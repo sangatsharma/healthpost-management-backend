@@ -16,7 +16,7 @@ export default function errorHandler(
   req: Request,
   res: Response,
   _: NextFunction) {
-
+  console.log(err);
   if (err instanceof customErrors.CustomError) {
     return errorResponse({
       res,
