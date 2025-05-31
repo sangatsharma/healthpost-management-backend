@@ -9,7 +9,8 @@ import {
 import {
   addNewHealthPostController,
   getHealthPostController,
-  getAHealthPostController
+  getAHealthPostController,
+  removeHealthPostController
 } from "./healthpost.controller";
 
 export {
@@ -21,5 +22,6 @@ export {
 
   addNewHealthPostController,
   getHealthPostController,
-  getAHealthPostController
+  getAHealthPostController,
+  removeHealthPostController
 };

@@ -10,6 +10,7 @@ import {
   addNewHealthPostController,
   getAHealthPostController,
   getHealthPostController,
+  removeHealthPostController,
 } from "@app/src/controllers/index.controller";
 import {
   authGuard,
@@ -38,6 +39,11 @@ healthPostRouter.get(
   "/:id",
   authGuard(["SUPERADMIN", "ADMIN"]),
   getAHealthPostController
+);
+healthPostRouter.delete(
+  "/:id",
+  authGuard(["SUPERADMIN"]),
+  removeHealthPostController
 );
 
 export default healthPostRouter;

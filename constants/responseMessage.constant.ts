@@ -42,6 +42,9 @@ export const responseMessageEnglish = {
       }
     }
   },
+  REMOVE_HEALTHPOST: {
+    SUCCESS: "Healthpost deleted",
+  },
 
   AUTH_GUARD: {
     LOGIN: "Please login to continue",
@@ -96,6 +99,9 @@ export const responseMessageNepali = {
       FAIL: {
       }
     }
+  },
+  REMOVE_HEALTHPOST: {
+    SUCCESS: "हेल्थपोस्ट हटाइयो",
   },
 
   AUTH_GUARD: {

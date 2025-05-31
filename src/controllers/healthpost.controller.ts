@@ -72,3 +72,34 @@ export const getAHealthPostController = async (
     data: healthPost
   });
 };
+
+export const removeHealthPostController = async (
+  req: Request,
+  res: Response,
+  _: NextFunction
+) => {
+  const response = responseMessageNepali;
+  const healthPostId = req.params.id;
+
+  const healthPostExists = await prisma.healthPost.findUnique({
+    where: {
+      id: healthPostId
+    }
+  });
+  if (!healthPostExists)
+    throw new customErrors.NotFoundError({
+      message: response.COMMON.NOT_FOUND
+    });
+
+  const healthPost = await prisma.healthPost.delete({
+    where: {
+      id: healthPostId as string
+    }
+  });
+
+  return successResponse({
+    res,
+    message: response.REMOVE_HEALTHPOST.SUCCESS,
+    data: healthPost
+  });
+};
