@@ -1,0 +1,58 @@
+import { z } from "zod";
+import { np } from "./messages/userAuth.messages";
+import { en } from "./messages/userAuth.messages";
+
+export const userRegisterSchemaValidation = (lang: string) => {
+  const t = lang === "np" ? np : en;
+
+  return z.object({
+    fullName: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string
+    }),
+    email: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string
+    }).email({
+      message: "Invalid email format",
+    }),
+    role: z.enum(["ADMIN", "PATIENT"], {
+      required_error: "Role must be: ADMIN | PATIENT"
+    }),
+    permission: z.enum(["ALL"]),
+  });
+};
+
+export const userLoginSchemaValidation = (lang: string) => {
+  const t = lang === "np" ? np : en;
+
+  return z.object({
+    email: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string
+    }).email({
+      message: "Invalid email format",
+    }),
+  });
+};
+
+export const otpSchemaValidation = (lang: string) => {
+  const t = lang === "np" ? np : en;
+
+  return z.object({
+    email: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string
+    }),
+    otp: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string
+    }),
+  });
+};
+
+
+// Infer types
+export type UserRegisterType = z.infer<ReturnType<typeof userRegisterSchemaValidation>>
+export type UserLoginType = z.infer<ReturnType<typeof userLoginSchemaValidation>>
+export type OtpValidateType = z.infer<ReturnType<typeof otpSchemaValidation>>

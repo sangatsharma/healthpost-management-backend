@@ -1,0 +1,28 @@
+// Superadmin and Admin
+model User {
+  id           String      @id @default(uuid())
+  fullName     String
+  email        String      @unique
+  role         ROLE
+  permission   PERMISSIONS
+  isVerified   Boolean     @default(false)
+  refreshToken String?
+  healthPost   HealthPost? @relation(fields: [healthPostId], references: [id])
+  healthPostId String?     @unique
+  otp          String?
+  optCreatedAt DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("user")
+}
+
+enum ROLE {
+  SUPERADMIN
+  ADMIN
+  PATIENT
+}
+
+enum PERMISSIONS {
+  ALL
+}
