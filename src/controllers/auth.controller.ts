@@ -24,34 +24,46 @@ import {
 
 // TODO: Code to email
 
-export const adminRegisterController = async (
+export const adminLoginController = async (
   req: Request,
   res: Response,
   _: NextFunction
 ) => {
-  const body = req.body;
+  const body = req.body as {
+    email: string;
+    password: string
+  };
 
-  const newUser = await prisma.user.create({
-    data: {
-      ...body,
-      role: "SUPERADMIN"
+  if (body.password !== "secret123")
+    throw new customErrors.AccessError({
+      name: "FORBIDDEN",
+      message: "Access denied"
+    });
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: body.email
     }
   });
+
+  if (!user || user.role !== "SUPERADMIN")
+    throw new customErrors.NotFoundError({
+      message: "User not found"
+    });
 
   const {
     jwtAccessToken,
     jwtRefreshToken,
-  } = await jwtTokenGen(newUser);
+  } = await jwtTokenGen(user);
 
   res.cookie("accessToken", jwtAccessToken);
   res.cookie("refreshToken", jwtRefreshToken);
 
   return successResponse({
     res,
-    message: "Superadmin created",
-    data: newUser
+    message: "Login Successfull",
+    data: user
   });
-
 };
 
 export const userRegisterController = async (

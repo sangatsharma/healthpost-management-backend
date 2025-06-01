@@ -4,7 +4,7 @@ import {
   valiadteOtpController,
   userLogoutHandler,
   refreshAccessToken,
-  adminRegisterController
+  adminLoginController
 } from "./auth.controller";
 
 import {
@@ -21,7 +21,7 @@ export {
   valiadteOtpController,
   userLogoutHandler,
   refreshAccessToken,
-  adminRegisterController,
+  adminLoginController,
 
   addNewHealthPostController,
   getHealthPostController,
