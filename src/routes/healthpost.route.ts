@@ -5,12 +5,14 @@ import {
 } from "@app/utils/index.utils";
 import {
   newHealthPostSchemaValidation,
+  updateHealthPostSchemaValidation,
 } from "@app/src/validations/index.validation";
 import {
   addNewHealthPostController,
   getAHealthPostController,
   getHealthPostController,
   removeHealthPostController,
+  updateHealthPostController,
 } from "@app/src/controllers/index.controller";
 import {
   authGuard,
@@ -44,6 +46,12 @@ healthPostRouter.delete(
   "/:id",
   authGuard(["SUPERADMIN"]),
   removeHealthPostController
+);
+healthPostRouter.put(
+  "/:id",
+  authGuard(["SUPERADMIN"]),
+  validateSchema(updateHealthPostSchemaValidation),
+  updateHealthPostController
 );
 
 export default healthPostRouter;

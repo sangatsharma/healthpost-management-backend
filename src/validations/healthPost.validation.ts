@@ -24,4 +24,26 @@ export const newHealthPostSchemaValidation = (lang: string) => {
   });
 };
 
+export const updateHealthPostSchemaValidation = (lang: string) => {
+  const t = lang === "np" ? np : en;
+
+  return z.object({
+    name: z.string({
+      invalid_type_error: t.invalid_type_string
+    }).optional(),
+    location: z.string({
+      invalid_type_error: t.invalid_type_string
+    }).optional(),
+    number: z.string({
+      invalid_type_error: t.invalid_type_string
+    }).optional(),
+    adminId: z.string({
+      invalid_type_error: t.invalid_type_string
+    }).optional(),
+  }).refine((input) => Object.keys(input).length >= 1, {
+    message: "Atleast one field required"
+  });
+};
+
 export type NewHealthPostType = z.infer<ReturnType<typeof newHealthPostSchemaValidation>>
+export type UpdateHealthPostType = z.infer<ReturnType<typeof updateHealthPostSchemaValidation>>

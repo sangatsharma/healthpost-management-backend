@@ -9,7 +9,9 @@ import {
 
 import {
   newHealthPostSchemaValidation,
-  NewHealthPostType
+  updateHealthPostSchemaValidation,
+  NewHealthPostType,
+  UpdateHealthPostType
 } from "./healthPost.validation";
 
 export {
@@ -21,5 +23,7 @@ export {
   OtpValidateType,
 
   newHealthPostSchemaValidation,
-  NewHealthPostType
+  updateHealthPostSchemaValidation,
+  NewHealthPostType,
+  UpdateHealthPostType
 };

@@ -11,6 +11,10 @@ import {
 import {
   responseMessageNepali,
 } from "@app/constants/index.constant";
+import {
+  UpdateHealthPostType,
+} from "@app/src/validations/index.validation";
+import { UserJwt } from "@app/types/jwtUser.type";
 
 export const addNewHealthPostController = async (
   req: Request,
@@ -53,6 +57,8 @@ export const getAHealthPostController = async (
   _: NextFunction
 ) => {
   const response = responseMessageNepali;
+
+  const user = res.locals.user as UserJwt;
   const healthPostId = req.params.id;
 
   const healthPost = await prisma.healthPost.findFirst({
@@ -62,6 +68,10 @@ export const getAHealthPostController = async (
   });
 
   if (!healthPost)
+    throw new customErrors.NotFoundError({
+      message: response.COMMON.NOT_FOUND
+    });
+  else if (user.role === "ADMIN" && healthPost.adminId !== user.id)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });
@@ -101,5 +111,51 @@ export const removeHealthPostController = async (
     res,
     message: response.REMOVE_HEALTHPOST.SUCCESS,
     data: healthPost
+  });
+};
+
+export const updateHealthPostController = async (
+  req: Request,
+  res: Response,
+  _: NextFunction
+) => {
+  const response = responseMessageNepali;
+  const healthPostId = req.params.id;
+  const data = req.body as UpdateHealthPostType;
+
+  const healthPostExists = await prisma.healthPost.findUnique({
+    where: {
+      id: healthPostId
+    }
+  });
+
+  if (!healthPostExists)
+    throw new customErrors.NotFoundError({
+      message: response.COMMON.NOT_FOUND
+    });
+
+  if (data.adminId) {
+    const adminExists = await prisma.user.findUnique({
+      where: {
+        id: data.adminId
+      }
+    });
+    if (!adminExists || adminExists.role !== "ADMIN")
+      throw new customErrors.BadRequestError({
+        message: response.UPDATE_HEALTHPOST.FAIL.INVALID_ADMIN_ID
+      });
+  }
+
+  const updatedHealthPost = await prisma.healthPost.update({
+    where: {
+      id: healthPostId
+    },
+    data: data
+  });
+
+  return successResponse({
+    res,
+    message: response.UPDATE_HEALTHPOST.SUCCESS,
+    data: updatedHealthPost
   });
 };
