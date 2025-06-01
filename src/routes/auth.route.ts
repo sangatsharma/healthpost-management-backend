@@ -11,13 +11,18 @@ import {
   userRegisterController,
   valiadteOtpController,
   userLogoutHandler,
-  refreshAccessToken
+  refreshAccessToken,
+  adminRegisterController
 } from "@app/src/controllers/index.controller";
 
 import { authGuard } from "@app/src/helpers/index.helper";
 
 const authRouter = express.Router();
 
+authRouter.post(
+  "/superadmin",
+  adminRegisterController,
+);
 authRouter.post(
   "/register",
   authGuard(["SUPERADMIN"]),

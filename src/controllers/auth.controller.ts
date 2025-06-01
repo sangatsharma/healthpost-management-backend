@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
+import { UserJwt } from "@app/types/jwtUser.type";
 import {
   CONFIG,
   customErrors,
@@ -14,12 +15,44 @@ import {
 import {
   responseMessageEnglish,
   responseMessageNepali,
-} from "@app/constants/responseMessage.constant";
-import { UserJwt } from "@app/types/jwtUser.type";
-import sendMail from "../helpers/sendMain.helper";
-import generateOTP from "../helpers/generateOtp.utils";
+} from "@app/constants/index.constant";
+import {
+  jwtTokenGen,
+  sendMail,
+  generateOTP
+} from "@app/src/helpers/index.helper";
 
 // TODO: Code to email
+
+export const adminRegisterController = async (
+  req: Request,
+  res: Response,
+  _: NextFunction
+) => {
+  const body = req.body;
+
+  const newUser = await prisma.user.create({
+    data: {
+      ...body,
+      role: "SUPERADMIN"
+    }
+  });
+
+  const {
+    jwtAccessToken,
+    jwtRefreshToken,
+  } = await jwtTokenGen(newUser);
+
+  res.cookie("accessToken", jwtAccessToken);
+  res.cookie("refreshToken", jwtRefreshToken);
+
+  return successResponse({
+    res,
+    message: "Superadmin created",
+    data: newUser
+  });
+
+};
 
 export const userRegisterController = async (
   req: Request,
@@ -157,35 +190,7 @@ export const valiadteOtpController = async (
     });
 
   // Gen tokens
-  const jwtAccessPayload = {
-    id: user.id,
-    email: user.email,
-    role: user.role,
-    permission: user.permission
-  };
-
-  const jwtRefreshPayload = {
-    id: user.id
-  };
-
-  const jwtAccessToken = jwt.sign(jwtAccessPayload, CONFIG.ACCESS_SECRET, {
-    expiresIn: "15m"
-  });
-
-  const jwtRefreshToken = jwt.sign(jwtRefreshPayload, CONFIG.REFRESH_SECRET, {
-    expiresIn: "7d"
-  });
-
-  await prisma.user.update({
-    where: {
-      id: user.id
-    },
-    data: {
-      otp: null,
-      optCreatedAt: null,
-      refreshToken: jwtRefreshToken
-    }
-  });
+  const { jwtAccessToken, jwtRefreshToken } = await jwtTokenGen(user);
 
   res.cookie("accessToken", jwtAccessToken);
   res.cookie("refreshToken", jwtRefreshToken);
