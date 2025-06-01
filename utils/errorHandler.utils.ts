@@ -95,7 +95,6 @@ export default function errorHandler(
     });
   }
 
-  console.log(err);
 
   return errorResponse({
     res,

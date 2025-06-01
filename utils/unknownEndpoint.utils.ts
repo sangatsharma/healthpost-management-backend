@@ -7,7 +7,6 @@ export default function unknownEndpoint(
   res: Response,
   _: NextFunction
 ) {
-  console.log(req.path);
   return errorResponse({
     res,
     statusCode: statusCodes.NOT_FOUND,

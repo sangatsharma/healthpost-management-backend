@@ -7,12 +7,11 @@ model User {
   permission   PERMISSIONS
   isVerified   Boolean     @default(false)
   refreshToken String?
-  healthPost   HealthPost? @relation(fields: [healthPostId], references: [id])
-  healthPostId String?     @unique
   otp          String?
   optCreatedAt DateTime?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  HealthPost   HealthPost?
 
   @@map("user")
 }

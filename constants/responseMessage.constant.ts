@@ -42,6 +42,15 @@ export const responseMessageEnglish = {
       }
     }
   },
+  REMOVE_HEALTHPOST: {
+    SUCCESS: "Healthpost deleted",
+  },
+  UPDATE_HEALTHPOST: {
+    SUCCESS: "Healthpost updated",
+    FAIL: {
+      INVALID_ADMIN_ID: "Admin not found",
+    }
+  },
 
   AUTH_GUARD: {
     LOGIN: "Please login to continue",
@@ -95,6 +104,15 @@ export const responseMessageNepali = {
       SUCCESS: "हेल्थपोस्ट भेटियो",
       FAIL: {
       }
+    }
+  },
+  REMOVE_HEALTHPOST: {
+    SUCCESS: "हेल्थपोस्ट हटाइयो",
+  },
+  UPDATE_HEALTHPOST: {
+    SUCCESS: "हेल्थपोस्ट अपडेट गरियो",
+    FAIL: {
+      INVALID_ADMIN_ID: "प्रशासक फेला परेन",
     }
   },
 

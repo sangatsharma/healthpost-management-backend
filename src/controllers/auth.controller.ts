@@ -90,9 +90,7 @@ export const userLoginController = async (
       text: `Your One Time Password for health app is ${otp}`
     });
   }
-  catch (err) {
-    console.log(err);
-
+  catch {
     throw new customErrors.GeneralError({
       name: "OTP failed",
       message: response.PRE_LOGIN.FAIL.UNKNOWN
@@ -238,10 +236,29 @@ export const refreshAccessToken = async (
   res: Response,
   _: NextFunction
 ) => {
-  const refreshToken = req.cookies["refreshToken"] as string;
   const response = responseMessageNepali;
+  const refreshToken = req.cookies["refreshToken"] as string;
+  const accessToken = req.cookies["accessToken"] as string;
 
-  const user = jwt.verify(refreshToken, CONFIG.REFRESH_SECRET) as UserJwt;
+  if (!accessToken || !refreshToken) {
+    throw new customErrors.AccessError({
+      name: "UNAUTHORIZED",
+      message: "Login first"
+    });
+  }
+  jwt.verify(refreshToken, CONFIG.REFRESH_SECRET);
+
+  const user = await prisma.user.findFirst({
+    where: {
+      refreshToken: refreshToken
+    }
+  });
+
+  if (!user)
+    throw new customErrors.AccessError({
+      name: "UNAUTHORIZED",
+      message: "Login first"
+    });
 
   // Gen tokens
   const jwtAccessPayload = {
