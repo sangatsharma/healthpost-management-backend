@@ -20,6 +20,7 @@ const authRouter = express.Router();
 
 authRouter.post(
   "/register",
+  authGuard(["SUPERADMIN"]),
   validateSchema(userRegisterSchemaValidation),
   userRegisterController,
 );
