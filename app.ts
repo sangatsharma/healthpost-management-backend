@@ -9,10 +9,17 @@ import {
   unknownEndpoint,
 } from "@app/utils/index.utils";
 import { CONFIG } from "./utils/config.utils";
+import cors from "cors";
 
 const port = CONFIG.PORT || 3000;
 
 const app = express();
+
+app.use(cors({
+  credentials: true,
+  origin: ["https://healthpost.vercel.app", "http://localhost:3000"],
+}));
+
 app.use(cookieParser());
 app.use(express.json());
 
