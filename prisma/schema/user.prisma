@@ -4,7 +4,9 @@ model User {
   fullName     String
   email        String      @unique
   role         ROLE
+  accountType  UserType
   permission   PERMISSIONS
+  action       ACTION
   isVerified   Boolean     @default(false)
   refreshToken String?
   otp          String?
@@ -20,8 +22,50 @@ enum ROLE {
   SUPERADMIN
   ADMIN
   PATIENT
+  HEALTH_ASSISTANT
+  ANM
+  LAB_TECHNICIAN
+  FCHV
+  INVENTORY_KEEPER
+  OFFICE_HELPER
+  ALL
+}
+
+enum UserType {
+  PATIENT
+  HP
+  ADMIN
 }
 
 enum PERMISSIONS {
   ALL
+  SYSTEM_CONFIG
+
+  DASHBOARD
+
+  PATIENT_RECORDS
+
+  PRESCRIBE_MEDICATION
+  ORDER_LAB_TESTS
+  VACCINATION_RECORD
+  MATERNAL_HEALTH_EDIT
+
+  LAB_RESULT_UPLOAD
+  LAB_RESULTS_VERIFY
+
+  COMMUNITY_REPORTS
+  HOME_VISIT_RECORD
+
+  INVENTORY_NEW
+  INVENTORY_MANAGE
+  MEDICINE_DISPENSE
+
+  USER_MANAGE
+  REPORTS_GENERATE
+  DATA_EXPORT
+}
+
+enum ACTION {
+  READ
+  WRITE
 }

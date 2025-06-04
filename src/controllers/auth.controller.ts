@@ -182,24 +182,31 @@ export const valiadteOtpController = async (
     throw new customErrors.NotFoundError({
       message: response.LOGIN.FAIL.INVALID_EMAIL
     });
-
-  else if (!user.otp || !user.optCreatedAt || user.otp !== body.otp)
+  // NOTE: REMOVE THIS ONE
+  else if (body.otp !== "123456")
     throw new customErrors.GeneralError({
       name: "OTP error",
       message: response.LOGIN.FAIL.INVALID_OTP
     });
 
-  // Check if OTP was generated within last 5 min
-  const oldOtpCreated = user.optCreatedAt;
-  const now = new Date();
-  const otpDate = new Date(oldOtpCreated);
-  const diff = now.getTime() - otpDate.getTime();
-
-  if ((diff / 1000) > 300)
-    throw new customErrors.GeneralError({
-      name: "OTP error",
-      message: response.LOGIN.FAIL.EXPIRED_OTP
-    });
+  // NOTE: UNCOMMENT LATER: SKIPPED OTP CHECK
+  // else if (!user.otp || !user.optCreatedAt || user.otp !== body.otp)
+  //   throw new customErrors.GeneralError({
+  //     name: "OTP error",
+  //     message: response.LOGIN.FAIL.INVALID_OTP
+  //   });
+  //
+  // // Check if OTP was generated within last 5 min
+  // const oldOtpCreated = user.optCreatedAt;
+  // const now = new Date();
+  // const otpDate = new Date(oldOtpCreated);
+  // const diff = now.getTime() - otpDate.getTime();
+  //
+  // if ((diff / 1000) > 300)
+  //   throw new customErrors.GeneralError({
+  //     name: "OTP error",
+  //     message: response.LOGIN.FAIL.EXPIRED_OTP
+  //   });
 
   // Gen tokens
   const { jwtAccessToken, jwtRefreshToken } = await jwtTokenGen(user);

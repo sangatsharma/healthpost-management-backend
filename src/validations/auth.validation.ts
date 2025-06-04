@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { np } from "./messages/userAuth.messages";
 import { en } from "./messages/userAuth.messages";
+import {
+  ROLE,
+  PERMISSIONS,
+} from "@prisma/client";
 
 export const userRegisterSchemaValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
@@ -16,7 +20,7 @@ export const userRegisterSchemaValidation = (lang: string) => {
     }).email({
       message: "Invalid email format",
     }),
-    role: z.enum(["ADMIN", "PATIENT"], {
+    role: z.nativeEnum(ROLE, {
       required_error: "Role must be: ADMIN | PATIENT"
     }),
     permission: z.enum(["ALL"]),
