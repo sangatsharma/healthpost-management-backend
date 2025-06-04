@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, CookieOptions } from "express";
 import * as jwt from "jsonwebtoken";
 import { UserJwt } from "@app/types/jwtUser.type";
 import {
@@ -21,6 +21,13 @@ import {
   sendMail,
   generateOTP
 } from "@app/src/helpers/index.helper";
+
+const cookieOptions: CookieOptions = {
+  sameSite: CONFIG.ENV === "PROD" ? "none" : "lax",
+  secure: CONFIG.ENV === "PROD",
+  path: "/",
+  maxAge: 7 * 24 * 60 * 60 * 1000
+};
 
 // TODO: Code to email
 
@@ -56,8 +63,8 @@ export const adminLoginController = async (
     jwtRefreshToken,
   } = await jwtTokenGen(user);
 
-  res.cookie("accessToken", jwtAccessToken);
-  res.cookie("refreshToken", jwtRefreshToken);
+  res.cookie("accessToken", jwtAccessToken, cookieOptions);
+  res.cookie("refreshToken", jwtRefreshToken, cookieOptions);
 
   return successResponse({
     res,
@@ -211,8 +218,8 @@ export const valiadteOtpController = async (
   // Gen tokens
   const { jwtAccessToken, jwtRefreshToken } = await jwtTokenGen(user);
 
-  res.cookie("accessToken", jwtAccessToken);
-  res.cookie("refreshToken", jwtRefreshToken);
+  res.cookie("accessToken", jwtAccessToken, cookieOptions);
+  res.cookie("refreshToken", jwtRefreshToken, cookieOptions);
 
   return successResponse({
     res,
@@ -296,7 +303,7 @@ export const refreshAccessToken = async (
     expiresIn: "15m"
   });
 
-  res.cookie("accessToken", jwtAccessToken);
+  res.cookie("accessToken", jwtAccessToken, cookieOptions);
 
   return successResponse({
     res,
