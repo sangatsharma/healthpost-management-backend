@@ -6,7 +6,6 @@ model User {
   role         ROLE
   accountType  UserType?
   permission   PERMISSIONS?
-  action       ACTION?
   isVerified   Boolean      @default(false)
   refreshToken String?
   otp          String?
@@ -16,6 +15,11 @@ model User {
   HealthPost   HealthPost?
 
   @@map("user")
+}
+
+model HpUserProfile {
+  userId String @unique
+  role   ROLE
 }
 
 enum ROLE {

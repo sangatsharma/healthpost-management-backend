@@ -25,7 +25,6 @@ export const userRegisterSchemaValidation = (lang: string) => {
     role: z.nativeEnum(ROLE),
     permission: z.nativeEnum(PERMISSIONS),
     accountType: z.nativeEnum(UserType),
-    action: z.nativeEnum(ACTION),
   });
 };
 

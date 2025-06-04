@@ -8,7 +8,8 @@ const jwtTokenGen = async (user: User) => {
     id: user.id,
     email: user.email,
     role: user.role,
-    permission: user.permission
+    permission: user.permission,
+    accountType: user.accountType,
   };
 
   const jwtRefreshPayload = {

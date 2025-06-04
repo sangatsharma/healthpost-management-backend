@@ -26,7 +26,7 @@ const cookieOptions: CookieOptions = {
   sameSite: CONFIG.ENV === "PROD" ? "none" : "lax",
   secure: CONFIG.ENV === "PROD",
   path: "/",
-  maxAge: 7 * 24 * 60 * 60 * 1000
+  maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
 // TODO: Code to email
@@ -36,6 +36,7 @@ export const adminLoginController = async (
   res: Response,
   _: NextFunction
 ) => {
+
   const body = req.body as {
     email: string;
     password: string
@@ -79,6 +80,16 @@ export const userRegisterController = async (
   _: NextFunction
 ) => {
   const body = req.body as UserRegisterType;
+  const user = res.locals.user as UserJwt;
+
+  if (body.role === "ADMIN" && user.role !== "SUPERADMIN")
+    throw new customErrors.AccessError({
+      name: "FORBIDDEN",
+      message: "Only superadmin can create admin",
+    });
+  // else if (body.accountType === "HP") {
+  //   if (body)
+  //   }
 
   const newUser = await prisma.user.create({
     data: body
@@ -217,6 +228,9 @@ export const valiadteOtpController = async (
 
   // Gen tokens
   const { jwtAccessToken, jwtRefreshToken } = await jwtTokenGen(user);
+
+  const domain = req.protocol + "://" + req.headers.host;
+  cookieOptions.domain = domain;
 
   res.cookie("accessToken", jwtAccessToken, cookieOptions);
   res.cookie("refreshToken", jwtRefreshToken, cookieOptions);
