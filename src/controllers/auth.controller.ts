@@ -22,10 +22,14 @@ import {
   generateOTP
 } from "@app/src/helpers/index.helper";
 
+const domain = CONFIG.ENV === "PROD" ? "healthpost.vercel.app" : "localhost";
+console.log(domain);
+
 const cookieOptions: CookieOptions = {
   sameSite: CONFIG.ENV === "PROD" ? "none" : "lax",
   secure: CONFIG.ENV === "PROD",
   path: "/",
+  domain: domain,
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
@@ -228,9 +232,6 @@ export const valiadteOtpController = async (
 
   // Gen tokens
   const { jwtAccessToken, jwtRefreshToken } = await jwtTokenGen(user);
-
-  const domain = req.protocol + "://" + req.headers.host;
-  cookieOptions.domain = domain;
 
   res.cookie("accessToken", jwtAccessToken, cookieOptions);
   res.cookie("refreshToken", jwtRefreshToken, cookieOptions);

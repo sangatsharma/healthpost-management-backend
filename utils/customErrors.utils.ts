@@ -46,8 +46,8 @@ class ValidationError extends CustomError {
   get error() {
     return {
       success: false,
-      message: this.name,
-      error: "Validation failed for certain fields",
+      error: this.name,
+      message: "Validation failed for certain fields",
       validationErrors: this.validationErrors,
     };
   }
@@ -74,8 +74,8 @@ class DbError extends CustomError {
   get error() {
     return {
       success: false,
-      message: this.name,
-      error: this.message,
+      message: this.message,
+      error: this.name,
       validationError: [],
     };
   }
@@ -105,8 +105,8 @@ class AccessError extends CustomError {
   get error() {
     return {
       success: false,
-      message: this.name,
-      error: this.message,
+      message: this.message,
+      error: this.name,
       validationError: []
     };
   };
@@ -136,8 +136,8 @@ class GeneralError extends CustomError {
   get error() {
     return {
       success: false,
-      message: this.name,
-      error: this.message,
+      message: this.message,
+      error: this.name,
       validationError: [],
     };
   }
@@ -163,8 +163,8 @@ class BadRequestError extends CustomError {
   get error() {
     return {
       success: false,
-      message: this.name,
-      error: this.message,
+      message: this.message,
+      error: this.name,
       validationError: [],
     };
   }
@@ -190,8 +190,8 @@ class NotFoundError extends CustomError {
   get error() {
     return {
       success: false,
-      message: this.name,
-      error: this.message,
+      message: this.message,
+      error: this.name,
       validationError: [],
     };
   }
