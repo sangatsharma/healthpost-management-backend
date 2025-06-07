@@ -8,7 +8,7 @@
     "start:prod": "node dist/app.js",
     "build": "prisma generate --schema ./prisma/schema/ && tsc --build && tsc-alias",
     "build:prod": "prisma generate --schema  ./prisma/schema/ && prisma migrate deploy && tsc --build && ts-alias",
-    "studio": "prisma studio --schema  ./prisma/schema.prisma",
+    "studio": "prisma studio --schema  ./prisma/schema/",
     "db:migrate": "prisma generate --schema ./prisma/schema/ && prisma migrate  dev --schema ./prisma/schema ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

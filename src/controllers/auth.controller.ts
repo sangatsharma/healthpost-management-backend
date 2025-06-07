@@ -23,7 +23,6 @@ import {
 } from "@app/src/helpers/index.helper";
 
 const domain = CONFIG.ENV === "PROD" ? "healthpost.vercel.app" : "localhost";
-console.log(domain);
 
 const cookieOptions: CookieOptions = {
   sameSite: CONFIG.ENV === "PROD" ? "none" : "lax",
@@ -86,6 +85,7 @@ export const userRegisterController = async (
   const body = req.body as UserRegisterType;
   const user = res.locals.user as UserJwt;
 
+  // TODO: Better role based access
   if (body.role === "ADMIN" && user.role !== "SUPERADMIN")
     throw new customErrors.AccessError({
       name: "FORBIDDEN",
@@ -95,8 +95,12 @@ export const userRegisterController = async (
   //   if (body)
   //   }
 
+  const stringPermission = body.permission.map((p) => JSON.stringify(p));
   const newUser = await prisma.user.create({
-    data: body
+    data: {
+      ...body,
+      permission: stringPermission
+    }
   });
 
   return successResponse({
@@ -150,19 +154,20 @@ export const userLoginController = async (
   const otp = generateOTP();
   const optCreatedAt = new Date();
 
-  try {
-    await sendMail({
-      to: newUser.email,
-      subject: "OTP for health app",
-      text: `Your One Time Password for health app is ${otp}`
-    });
-  }
-  catch {
-    throw new customErrors.GeneralError({
-      name: "OTP failed",
-      message: response.PRE_LOGIN.FAIL.UNKNOWN
-    });
-  }
+  // TODO: Uncomment
+  // try {
+  //   await sendMail({
+  //     to: newUser.email,
+  //     subject: "OTP for health app",
+  //     text: `Your One Time Password for health app is ${otp}`
+  //   });
+  // }
+  // catch {
+  //   throw new customErrors.GeneralError({
+  //     name: "OTP failed",
+  //     message: response.PRE_LOGIN.FAIL.UNKNOWN
+  //   });
+  // }
 
   await prisma.user.update({
     where: {
@@ -236,12 +241,17 @@ export const valiadteOtpController = async (
   res.cookie("accessToken", jwtAccessToken, cookieOptions);
   res.cookie("refreshToken", jwtRefreshToken, cookieOptions);
 
+  const { otp, optCreatedAt, ...rest } = user;
+
   return successResponse({
     res,
     message: response.LOGIN.SUCCESS,
     data: {
-      accessToken: jwtAccessToken,
-      refreshToken: jwtRefreshToken
+      token: {
+        accessToken: jwtAccessToken,
+        refreshToken: jwtRefreshToken
+      },
+      user: rest
     }
   });
 };
@@ -267,7 +277,9 @@ export const userLogoutHandler = async (
       id: user.id
     },
     data: {
-      refreshToken: null
+      refreshToken: null,
+      otp: null,
+      optCreatedAt: null,
     }
   });
 

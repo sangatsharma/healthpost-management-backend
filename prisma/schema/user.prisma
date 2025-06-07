@@ -1,17 +1,17 @@
 // Superadmin and Admin
 model User {
-  id           String       @id @default(uuid())
+  id           String      @id @default(uuid())
   fullName     String
-  email        String       @unique
+  email        String      @unique
   role         ROLE
-  accountType  UserType?
-  permission   PERMISSIONS?
-  isVerified   Boolean      @default(false)
+  accountType  UserType
+  permission   Json
+  isVerified   Boolean     @default(false)
   refreshToken String?
   otp          String?
   optCreatedAt DateTime?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   HealthPost   HealthPost?
 
   @@map("user")
@@ -41,7 +41,7 @@ enum UserType {
   ADMIN
 }
 
-enum PERMISSIONS {
+enum RESOURCES {
   ALL
   SYSTEM_CONFIG
 

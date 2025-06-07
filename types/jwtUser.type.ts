@@ -1,8 +1,11 @@
-import { PERMISSIONS, ROLE } from "@prisma/client";
+import { ACTION, RESOURCES, ROLE } from "@prisma/client";
 
 export type UserJwt = {
   id: string,
   email: string,
   role: ROLE,
-  permission: PERMISSIONS
+  permission: {
+    action: ACTION,
+    resource: RESOURCES
+  }[]
 }

@@ -3,9 +3,9 @@ import { np } from "./messages/userAuth.messages";
 import { en } from "./messages/userAuth.messages";
 import {
   ROLE,
-  PERMISSIONS,
-  UserType,
   ACTION,
+  UserType,
+  RESOURCES,
 } from "@prisma/client";
 
 export const userRegisterSchemaValidation = (lang: string) => {
@@ -22,9 +22,16 @@ export const userRegisterSchemaValidation = (lang: string) => {
     }).email({
       message: "Invalid email format",
     }),
-    role: z.nativeEnum(ROLE),
-    permission: z.nativeEnum(PERMISSIONS),
     accountType: z.nativeEnum(UserType),
+    role: z.nativeEnum(ROLE),
+    permission: z.array(z.object({
+      action: z.nativeEnum(ACTION),
+      resource: z.nativeEnum(RESOURCES)
+    }, {
+      required_error: "FORMAT: {action: ACTION, resource:RESOURCE}"
+    }), {
+      required_error: "FORMAT: {action: ACTION, resource:RESOURCE}[]"
+    }),
   });
 };
 

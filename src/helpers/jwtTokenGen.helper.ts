@@ -4,11 +4,15 @@ import * as jwt from "jsonwebtoken";
 
 const jwtTokenGen = async (user: User) => {
 
+  let jsonPermission = user.permission as string[] | null;
+  if (jsonPermission)
+    jsonPermission = jsonPermission.map((j) => JSON.parse(j));
+
   const jwtAccessPayload = {
     id: user.id,
     email: user.email,
     role: user.role,
-    permission: user.permission,
+    permission: jsonPermission,
     accountType: user.accountType,
   };
 
