@@ -242,6 +242,10 @@ export const valiadteOtpController = async (
   res.cookie("refreshToken", jwtRefreshToken, cookieOptions);
 
   const { otp, optCreatedAt, ...rest } = user;
+  if (rest.permission) {
+    const per = rest.permission as string[];
+    rest.permission = per.map((p) => JSON.parse(p));
+  }
 
   return successResponse({
     res,
