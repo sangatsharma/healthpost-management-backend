@@ -25,7 +25,7 @@ authRouter.post(
 );
 authRouter.post(
   "/register",
-  // authGuard(["SUPERADMIN"]),
+  authGuard(["SUPERADMIN"]),
   validateSchema(userRegisterSchemaValidation),
   userRegisterController,
 );

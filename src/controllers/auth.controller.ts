@@ -13,6 +13,7 @@ import {
   OtpValidateType
 } from "@app/src/validations/index.validation";
 import {
+  allowedRolesByAccountType,
   responseMessageEnglish,
   responseMessageNepali,
 } from "@app/constants/index.constant";
@@ -91,6 +92,12 @@ export const userRegisterController = async (
       name: "FORBIDDEN",
       message: "Only superadmin can create admin",
     });
+
+  if (!allowedRolesByAccountType[body.accountType]?.includes(body.role)) {
+    throw new customErrors.BadRequestError({
+      message: `Role '${body.role}' is not allowed for account type '${body.accountType}'`,
+    });
+  }
   // else if (body.accountType === "HP") {
   //   if (body)
   //   }

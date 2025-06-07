@@ -3,9 +3,11 @@ import {
   responseMessageEnglish,
   responseMessageNepali,
 } from "./responseMessage.constant";
+import allowedRolesByAccountType from "./allowedRoles.constant";
 
 export {
   statusCodes,
   responseMessageEnglish,
-  responseMessageNepali
+  responseMessageNepali,
+  allowedRolesByAccountType
 };
