@@ -19,9 +19,9 @@ import {
 } from "@app/constants/index.constant";
 import {
   jwtTokenGen,
-  sendMail,
   generateOTP
 } from "@app/src/helpers/index.helper";
+import { permission } from "process";
 
 const domain = CONFIG.ENV === "PROD" ? "healthpost.vercel.app" : "localhost";
 
@@ -102,18 +102,22 @@ export const userRegisterController = async (
   //   if (body)
   //   }
 
-  const stringPermission = body.permission.map((p) => JSON.stringify(p));
   const newUser = await prisma.user.create({
     data: {
       ...body,
-      permission: stringPermission
+      permission: JSON.stringify(body.permission),
     }
   });
+
+  const parsedPermission = JSON.parse(newUser.permission as string);
 
   return successResponse({
     res,
     message: responseMessageEnglish.REGISTER.SUCCESS,
-    data: newUser
+    data: {
+      ...newUser,
+      permission: parsedPermission
+    }
   });
 
 };
@@ -141,6 +145,10 @@ export const userLoginController = async (
   if (!newUser)
     throw new customErrors.NotFoundError({
       message: response.LOGIN.FAIL.INVALID_EMAIL
+    });
+  else if (newUser.accountType !== body.accountType)
+    throw new customErrors.BadRequestError({
+      message: `Login from ${newUser.accountType} portal`
     });
 
   // Check if OTP was generated within last 2 min
@@ -250,8 +258,7 @@ export const valiadteOtpController = async (
 
   const { otp, optCreatedAt, ...rest } = user;
   if (rest.permission) {
-    const per = rest.permission as string[];
-    rest.permission = per.map((p) => JSON.parse(p));
+    rest.permission = JSON.parse(rest.permission as string);
   }
 
   return successResponse({
@@ -343,12 +350,18 @@ export const refreshAccessToken = async (
 
   res.cookie("accessToken", jwtAccessToken, cookieOptions);
 
+  const { otp, optCreatedAt, ...rest } = user;
   return successResponse({
     res,
     message: response.REGEN_ACCESS.SUCCESS,
     data: {
-      accessToken: jwtAccessToken,
-      refreshToken
+      token: {
+        accessToken: jwtAccessToken,
+        refreshToken
+      },
+      user: {
+        ...rest
+      }
     }
   });
 };

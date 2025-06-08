@@ -6,7 +6,7 @@ const jwtTokenGen = async (user: User) => {
 
   let jsonPermission = user.permission as string[] | null;
   if (jsonPermission)
-    jsonPermission = jsonPermission.map((j) => JSON.parse(j));
+    jsonPermission = JSON.parse(user.permission as string);
 
   const jwtAccessPayload = {
     id: user.id,

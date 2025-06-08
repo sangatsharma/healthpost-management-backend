@@ -1,7 +1,9 @@
 // Superadmin and Admin
 model User {
   id           String      @id @default(uuid())
-  fullName     String
+  firstName    String
+  middleName   String?
+  lastName     String
   email        String      @unique
   role         ROLE
   accountType  UserType

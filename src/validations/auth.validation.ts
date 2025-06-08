@@ -12,7 +12,14 @@ export const userRegisterSchemaValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
 
   return z.object({
-    fullName: z.string({
+    firstName: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string
+    }),
+    middleName: z.string({
+      invalid_type_error: t.invalid_type_string
+    }).optional(),
+    lastName: z.string({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
     }),
@@ -45,6 +52,8 @@ export const userLoginSchemaValidation = (lang: string) => {
     }).email({
       message: "Invalid email format",
     }),
+
+    accountType: z.nativeEnum(UserType)
   });
 };
 
