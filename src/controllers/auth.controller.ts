@@ -22,11 +22,10 @@ import {
   generateOTP
 } from "@app/src/helpers/index.helper";
 
-// const domain = CONFIG.ENV === "PROD" ? "healthsync.me" : "localhost";
+// const domain = CONFIG.ENV === "PROD" ? ".healthsync.me" : "localhost";
 
 const cookieOptions: CookieOptions = {
-  // sameSite: CONFIG.ENV === "PROD" ? "none" : "lax",
-  // secure: CONFIG.ENV === "PROD",
+  secure: CONFIG.ENV === "PROD",
   path: "/",
   // domain: domain,
   maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -357,7 +356,8 @@ export const refreshAccessToken = async (
     id: user.id,
     email: user.email,
     role: user.role,
-    permission: jsonPermission
+    permission: jsonPermission,
+    acountType: user.accountType,
   };
 
   const jwtAccessToken = jwt.sign(jwtAccessPayload, CONFIG.ACCESS_SECRET, {
