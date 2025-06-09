@@ -15,6 +15,10 @@ import {
   updateHealthPostController
 } from "./healthpost.controller";
 
+import {
+  getUserHandler
+} from "./user.controller";
+
 export {
   userLoginController,
   userRegisterController,
@@ -27,5 +31,7 @@ export {
   getHealthPostController,
   getAHealthPostController,
   removeHealthPostController,
-  updateHealthPostController
+  updateHealthPostController,
+
+  getUserHandler
 };

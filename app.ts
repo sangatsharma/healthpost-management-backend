@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import {
   authRouter,
   healthPostRouter,
+  userRouter,
 } from "@app/src/routes/index.route";
 import {
   errorHandler,
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 app.use("/api/healthpost", healthPostRouter);
 
 app.use(errorHandler);
