@@ -22,10 +22,13 @@ import {
   generateOTP
 } from "@app/src/helpers/index.helper";
 
-// const domain = CONFIG.ENV === "PROD" ? ".healthsync.me" : "localhost";
+const domain = CONFIG.ENV === "PROD" ? ".healthsync.me" : "localhost";
 
 const cookieOptions: CookieOptions = {
   secure: CONFIG.ENV === "PROD",
+  sameSite: "none",
+  httpOnly: true,
+  domain: domain,
   path: "/",
   // domain: domain,
   maxAge: 7 * 24 * 60 * 60 * 1000,
