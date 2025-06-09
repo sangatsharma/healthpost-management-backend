@@ -9,6 +9,10 @@ model User {
   accountType  UserType
   permission   Json
   isVerified   Boolean     @default(false)
+  phoneNumber  String?
+  gender       GENDER?
+  profileImage String?
+  healthPostId String?
   refreshToken String?
   otp          String?
   optCreatedAt DateTime?
@@ -74,4 +78,10 @@ enum RESOURCES {
 enum ACTION {
   READ
   WRITE
+}
+
+enum GENDER {
+  MALE
+  FEMALE
+  OTHER
 }

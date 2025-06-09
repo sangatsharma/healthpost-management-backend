@@ -21,15 +21,14 @@ import {
   jwtTokenGen,
   generateOTP
 } from "@app/src/helpers/index.helper";
-import { permission } from "process";
 
-const domain = CONFIG.ENV === "PROD" ? "healthpost.vercel.app" : "localhost";
+// const domain = CONFIG.ENV === "PROD" ? "healthsync.me" : "localhost";
 
 const cookieOptions: CookieOptions = {
-  sameSite: CONFIG.ENV === "PROD" ? "none" : "lax",
-  secure: CONFIG.ENV === "PROD",
+  // sameSite: CONFIG.ENV === "PROD" ? "none" : "lax",
+  // secure: CONFIG.ENV === "PROD",
   path: "/",
-  domain: domain,
+  // domain: domain,
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
@@ -110,12 +109,18 @@ export const userRegisterController = async (
   });
 
   const parsedPermission = JSON.parse(newUser.permission as string);
+  const { firstName, middleName, lastName, ...rest } = newUser;
 
   return successResponse({
     res,
     message: responseMessageEnglish.REGISTER.SUCCESS,
     data: {
-      ...newUser,
+      ...rest,
+      fullName: {
+        firstName,
+        middleName,
+        lastName
+      },
       permission: parsedPermission
     }
   });
@@ -256,7 +261,7 @@ export const valiadteOtpController = async (
   res.cookie("accessToken", jwtAccessToken, cookieOptions);
   res.cookie("refreshToken", jwtRefreshToken, cookieOptions);
 
-  const { otp, optCreatedAt, ...rest } = user;
+  const { otp, optCreatedAt, firstName, middleName, lastName, ...rest } = user;
   if (rest.permission) {
     rest.permission = JSON.parse(rest.permission as string);
   }
@@ -269,7 +274,14 @@ export const valiadteOtpController = async (
         accessToken: jwtAccessToken,
         refreshToken: jwtRefreshToken
       },
-      user: rest
+      user: {
+        ...rest,
+        fullName: {
+          firstName,
+          middleName,
+          lastName
+        }
+      }
     }
   });
 };
@@ -336,12 +348,16 @@ export const refreshAccessToken = async (
       message: "Login first"
     });
 
+  let jsonPermission = user.permission as string[] | null;
+  if (jsonPermission)
+    jsonPermission = JSON.parse(user.permission as string);
+
   // Gen tokens
   const jwtAccessPayload = {
     id: user.id,
     email: user.email,
     role: user.role,
-    permission: user.permission
+    permission: jsonPermission
   };
 
   const jwtAccessToken = jwt.sign(jwtAccessPayload, CONFIG.ACCESS_SECRET, {
@@ -350,7 +366,11 @@ export const refreshAccessToken = async (
 
   res.cookie("accessToken", jwtAccessToken, cookieOptions);
 
-  const { otp, optCreatedAt, ...rest } = user;
+  if (user.permission) {
+    user.permission = JSON.parse(user.permission as string);
+  }
+
+  const { otp, optCreatedAt, firstName, middleName, lastName, ...rest } = user;
   return successResponse({
     res,
     message: response.REGEN_ACCESS.SUCCESS,
@@ -360,7 +380,12 @@ export const refreshAccessToken = async (
         refreshToken
       },
       user: {
-        ...rest
+        ...rest,
+        fullName: {
+          firstName,
+          middleName,
+          lastName
+        }
       }
     }
   });

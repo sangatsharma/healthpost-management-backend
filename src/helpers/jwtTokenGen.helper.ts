@@ -12,7 +12,7 @@ const jwtTokenGen = async (user: User) => {
     id: user.id,
     email: user.email,
     role: user.role,
-    permission: jsonPermission,
+    permissions: jsonPermission,
     accountType: user.accountType,
   };
 
