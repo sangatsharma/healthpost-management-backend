@@ -51,12 +51,14 @@ authRouter.post(
 
 authRouter.get(
   "/logout",
+  languageMiddleware,
   authGuard(),
   userLogoutHandler
 );
 
 authRouter.get(
   "/refresh-token",
+  languageMiddleware,
   refreshAccessToken
 );
 
