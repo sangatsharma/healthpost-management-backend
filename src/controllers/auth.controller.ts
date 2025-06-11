@@ -1,4 +1,9 @@
-import { Request, Response, NextFunction, CookieOptions } from "express";
+import {
+  Request,
+  Response,
+  NextFunction,
+  CookieOptions,
+} from "express";
 import * as jwt from "jsonwebtoken";
 import { UserJwt } from "@app/types/jwtUser.type";
 import {
@@ -19,8 +24,12 @@ import {
 } from "@app/constants/index.constant";
 import {
   jwtTokenGen,
-  generateOTP
+  generateOTP,
+  TokenHelper
 } from "@app/src/helpers/index.helper";
+import { RepoManager } from "@app/src/repository/index.repository";
+import { User } from "@prisma/client";
+import { ModifiedUser } from "@app/types/index.type";
 
 const domain = CONFIG.ENV === "PROD" ? ".healthsync.me" : "localhost";
 
@@ -30,7 +39,6 @@ const cookieOptions: CookieOptions = {
   httpOnly: true,
   domain: domain,
   path: "/",
-  // domain: domain,
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
@@ -86,45 +94,27 @@ export const userRegisterController = async (
 ) => {
   const body = req.body as UserRegisterType;
   const user = res.locals.user as UserJwt;
+  const response = res.locals.message;
 
   // TODO: Better role based access
   if (body.role === "ADMIN" && user.role !== "SUPERADMIN")
     throw new customErrors.AccessError({
       name: "FORBIDDEN",
-      message: "Only superadmin can create admin",
+      message: response.REGISTER.FAIL.PERMISSION,
     });
 
   if (!allowedRolesByAccountType[body.accountType]?.includes(body.role)) {
     throw new customErrors.BadRequestError({
-      message: `Role '${body.role}' is not allowed for account type '${body.accountType}'`,
+      message: response.REGISTER.FAIL.INVALID_ROLE,
     });
   }
-  // else if (body.accountType === "HP") {
-  //   if (body)
-  //   }
 
-  const newUser = await prisma.user.create({
-    data: {
-      ...body,
-      permission: JSON.stringify(body.permission),
-    }
-  });
-
-  const parsedPermission = JSON.parse(newUser.permission as string);
-  const { firstName, middleName, lastName, ...rest } = newUser;
+  const newUser = await RepoManager.userRepository.create(body);
 
   return successResponse({
     res,
-    message: responseMessageEnglish.REGISTER.SUCCESS,
-    data: {
-      ...rest,
-      fullName: {
-        firstName,
-        middleName,
-        lastName
-      },
-      permission: parsedPermission
-    }
+    message: response.REGISTER.SUCCESS,
+    data: newUser
   });
 
 };
@@ -134,7 +124,7 @@ export const userLoginController = async (
   res: Response,
   _: NextFunction
 ) => {
-  const response = responseMessageNepali;
+  const response = res.locals.message;
 
   if (req.cookies["accessToken"])
     throw new customErrors.BadRequestError({
@@ -143,23 +133,19 @@ export const userLoginController = async (
 
   const body = req.body as UserLoginType;
 
-  const newUser = await prisma.user.findUnique({
-    where: {
-      email: body.email
-    }
-  });
+  const existingUser = await RepoManager.userRepository.findByEmail(body.email) as User | null;
 
-  if (!newUser)
+  if (!existingUser)
     throw new customErrors.NotFoundError({
       message: response.LOGIN.FAIL.INVALID_EMAIL
     });
-  else if (newUser.accountType !== body.accountType)
+  else if (existingUser.accountType !== body.accountType)
     throw new customErrors.BadRequestError({
-      message: `Login from ${newUser.accountType} portal`
+      message: `Login from ${existingUser.accountType} portal`
     });
 
   // Check if OTP was generated within last 2 min
-  const oldOtpCreated = newUser.optCreatedAt;
+  const oldOtpCreated = existingUser.optCreatedAt;
   if (oldOtpCreated) {
     const now = new Date();
     const otpDate = new Date(oldOtpCreated);
@@ -174,7 +160,6 @@ export const userLoginController = async (
 
   // Gen new OTP and mail
   const otp = generateOTP();
-  const optCreatedAt = new Date();
 
   // TODO: Uncomment
   // try {
@@ -191,15 +176,7 @@ export const userLoginController = async (
   //   });
   // }
 
-  await prisma.user.update({
-    where: {
-      id: newUser.id
-    },
-    data: {
-      otp,
-      optCreatedAt
-    }
-  });
+  const _updatedUser = await RepoManager.userRepository.updateOtp(existingUser.id, otp);
 
   return successResponse({
     res,
@@ -212,7 +189,7 @@ export const valiadteOtpController = async (
   res: Response,
   _: NextFunction
 ) => {
-  const response = responseMessageNepali;
+  const response = res.locals.message;
 
   const body = req.body as OtpValidateType;
 
@@ -221,11 +198,8 @@ export const valiadteOtpController = async (
       message: response.LOGIN.FAIL.ALREADY_LOGGED_IN
     });
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email: body.email
-    }
-  });
+  const user = await RepoManager.userRepository
+    .findByEmail(body.email, true) as ModifiedUser | null;
 
   if (!user)
     throw new customErrors.NotFoundError({
@@ -258,32 +232,23 @@ export const valiadteOtpController = async (
   //   });
 
   // Gen tokens
-  const { jwtAccessToken, jwtRefreshToken } = await jwtTokenGen(user);
+  const {
+    accessToken,
+    refreshToken
+  } = await TokenHelper.genTokens(user);
 
-  res.cookie("accessToken", jwtAccessToken, cookieOptions);
-  res.cookie("refreshToken", jwtRefreshToken, cookieOptions);
-
-  const { otp, optCreatedAt, firstName, middleName, lastName, ...rest } = user;
-  if (rest.permission) {
-    rest.permission = JSON.parse(rest.permission as string);
-  }
+  res.cookie("accessToken", accessToken, cookieOptions);
+  res.cookie("refreshToken", refreshToken, cookieOptions);
 
   return successResponse({
     res,
     message: response.LOGIN.SUCCESS,
     data: {
       token: {
-        accessToken: jwtAccessToken,
-        refreshToken: jwtRefreshToken
+        accessToken,
+        refreshToken
       },
-      user: {
-        ...rest,
-        fullName: {
-          firstName,
-          middleName,
-          lastName
-        }
-      }
+      user: user
     }
   });
 };
@@ -294,7 +259,7 @@ export const userLogoutHandler = async (
   next: NextFunction
 ) => {
   const user = res.locals.user as UserJwt;
-  const response = responseMessageNepali;
+  const response = res.locals.message;
 
   res.clearCookie("accessToken", {
     expires: new Date("1990-10-10")
@@ -304,16 +269,7 @@ export const userLogoutHandler = async (
     expires: new Date("1990-10-10")
   });
 
-  await prisma.user.update({
-    where: {
-      id: user.id
-    },
-    data: {
-      refreshToken: null,
-      otp: null,
-      optCreatedAt: null,
-    }
-  });
+  await RepoManager.userRepository.updateLogout(user.id);
 
   return successResponse({
     res,
@@ -326,23 +282,21 @@ export const refreshAccessToken = async (
   res: Response,
   _: NextFunction
 ) => {
-  const response = responseMessageNepali;
+  const response = res.locals.message;
   const refreshToken = req.cookies["refreshToken"] as string;
-  const accessToken = req.cookies["accessToken"] as string;
+  const oldAccessToken = req.cookies["accessToken"] as string;
 
-  if (!accessToken || !refreshToken) {
+  if (!oldAccessToken || !refreshToken) {
     throw new customErrors.AccessError({
       name: "UNAUTHORIZED",
       message: "Login first"
     });
   }
-  jwt.verify(refreshToken, CONFIG.REFRESH_SECRET);
+  const userRefresh = jwt.verify(refreshToken, CONFIG.REFRESH_SECRET) as {
+    id: string
+  };
 
-  const user = await prisma.user.findFirst({
-    where: {
-      refreshToken: refreshToken
-    }
-  });
+  const user = await RepoManager.userRepository.findById(userRefresh.id);
 
   if (!user)
     throw new customErrors.AccessError({
@@ -350,46 +304,19 @@ export const refreshAccessToken = async (
       message: "Login first"
     });
 
-  let jsonPermission = user.permission as string[] | null;
-  if (jsonPermission)
-    jsonPermission = JSON.parse(user.permission as string);
+  const { accessToken } = TokenHelper.regenRefresh(user);
 
-  // Gen tokens
-  const jwtAccessPayload = {
-    id: user.id,
-    email: user.email,
-    role: user.role,
-    permission: jsonPermission,
-    acountType: user.accountType,
-  };
+  res.cookie("accessToken", accessToken, cookieOptions);
 
-  const jwtAccessToken = jwt.sign(jwtAccessPayload, CONFIG.ACCESS_SECRET, {
-    expiresIn: "15m"
-  });
-
-  res.cookie("accessToken", jwtAccessToken, cookieOptions);
-
-  if (user.permission) {
-    user.permission = JSON.parse(user.permission as string);
-  }
-
-  const { otp, optCreatedAt, firstName, middleName, lastName, ...rest } = user;
   return successResponse({
     res,
     message: response.REGEN_ACCESS.SUCCESS,
     data: {
       token: {
-        accessToken: jwtAccessToken,
+        accessToken: accessToken,
         refreshToken
       },
-      user: {
-        ...rest,
-        fullName: {
-          firstName,
-          middleName,
-          lastName
-        }
-      }
+      user
     }
   });
 };

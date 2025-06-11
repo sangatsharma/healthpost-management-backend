@@ -17,6 +17,10 @@ export const responseMessageEnglish = {
   },
   REGISTER: {
     SUCCESS: "Register successful",
+    FAIL: {
+      PERMISSION: "Not enough permission",
+      INALID_ROLE: "accountType and role donot match"
+    }
   },
   LOGOUT: {
     SUCCESS: "Logout successful"
@@ -34,7 +38,7 @@ export const responseMessageEnglish = {
 
   FETCH_HEALTHPOST: {
     MANY: {
-      SUCESS: "Fetched healthposts",
+      SUCCESS: "Fetched healthposts",
     },
     SINGLE: {
       SUCCESS: "Fetched healthpost",
@@ -81,6 +85,10 @@ export const responseMessageNepali = {
 
   REGISTER: {
     SUCCESS: "दर्ता सफल भयो",
+    FAIL: {
+      PERMISSION: "पर्याप्त अनुमति छैन",
+      INVALID_ROLE: "accountType र role मेल खाँदैनन्"
+    }
   },
 
   LOGOUT: {

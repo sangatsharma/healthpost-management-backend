@@ -12,9 +12,12 @@ import {
   responseMessageNepali,
 } from "@app/constants/index.constant";
 import {
+  NewHealthPostType,
   UpdateHealthPostType,
 } from "@app/src/validations/index.validation";
-import { UserJwt } from "@app/types/jwtUser.type";
+import { UserJwt } from "@app/types/index.type";
+import { RepoManager } from "@app/src/repository/index.repository";
+import { HealthPost } from "@prisma/client";
 
 export const addNewHealthPostController = async (
   req: Request,
@@ -22,12 +25,17 @@ export const addNewHealthPostController = async (
   _: NextFunction
 ) => {
   const response = responseMessageNepali;
-  const body = req.body;
+  const body = req.body as NewHealthPostType;
 
-  // TODO: Validate adminId
-  const newHealthPost = await prisma.healthPost.create({
-    data: body
-  });
+  if (body.adminId) {
+    const adminExists = await RepoManager.userRepository.findById(body.adminId);
+    if (!adminExists)
+      throw new customErrors.NotFoundError({
+        message: "Invalid adminId"
+      });
+  }
+
+  const newHealthPost = await RepoManager.healthPostRepository.create(body);
 
   return successResponse({
     res,
@@ -42,7 +50,7 @@ export const getHealthPostController = async (
   _: NextFunction
 ) => {
   const response = responseMessageNepali;
-  const healthPosts = await prisma.healthPost.findMany();
+  const healthPosts = await RepoManager.healthPostRepository.getAll();
 
   return successResponse({
     res,
@@ -61,11 +69,9 @@ export const getAHealthPostController = async (
   const user = res.locals.user as UserJwt;
   const healthPostId = req.params.id;
 
-  const healthPost = await prisma.healthPost.findFirst({
-    where: {
-      id: healthPostId as string
-    }
-  });
+  const healthPost = await RepoManager.healthPostRepository.findById(
+    healthPostId
+  );
 
   if (!healthPost)
     throw new customErrors.NotFoundError({
@@ -91,21 +97,18 @@ export const removeHealthPostController = async (
   const response = responseMessageNepali;
   const healthPostId = req.params.id;
 
-  const healthPostExists = await prisma.healthPost.findUnique({
-    where: {
-      id: healthPostId
-    }
-  });
+  const healthPostExists = await RepoManager.healthPostRepository.findById(
+    healthPostId
+  );
+
   if (!healthPostExists)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });
 
-  const healthPost = await prisma.healthPost.delete({
-    where: {
-      id: healthPostId as string
-    }
-  });
+  const healthPost = await RepoManager.healthPostRepository.delete(
+    healthPostId
+  ) as HealthPost;
 
   return successResponse({
     res,
@@ -123,35 +126,29 @@ export const updateHealthPostController = async (
   const healthPostId = req.params.id;
   const data = req.body as UpdateHealthPostType;
 
-  const healthPostExists = await prisma.healthPost.findUnique({
-    where: {
-      id: healthPostId
-    }
-  });
-
+  const healthPostExists = await RepoManager.healthPostRepository.findById(
+    healthPostId,
+  );
   if (!healthPostExists)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });
 
   if (data.adminId) {
-    const adminExists = await prisma.user.findUnique({
-      where: {
-        id: data.adminId
-      }
-    });
+    const adminExists = await RepoManager.userRepository.findById(
+      data.adminId
+    );
+
     if (!adminExists || adminExists.role !== "ADMIN")
       throw new customErrors.BadRequestError({
         message: response.UPDATE_HEALTHPOST.FAIL.INVALID_ADMIN_ID
       });
   }
 
-  const updatedHealthPost = await prisma.healthPost.update({
-    where: {
-      id: healthPostId
-    },
-    data: data
-  });
+  const updatedHealthPost = await RepoManager.healthPostRepository.update(
+    healthPostId,
+    data
+  ) as HealthPost;
 
   return successResponse({
     res,

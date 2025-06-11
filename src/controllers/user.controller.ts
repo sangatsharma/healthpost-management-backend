@@ -1,12 +1,14 @@
-import { UserJwt } from "@app/types/jwtUser.type";
-import customErrors from "@app/utils/customErrors.utils";
-import prisma from "@app/utils/db.utils";
-import { successResponse } from "@app/utils/response.utils";
 import {
   Request,
   Response,
   NextFunction,
 } from "express";
+import { UserJwt } from "@app/types/index.type";
+import {
+  customErrors,
+  successResponse,
+} from "@app/utils/index.utils";
+import { RepoManager } from "@app/src/repository/index.repository";
 
 export const getUserHandler = async (
   req: Request,
@@ -14,33 +16,18 @@ export const getUserHandler = async (
   _: NextFunction
 ) => {
 
-  const user = res.locals.user as UserJwt;
+  const userJwt = res.locals.user as UserJwt;
 
-  const dbUser = await prisma.user.findUnique({
-    where: {
-      id: user.id,
-    }
-  });
+  const user = await RepoManager.userRepository.findById(userJwt.id);
 
-  if (!dbUser)
+  if (!user)
     throw new customErrors.NotFoundError({
       message: "User not found"
     });
 
-  const { otp, optCreatedAt, firstName, middleName, lastName, ...rest } = dbUser;
-  if (rest.permission) {
-    rest.permission = JSON.parse(rest.permission as string);
-  }
   return successResponse({
     res,
     message: "Success",
-    data: {
-      ...rest,
-      fullName: {
-        firstName,
-        middleName,
-        lastName
-      }
-    }
+    data: user
   });
 };

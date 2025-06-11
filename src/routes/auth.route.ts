@@ -15,29 +15,36 @@ import {
   adminLoginController
 } from "@app/src/controllers/index.controller";
 
-import { authGuard } from "@app/src/helpers/index.helper";
+import {
+  authGuard,
+  languageMiddleware,
+} from "@app/src/helpers/index.helper";
 
 const authRouter = express.Router();
 
 authRouter.post(
   "/superadmin",
+  languageMiddleware,
   adminLoginController,
 );
 authRouter.post(
   "/register",
   // authGuard(["SUPERADMIN"]),
   validateSchema(userRegisterSchemaValidation),
+  languageMiddleware,
   userRegisterController,
 );
 
 authRouter.post(
   "/login",
   validateSchema(userLoginSchemaValidation),
+  languageMiddleware,
   userLoginController,
 );
 
 authRouter.post(
   "/validate-otp",
+  languageMiddleware,
   validateSchema(otpSchemaValidation),
   valiadteOtpController
 );
