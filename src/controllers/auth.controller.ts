@@ -19,8 +19,6 @@ import {
 } from "@app/src/validations/index.validation";
 import {
   allowedRolesByAccountType,
-  responseMessageEnglish,
-  responseMessageNepali,
 } from "@app/constants/index.constant";
 import {
   jwtTokenGen,

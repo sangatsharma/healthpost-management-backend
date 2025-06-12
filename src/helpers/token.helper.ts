@@ -14,7 +14,7 @@ export class TokenHelper {
       email: user.email,
       role: user.role,
       permissions: user.permissions,
-      acountType: user.accountType,
+      accountType: user.accountType,
     };
 
     const jwtAccessToken = jwt.sign(accessPayload, CONFIG.ACCESS_SECRET, {
@@ -46,7 +46,7 @@ export class TokenHelper {
       email: user.email,
       role: user.role,
       permissions: user.permissions,
-      acountType: user.accountType,
+      accountType: user.accountType,
     };
 
     const jwtAccessToken = jwt.sign(payload, CONFIG.ACCESS_SECRET, {

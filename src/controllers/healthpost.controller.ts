@@ -6,11 +6,7 @@ import {
 import {
   customErrors,
   successResponse,
-  prisma
 } from "@app/utils/index.utils";
-import {
-  responseMessageNepali,
-} from "@app/constants/index.constant";
 import {
   NewHealthPostType,
   UpdateHealthPostType,
@@ -24,7 +20,7 @@ export const addNewHealthPostController = async (
   res: Response,
   _: NextFunction
 ) => {
-  const response = responseMessageNepali;
+  const response = res.locals.message;
   const body = req.body as NewHealthPostType;
 
   if (body.adminId) {
@@ -49,7 +45,7 @@ export const getHealthPostController = async (
   res: Response,
   _: NextFunction
 ) => {
-  const response = responseMessageNepali;
+  const response = res.locals.message;
   const healthPosts = await RepoManager.healthPostRepository.getAll();
 
   return successResponse({
@@ -64,7 +60,7 @@ export const getAHealthPostController = async (
   res: Response,
   _: NextFunction
 ) => {
-  const response = responseMessageNepali;
+  const response = res.locals.message;
 
   const user = res.locals.user as UserJwt;
   const healthPostId = req.params.id;
@@ -94,7 +90,7 @@ export const removeHealthPostController = async (
   res: Response,
   _: NextFunction
 ) => {
-  const response = responseMessageNepali;
+  const response = res.locals.message;
   const healthPostId = req.params.id;
 
   const healthPostExists = await RepoManager.healthPostRepository.findById(
@@ -122,7 +118,7 @@ export const updateHealthPostController = async (
   res: Response,
   _: NextFunction
 ) => {
-  const response = responseMessageNepali;
+  const response = res.locals.message;
   const healthPostId = req.params.id;
   const data = req.body as UpdateHealthPostType;
 

@@ -16,6 +16,7 @@ import {
 } from "@app/src/controllers/index.controller";
 import {
   authGuard,
+  languageMiddleware,
 } from "@app/src/helpers/index.helper";
 
 const healthPostRouter = express.Router();
@@ -30,27 +31,32 @@ healthPostRouter.post(
   "",
   authGuard(["SUPERADMIN"]),
   validateSchema(newHealthPostSchemaValidation),
+  languageMiddleware,
   addNewHealthPostController
 );
 healthPostRouter.get(
   "",
   authGuard(["SUPERADMIN"]),
+  languageMiddleware,
   getHealthPostController
 );
 healthPostRouter.get(
   "/:id",
   authGuard(["SUPERADMIN", "ADMIN"]),
+  languageMiddleware,
   getAHealthPostController
 );
 healthPostRouter.delete(
   "/:id",
   authGuard(["SUPERADMIN"]),
+  languageMiddleware,
   removeHealthPostController
 );
 healthPostRouter.put(
   "/:id",
   authGuard(["SUPERADMIN"]),
   validateSchema(updateHealthPostSchemaValidation),
+  languageMiddleware,
   updateHealthPostController
 );
 
