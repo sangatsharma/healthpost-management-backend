@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { Prisma, PrismaClient, User } from "@prisma/client";
 import { UserRegisterType } from "@app/src/validations/index.validation";
 import { ModifiedUser } from "@app/types/index.type";
 
@@ -110,5 +110,19 @@ export class UserRepository {
     });
 
     return;
+  }
+
+  async update(
+    id: string,
+    data: Partial<User>,
+  ): Promise<ModifiedUser> {
+    const updatedUser = await this.prisma.update({
+      where: {
+        id: id
+      },
+      data: data as Prisma.UserUpdateInput
+    });
+
+    return userModifierFunction(updatedUser);
   }
 }

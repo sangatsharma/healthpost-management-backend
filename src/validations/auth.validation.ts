@@ -39,6 +39,9 @@ export const userRegisterSchemaValidation = (lang: string) => {
     }), {
       required_error: "FORMAT: {action: ACTION, resource:RESOURCE}[]"
     }),
+    healthPostId: z.string({
+      invalid_type_error: t.invalid_type_string
+    }).optional()
   });
 };
 
