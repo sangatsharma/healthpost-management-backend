@@ -94,6 +94,17 @@ export default function errorHandler(
       }
     });
   }
+  else if (err?.message) {
+    return errorResponse({
+      res,
+      statusCode: statusCodes.BAD_REQUEST,
+      err: {
+        success: false,
+        error: err.name,
+        message: err.message
+      }
+    });
+  }
 
 
   return errorResponse({
