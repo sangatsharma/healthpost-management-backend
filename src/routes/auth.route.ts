@@ -32,9 +32,9 @@ authRouter.post(
 );
 authRouter.post(
   "/register",
+  authGuard(["SUPERADMIN"]),
   upload.single("profileImage"),
   uploadToCloudinary,
-  // authGuard(["SUPERADMIN"]),
   validateSchema(userRegisterSchemaValidation),
   languageMiddleware,
   userRegisterController,

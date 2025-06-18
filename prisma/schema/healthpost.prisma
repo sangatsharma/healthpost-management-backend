@@ -1,12 +1,21 @@
 model HealthPost {
-  id        String   @id @default(uuid())
-  name      String
-  location  String
-  number    String
-  admin     User?    @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  adminId   String?  @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String           @id @default(uuid())
+  name         String?
+  email        String?
+  municipality String?
+  location     String?
+  phone        String
+  status       HealthPostStatus
+  wardNo       Int
+  admin        User?            @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  adminId      String?          @unique
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 
   @@map("healthpost")
+}
+
+enum HealthPostStatus {
+  ACTIVE
+  INACTIVE
 }

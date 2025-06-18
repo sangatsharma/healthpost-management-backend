@@ -25,7 +25,7 @@ export const addNewHealthPostController = async (
 
   if (body.adminId) {
     const adminExists = await RepoManager.userRepository.findById(body.adminId);
-    if (!adminExists)
+    if (!adminExists || adminExists?.role !== "ADMIN")
       throw new customErrors.NotFoundError({
         message: "Invalid adminId"
       });

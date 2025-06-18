@@ -36,7 +36,7 @@ const cookieOptions: CookieOptions = {
   secure: CONFIG.ENV === "PROD",
   sameSite: "none",
   httpOnly: true,
-  domain: domain,
+  // domain: domain,
   path: "/",
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
