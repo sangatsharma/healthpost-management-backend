@@ -1,3 +1,4 @@
+import { Record } from "@prisma/client/runtime/library";
 import { Request, Response, NextFunction } from "express";
 import { ZodError, ZodSchema } from "zod";
 
@@ -12,6 +13,31 @@ export function validateSchema(
     const lang = req.cookies["locale"];
 
     try {
+
+      if (req.path === "/register") {
+
+        const rawPermissions: Record<string, Record<string, string>> = {};
+
+        Object.keys(req.body).forEach(key => {
+          const match = key.match(/^permission\[(\d+)\]\.(action|resource)$/);
+          if (match) {
+            const index = parseInt(match[1], 10);
+            const field = match[2];
+            if (!rawPermissions[index])
+              rawPermissions[index] = {};
+            rawPermissions[index][field] = req.body[key];
+            delete req.body[key];
+          }
+        });
+
+        const permissions: Record<string, string>[] = [];
+
+        Object.keys(rawPermissions).forEach((key) => {
+          permissions.push(rawPermissions[key]);
+        });
+        req.body.permission = permissions;
+      }
+
       const parshed_data = schema(lang).parse(req.body);
       req.body = parshed_data;
       next();

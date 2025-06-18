@@ -7,6 +7,7 @@ import {
 import * as jwt from "jsonwebtoken";
 import { UserJwt } from "@app/types/jwtUser.type";
 import {
+  cloudinary,
   CONFIG,
   customErrors,
   prisma,
@@ -88,32 +89,46 @@ export const adminLoginController = async (
 export const userRegisterController = async (
   req: Request,
   res: Response,
-  _: NextFunction
+  next: NextFunction
 ) => {
   const body = req.body as UserRegisterType;
   const user = res.locals.user as UserJwt;
+  const profileUrl = res.locals.profileUrl;
+  const publicId = res.locals.publicId;
   const response = res.locals.message;
 
-  // TODO: Better role based access
-  if (body.role === "ADMIN" && user.role !== "SUPERADMIN")
-    throw new customErrors.AccessError({
-      name: "FORBIDDEN",
-      message: response.REGISTER.FAIL.PERMISSION,
+  try {
+    // TODO: Better role based access
+    if (body.role === "ADMIN" && user.role !== "SUPERADMIN")
+      throw new customErrors.AccessError({
+        name: "FORBIDDEN",
+        message: response.REGISTER.FAIL.PERMISSION,
+      });
+
+    if (!allowedRolesByAccountType[body.accountType]?.includes(body.role)) {
+      throw new customErrors.BadRequestError({
+        message: response.REGISTER.FAIL.INVALID_ROLE,
+      });
+    }
+
+    const newUser = await RepoManager.userRepository.create({
+      ...body,
+      profileImage: profileUrl
     });
 
-  if (!allowedRolesByAccountType[body.accountType]?.includes(body.role)) {
-    throw new customErrors.BadRequestError({
-      message: response.REGISTER.FAIL.INVALID_ROLE,
+    return successResponse({
+      res,
+      message: response.REGISTER.SUCCESS,
+      data: newUser
     });
+
   }
-
-  const newUser = await RepoManager.userRepository.create(body);
-
-  return successResponse({
-    res,
-    message: response.REGISTER.SUCCESS,
-    data: newUser
-  });
+  catch (err) {
+    if (profileUrl) {
+      await cloudinary.uploader.destroy(publicId);
+    }
+    return next(err);
+  }
 
 };
 

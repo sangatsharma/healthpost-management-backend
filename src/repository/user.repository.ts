@@ -29,7 +29,9 @@ export class UserRepository {
   constructor(private readonly prisma: PrismaClient["user"]) { }
 
 
-  async create(dto: UserRegisterType): Promise<ModifiedUser> {
+  async create(dto: UserRegisterType & {
+    profileImage?: string
+  }): Promise<ModifiedUser> {
     const user = await this.prisma.create({
       data: {
         ...dto,

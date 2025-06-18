@@ -4,6 +4,7 @@ import generateOTP from "./generateOtp.utils";
 import jwtTokenGen from "./jwtTokenGen.helper";
 import { TokenHelper } from "./token.helper";
 import languageMiddleware from "./responseLanguage.helper";
+import { uploadToCloudinary } from "./uploadToCloudinary.helper";
 
 export {
   authGuard,
@@ -11,5 +12,6 @@ export {
   generateOTP,
   jwtTokenGen,
   TokenHelper,
-  languageMiddleware
+  languageMiddleware,
+  uploadToCloudinary
 };

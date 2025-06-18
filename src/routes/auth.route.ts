@@ -1,6 +1,4 @@
 import express from "express";
-
-import { validateSchema } from "@app/utils/validateSchema.utils";
 import {
   otpSchemaValidation,
   userLoginSchemaValidation,
@@ -18,7 +16,12 @@ import {
 import {
   authGuard,
   languageMiddleware,
+  uploadToCloudinary
 } from "@app/src/helpers/index.helper";
+import {
+  validateSchema,
+  upload,
+} from "@app/utils/index.utils";
 
 const authRouter = express.Router();
 
@@ -29,6 +32,8 @@ authRouter.post(
 );
 authRouter.post(
   "/register",
+  upload.single("profileImage"),
+  uploadToCloudinary,
   // authGuard(["SUPERADMIN"]),
   validateSchema(userRegisterSchemaValidation),
   languageMiddleware,

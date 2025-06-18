@@ -5,6 +5,7 @@ import errorHandler from "./errorHandler.utils";
 import { successResponse, errorResponse } from "./response.utils";
 import { validateSchema } from "./validateSchema.utils";
 import unknownEndpoint from "./unknownEndpoint.utils";
+import { cloudinary, upload } from "./cloudinary.utils";
 
 export {
   CONFIG,
@@ -14,5 +15,7 @@ export {
   successResponse,
   errorResponse,
   validateSchema,
-  unknownEndpoint
+  unknownEndpoint,
+  cloudinary,
+  upload
 };
