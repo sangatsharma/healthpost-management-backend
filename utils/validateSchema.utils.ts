@@ -10,7 +10,7 @@ export function validateSchema(
     res: Response,
     next: NextFunction
   ) => {
-    const lang = req.cookies["locale"];
+    const lang = req.cookies["NEXT_LOCALE"];
 
     try {
 

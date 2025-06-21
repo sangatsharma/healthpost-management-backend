@@ -29,6 +29,7 @@ import {
 import { RepoManager } from "@app/src/repository/index.repository";
 import { User } from "@prisma/client";
 import { ModifiedUser } from "@app/types/index.type";
+import healthPostRouter from "../routes/healthpost.route";
 
 const domain = CONFIG.ENV === "PROD" ? ".healthsync.me" : "localhost";
 
@@ -92,27 +93,19 @@ export const userRegisterController = async (
   next: NextFunction
 ) => {
   const body = req.body as UserRegisterType;
-  const user = res.locals.user as UserJwt;
+  const user = res.locals.user as UserJwt & {
+    healthPostId: string | undefined | null
+  };
   const profileUrl = res.locals.profileUrl;
   const publicId = res.locals.publicId;
   const response = res.locals.message;
 
   try {
-    // TODO: Better role based access
-    if (body.role === "ADMIN" && user.role !== "SUPERADMIN")
-      throw new customErrors.AccessError({
-        name: "FORBIDDEN",
-        message: response.REGISTER.FAIL.PERMISSION,
-      });
-
-    if (!allowedRolesByAccountType[body.accountType]?.includes(body.role)) {
-      throw new customErrors.BadRequestError({
-        message: response.REGISTER.FAIL.INVALID_ROLE,
-      });
-    }
-
     const newUser = await RepoManager.userRepository.create({
       ...body,
+      healthPostId: body.role === "ADMIN" ? body.healthPostId
+        : body.accountType === "PATIENT" ? undefined
+          : user.healthPostId ? user.healthPostId : undefined,
       profileImage: profileUrl
     });
 

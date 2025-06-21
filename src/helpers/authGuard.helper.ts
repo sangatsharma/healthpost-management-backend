@@ -1,4 +1,4 @@
-import customErrors from "@app/utils/customErrors.utils";
+import { customErrors } from "@app/utils/index.utils";
 import {
   Request,
   Response,
@@ -8,8 +8,8 @@ import * as jwt from "jsonwebtoken";
 import {
   responseMessageNepali,
   responseMessageEnglish,
-} from "@app/constants/responseMessage.constant";
-import { UserJwt } from "@app/types/jwtUser.type";
+} from "@app/constants/index.constant";
+import { UserJwt } from "@app/types/index.type";
 
 const authGuard = (role?: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {

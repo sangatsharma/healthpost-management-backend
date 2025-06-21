@@ -19,7 +19,7 @@ export const responseMessageEnglish = {
     SUCCESS: "Register successful",
     FAIL: {
       PERMISSION: "Not enough permission",
-      INALID_ROLE: "accountType and role donot match"
+      INVALID_ROLE: "accountType and role donot match"
     }
   },
   LOGOUT: {

@@ -16,6 +16,7 @@ import {
 import {
   authGuard,
   languageMiddleware,
+  registerAuthGuard,
   uploadToCloudinary
 } from "@app/src/helpers/index.helper";
 import {
@@ -32,10 +33,10 @@ authRouter.post(
 );
 authRouter.post(
   "/register",
-  authGuard(["SUPERADMIN"]),
-  upload.single("profileImage"),
-  uploadToCloudinary,
+  upload.single("profileImage"), // Parse multipart formdata
   validateSchema(userRegisterSchemaValidation),
+  registerAuthGuard,
+  uploadToCloudinary,
   languageMiddleware,
   userRegisterController,
 );
