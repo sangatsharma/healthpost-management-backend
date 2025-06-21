@@ -10,8 +10,11 @@ import {
 import {
   newHealthPostSchemaValidation,
   updateHealthPostSchemaValidation,
+  assignToHealthPost,
   NewHealthPostType,
-  UpdateHealthPostType
+  UpdateHealthPostType,
+  AssignUserToHealthPostType
+
 } from "./healthPost.validation";
 
 export {
@@ -24,6 +27,8 @@ export {
 
   newHealthPostSchemaValidation,
   updateHealthPostSchemaValidation,
+  assignToHealthPost,
   NewHealthPostType,
-  UpdateHealthPostType
+  UpdateHealthPostType,
+  AssignUserToHealthPostType,
 };

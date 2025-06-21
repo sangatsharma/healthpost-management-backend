@@ -66,5 +66,17 @@ export const updateHealthPostSchemaValidation = (lang: string) => {
   });
 };
 
+export const assignToHealthPost = (lang: string) => {
+  const t = lang === "np" ? np : en;
+
+  return z.object({
+    userId: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string
+    }),
+  });
+};
+
 export type NewHealthPostType = z.infer<ReturnType<typeof newHealthPostSchemaValidation>>
 export type UpdateHealthPostType = z.infer<ReturnType<typeof updateHealthPostSchemaValidation>>
+export type AssignUserToHealthPostType = z.infer<ReturnType<typeof assignToHealthPost>>

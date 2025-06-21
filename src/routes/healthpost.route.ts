@@ -4,11 +4,13 @@ import {
   validateSchema,
 } from "@app/utils/index.utils";
 import {
+  assignToHealthPost,
   newHealthPostSchemaValidation,
   updateHealthPostSchemaValidation,
 } from "@app/src/validations/index.validation";
 import {
   addNewHealthPostController,
+  assignUserToHealthPost,
   getAHealthPostController,
   getHealthPostController,
   removeHealthPostController,
@@ -58,6 +60,13 @@ healthPostRouter.put(
   validateSchema(updateHealthPostSchemaValidation),
   languageMiddleware,
   updateHealthPostController
+);
+healthPostRouter.patch(
+  "/:id/assign",
+  authGuard(["ADMIN"]),
+  validateSchema(assignToHealthPost),
+  languageMiddleware,
+  assignUserToHealthPost
 );
 
 export default healthPostRouter;

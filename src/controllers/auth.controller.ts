@@ -189,7 +189,7 @@ export const userLoginController = async (
   //   });
   // }
 
-  const _updatedUser = await RepoManager.userRepository.updateOtp(existingUser.id, otp);
+  await RepoManager.userRepository.updateOtp(existingUser.id, otp);
 
   return successResponse({
     res,
@@ -250,6 +250,8 @@ export const valiadteOtpController = async (
     refreshToken
   } = await TokenHelper.genTokens(user);
 
+  await RepoManager.userRepository.clearOtp(user.id);
+
   res.cookie("accessToken", accessToken, cookieOptions);
   res.cookie("refreshToken", refreshToken, cookieOptions);
 
@@ -271,7 +273,9 @@ export const userLogoutHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = res.locals.user as UserJwt;
+  const user = res.locals.user as {
+    id: string
+  };
   const response = res.locals.message;
 
   res.clearCookie("accessToken", {

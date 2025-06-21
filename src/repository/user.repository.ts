@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, User } from "@prisma/client";
-import { UserRegisterType } from "@app/src/validations/index.validation";
+import { AssignUserToHealthPostType, UserRegisterType } from "@app/src/validations/index.validation";
 import { ModifiedUser } from "@app/types/index.type";
 
 
@@ -126,5 +126,34 @@ export class UserRepository {
     });
 
     return userModifierFunction(updatedUser);
+  }
+
+  async clearOtp(userId: string): Promise<ModifiedUser> {
+    const user = await this.prisma.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        otp: null,
+        optCreatedAt: null
+      }
+    });
+
+    return userModifierFunction(user);
+  }
+
+  async assignUser(dto: AssignUserToHealthPostType & {
+    healthPostId: string
+  }): Promise<ModifiedUser> {
+    const user = await this.prisma.update({
+      where: {
+        id: dto.userId,
+      },
+      data: {
+        healthPostId: dto.healthPostId,
+      }
+    });
+
+    return userModifierFunction(user);
   }
 }

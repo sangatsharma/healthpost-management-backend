@@ -12,7 +12,8 @@ import {
   getHealthPostController,
   getAHealthPostController,
   removeHealthPostController,
-  updateHealthPostController
+  updateHealthPostController,
+  assignUserToHealthPost
 } from "./healthpost.controller";
 
 import {
@@ -32,6 +33,7 @@ export {
   getAHealthPostController,
   removeHealthPostController,
   updateHealthPostController,
+  assignUserToHealthPost,
 
   getUserHandler
 };

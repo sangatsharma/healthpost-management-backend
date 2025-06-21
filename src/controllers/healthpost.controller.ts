@@ -8,6 +8,7 @@ import {
   successResponse,
 } from "@app/utils/index.utils";
 import {
+  AssignUserToHealthPostType,
   NewHealthPostType,
   UpdateHealthPostType,
 } from "@app/src/validations/index.validation";
@@ -15,6 +16,10 @@ import { UserJwt } from "@app/types/index.type";
 import { RepoManager } from "@app/src/repository/index.repository";
 import { HealthPost } from "@prisma/client";
 
+
+/*
+ * #CRUD
+*/
 export const addNewHealthPostController = async (
   req: Request,
   res: Response,
@@ -32,6 +37,10 @@ export const addNewHealthPostController = async (
   }
 
   const newHealthPost = await RepoManager.healthPostRepository.create(body);
+  if (body.adminId)
+    await RepoManager.userRepository.update(body.adminId, {
+      healthPostId: newHealthPost.id
+    });
 
   return successResponse({
     res,
@@ -145,10 +154,59 @@ export const updateHealthPostController = async (
     healthPostId,
     data
   ) as HealthPost;
+  if (data.adminId)
+    await RepoManager.userRepository.update(data.adminId, {
+      healthPostId: healthPostId
+    });
 
   return successResponse({
     res,
     message: response.UPDATE_HEALTHPOST.SUCCESS,
     data: updatedHealthPost
+  });
+};
+
+
+
+/*
+ * #OPERATION
+*/
+
+export const assignUserToHealthPost = async (
+  req: Request,
+  res: Response,
+  _: NextFunction
+) => {
+  const response = res.locals.message;
+  const user = res.locals.user as UserJwt;
+  const healthPostId = req.params.id;
+  const body = req.body as AssignUserToHealthPostType;
+
+  const healthPostExists = await RepoManager.healthPostRepository.findById(healthPostId);
+  if (!healthPostExists)
+    throw new customErrors.NotFoundError({
+      message: "HealthPost not found"
+    });
+  else if (healthPostExists.adminId !== user.id)
+    throw new customErrors.AccessError({
+      name: "FORBIDDEN",
+      message: "You dont' own this"
+    });
+
+  const userExists = await RepoManager.userRepository.findById(body.userId);
+  if (!userExists)
+    throw new customErrors.NotFoundError({
+      message: "User not found"
+    });
+
+
+  const assignedUser = await RepoManager.userRepository.assignUser({
+    userId: body.userId,
+    healthPostId
+  });
+  return successResponse({
+    res,
+    message: "Successfully assigned user to heallthpost",
+    data: assignedUser
   });
 };

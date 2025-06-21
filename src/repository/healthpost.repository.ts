@@ -1,5 +1,8 @@
 import { PrismaClient, HealthPost } from "@prisma/client";
-import { NewHealthPostType, UpdateHealthPostType } from "@app/src/validations/index.validation";
+import {
+  NewHealthPostType,
+  UpdateHealthPostType,
+} from "@app/src/validations/index.validation";
 
 export class HealthPostRepository {
   constructor(private readonly prisma: PrismaClient["healthPost"]) { }

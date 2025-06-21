@@ -27,6 +27,12 @@ const authGuard = (role?: string[]) => {
       });
     }
 
+    if (req.path === "/logout") {
+      const user = jwt.verify(refreshToken, "12345678") as UserJwt;
+      res.locals.user = user;
+      return next();
+    }
+
     const user = jwt.verify(accessToken, "secret") as UserJwt;
 
     if (role) {
