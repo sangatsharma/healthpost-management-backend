@@ -53,9 +53,9 @@ export const updateHealthPostSchemaValidation = (lang: string) => {
     adminId: z.string({
       invalid_type_error: t.invalid_type_string
     }).optional(),
-    wardNo: z.number({
+    wardNo: z.string({
       invalid_type_error: t.invalid_type_string
-    }).optional(),
+    }).optional().transform((value) => value ? Number(value) : undefined),
     status: z.nativeEnum(HealthPostStatus).optional()
   }).refine((input) => Object.keys(input).length >= 1, {
     message: "Atleast one field required"
