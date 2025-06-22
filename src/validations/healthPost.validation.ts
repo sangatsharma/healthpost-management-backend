@@ -23,10 +23,10 @@ export const newHealthPostSchemaValidation = (lang: string) => {
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
     }),
-    wardNo: z.number({
+    wardNo: z.string({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
-    }),
+    }).transform((input) => Number(input)),
     status: z.nativeEnum(HealthPostStatus)
   });
 };

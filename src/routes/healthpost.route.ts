@@ -1,6 +1,7 @@
 import express from "express";
 
 import {
+  upload,
   validateSchema,
 } from "@app/utils/index.utils";
 import {
@@ -31,6 +32,7 @@ const healthPostRouter = express.Router();
  */
 healthPostRouter.post(
   "",
+  upload.array("images"),
   authGuard(["SUPERADMIN"]),
   validateSchema(newHealthPostSchemaValidation),
   languageMiddleware,
