@@ -28,7 +28,7 @@ export const addNewHealthPostController = async (
   const response = res.locals.message;
   const body = req.body as NewHealthPostType;
 
-
+  const images = res.locals.urls;
   const newHealthPost = await RepoManager.healthPostRepository.create(body);
 
   return successResponse({

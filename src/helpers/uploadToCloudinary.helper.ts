@@ -15,7 +15,7 @@ export const uploadToCloudinary = async (req: Request, res: Response, next: Next
 
     if (!files || files.length === 0) {
       // No files uploaded, proceed to next middleware
-      res.locals.profileUrls = [];
+      res.locals.urls = [];
       res.locals.publicIds = [];
       return next();
     }
@@ -52,7 +52,7 @@ export const uploadToCloudinary = async (req: Request, res: Response, next: Next
     const results = await Promise.all(uploadPromises);
 
     // Store URLs and public IDs in res.locals
-    res.locals.profileUrls = results.map((result) => result.secure_url);
+    res.locals.urls = results.map((result) => result.secure_url);
     res.locals.publicIds = results.map((result) => result.public_id);
 
     next();

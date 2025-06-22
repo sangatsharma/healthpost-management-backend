@@ -20,6 +20,7 @@ import {
 import {
   authGuard,
   languageMiddleware,
+  uploadToCloudinary,
 } from "@app/src/helpers/index.helper";
 
 const healthPostRouter = express.Router();
@@ -35,6 +36,7 @@ healthPostRouter.post(
   upload.array("images"),
   authGuard(["SUPERADMIN"]),
   validateSchema(newHealthPostSchemaValidation),
+  uploadToCloudinary,
   languageMiddleware,
   addNewHealthPostController
 );
@@ -58,6 +60,7 @@ healthPostRouter.delete(
 );
 healthPostRouter.put(
   "/:id",
+  upload.array("images"),
   authGuard(["SUPERADMIN"]),
   validateSchema(updateHealthPostSchemaValidation),
   languageMiddleware,

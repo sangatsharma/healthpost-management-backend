@@ -37,16 +37,16 @@ export const updateHealthPostSchemaValidation = (lang: string) => {
   return z.object({
     name: z.string({
       invalid_type_error: t.invalid_type_string
-    }).optional(),
+    }).optional().nullable(),
     email: z.string({
       invalid_type_error: t.invalid_type_string
-    }).optional(),
+    }).optional().nullable(),
     municipality: z.string({
       invalid_type_error: t.invalid_type_string
-    }).optional(),
+    }).optional().nullable(),
     location: z.string({
       invalid_type_error: t.invalid_type_string
-    }).optional(),
+    }).optional().nullable(),
     phone: z.string({
       invalid_type_error: t.invalid_type_string
     }).optional(),
@@ -59,7 +59,14 @@ export const updateHealthPostSchemaValidation = (lang: string) => {
     status: z.nativeEnum(HealthPostStatus).optional()
   }).refine((input) => Object.keys(input).length >= 1, {
     message: "Atleast one field required"
-  });
+  }).transform((fields) => {
+    const transformed = { ...fields };
+    if (transformed.name === "null") transformed.name = null;
+    if (transformed.email === "null") transformed.email = null;
+    if (transformed.municipality === "null") transformed.municipality = null;
+    if (transformed.location === "null") transformed.location = null;
+    return transformed;
+  });;
 };
 
 export const assignToHealthPost = (lang: string) => {
