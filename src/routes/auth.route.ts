@@ -33,7 +33,7 @@ authRouter.post(
 );
 authRouter.post(
   "/register",
-  upload.single("profileImage"), // Parse multipart formdata
+  upload.array("profileImage"), // Parse multipart formdata
   validateSchema(userRegisterSchemaValidation),
   registerAuthGuard,
   uploadToCloudinary,

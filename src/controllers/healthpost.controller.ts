@@ -28,19 +28,8 @@ export const addNewHealthPostController = async (
   const response = res.locals.message;
   const body = req.body as NewHealthPostType;
 
-  if (body.adminId) {
-    const adminExists = await RepoManager.userRepository.findById(body.adminId);
-    if (!adminExists || adminExists?.role !== "ADMIN")
-      throw new customErrors.NotFoundError({
-        message: "Invalid adminId"
-      });
-  }
 
   const newHealthPost = await RepoManager.healthPostRepository.create(body);
-  if (body.adminId)
-    await RepoManager.userRepository.update(body.adminId, {
-      healthPostId: newHealthPost.id
-    });
 
   return successResponse({
     res,

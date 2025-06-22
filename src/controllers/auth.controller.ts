@@ -96,8 +96,8 @@ export const userRegisterController = async (
   const user = res.locals.user as UserJwt & {
     healthPostId: string | undefined | null
   };
-  const profileUrl = res.locals.profileUrl;
-  const publicId = res.locals.publicId;
+  const profileUrl = res.locals.profileUrls[0] || null;
+  const publicId = res.locals.publicId[0] || null;
   const response = res.locals.message;
 
   try {

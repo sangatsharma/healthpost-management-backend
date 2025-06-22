@@ -23,10 +23,6 @@ export const newHealthPostSchemaValidation = (lang: string) => {
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
     }),
-    adminId: z.string({
-      required_error: t.required,
-      invalid_type_error: t.invalid_type_string
-    }),
     wardNo: z.number({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
