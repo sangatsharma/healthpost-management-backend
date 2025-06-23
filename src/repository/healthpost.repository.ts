@@ -7,9 +7,14 @@ import {
 export class HealthPostRepository {
   constructor(private readonly prisma: PrismaClient["healthPost"]) { }
 
-  async create(dto: NewHealthPostType): Promise<HealthPost> {
+  async create(dto: NewHealthPostType, imageUrls: string[]): Promise<HealthPost> {
     const healthPost = await this.prisma.create({
-      data: dto
+      data: {
+        ...dto,
+        images: {
+          set: imageUrls
+        }
+      }
     });
 
     return healthPost;

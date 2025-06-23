@@ -7,6 +7,7 @@ model HealthPost {
   phone        String
   status       HealthPostStatus
   wardNo       Int
+  images       String[]         @default([])
   admin        User?            @relation(fields: [adminId], references: [id], onDelete: Cascade)
   adminId      String?          @unique
   createdAt    DateTime         @default(now())
