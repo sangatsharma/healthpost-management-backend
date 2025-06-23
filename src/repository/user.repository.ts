@@ -1,9 +1,36 @@
 import { Prisma, PrismaClient, User } from "@prisma/client";
 import { AssignUserToHealthPostType, UserRegisterType } from "@app/src/validations/index.validation";
 import { ModifiedUser } from "@app/types/index.type";
+import { RepoManager } from "./index.repository";
 
 
 const userModifierFunction = (user: User): ModifiedUser => {
+  const {
+    firstName,
+    middleName,
+    lastName,
+    permission,
+    otp,
+    optCreatedAt,
+    ...rest
+  } = user;
+
+  return {
+    fullName: {
+      firstName,
+      middleName,
+      lastName
+    },
+    permissions: JSON.parse(permission as string),
+    ...rest
+  };
+};
+
+const allUserModifierFunction = (user: User | User & {
+  healthPost: {
+    name: string | null
+  }
+}): ModifiedUser => {
   const {
     firstName,
     middleName,
@@ -48,6 +75,31 @@ export class UserRepository {
     const updatedUsers = users.map(userModifierFunction);
 
     return updatedUsers;
+  }
+
+  async getAllWithHealthpost() {
+    const users = await this.prisma.findMany({});
+    const hpUser = await Promise.all(users.map(async (user) => {
+      if (!user.healthPostId) return user;
+
+      const hp = await RepoManager.healthPostRepository.findById(
+        user.healthPostId
+      );
+
+      return {
+        healthPost: {
+          name: hp?.name
+        },
+        ...user
+      };
+    }));
+
+
+
+    const updatedUsers = hpUser.map(allUserModifierFunction);
+
+    return updatedUsers;
+
   }
 
   async findById(id: string): Promise<ModifiedUser | null> {

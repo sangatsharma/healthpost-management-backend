@@ -68,7 +68,7 @@ healthPostRouter.put(
 );
 healthPostRouter.patch(
   "/:id/assign",
-  authGuard(["ADMIN"]),
+  authGuard(["SUPERADMIN", "ADMIN"]),
   validateSchema(assignToHealthPost),
   languageMiddleware,
   assignUserToHealthPost

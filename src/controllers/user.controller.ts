@@ -31,3 +31,18 @@ export const getUserHandler = async (
     data: user
   });
 };
+
+export const getAllUsersHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+
+  const user = await RepoManager.userRepository.getAllWithHealthpost();
+
+  return successResponse({
+    res,
+    message: "Success",
+    data: user
+  });
+};

@@ -179,7 +179,7 @@ export const assignUserToHealthPost = async (
     throw new customErrors.NotFoundError({
       message: "HealthPost not found"
     });
-  else if (healthPostExists.adminId !== user.id)
+  else if (user.role !== "SUPERADMIN" && healthPostExists.adminId !== user.id)
     throw new customErrors.AccessError({
       name: "FORBIDDEN",
       message: "You dont' own this"
