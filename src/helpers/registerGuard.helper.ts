@@ -51,7 +51,7 @@ const registerAuthGuard = async (
       name: "FORBIDDEN",
       message: response.REGISTER.FAIL.PERMISSION,
     });
-  else if (body.accountType === "HP" && user.role !== "ADMIN")
+  else if (body.accountType === "HP" && !(user.role === "ADMIN" || user.role === "SUPERADMIN"))
     throw new customErrors.AccessError({
       name: "FORBIDDEN",
       message: response.REGISTER.FAIL.PERMISSION,

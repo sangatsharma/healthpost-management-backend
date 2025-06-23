@@ -97,7 +97,7 @@ export const userRegisterController = async (
     healthPostId: string | undefined | null
   };
   const profileUrl = res.locals.urls[0] || null;
-  const publicId = res.locals.publicId[0] || null;
+  const publicId = res.locals.publicIds[0] || null;
   const response = res.locals.message;
 
   try {
