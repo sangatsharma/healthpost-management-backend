@@ -6,6 +6,8 @@ import {
   ACTION,
   UserType,
   RESOURCES,
+  GENDER,
+  STATUS,
 } from "@prisma/client";
 
 export const userRegisterSchemaValidation = (lang: string) => {
@@ -29,8 +31,13 @@ export const userRegisterSchemaValidation = (lang: string) => {
     }).email({
       message: "Invalid email format",
     }),
+    phoneNumber: z.string({
+      invalid_type_error: t.invalid_type_string
+    }).optional(),
+    gender: z.nativeEnum(GENDER).optional(),
     accountType: z.nativeEnum(UserType),
     role: z.nativeEnum(ROLE),
+    status: z.nativeEnum(STATUS).optional(),
     permission: z.array(z.object({
       action: z.nativeEnum(ACTION),
       resource: z.nativeEnum(RESOURCES)

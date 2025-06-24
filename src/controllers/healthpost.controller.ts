@@ -122,6 +122,10 @@ export const updateHealthPostController = async (
   const response = res.locals.message;
   const healthPostId = req.params.id;
   const data = req.body as UpdateHealthPostType;
+  const user = res.locals.user as UserJwt;
+
+  const profileUrl = res.locals.urls[0] || null;
+  const publicId = res.locals.publicIds[0] || null;
 
   const healthPostExists = await RepoManager.healthPostRepository.findById(
     healthPostId,
@@ -129,6 +133,11 @@ export const updateHealthPostController = async (
   if (!healthPostExists)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
+    });
+  else if (user.role === "ADMIN" && healthPostExists.adminId !== user.id)
+    throw new customErrors.AccessError({
+      name: "FORBIDDEN",
+      message: response.COMMON.FORBIDDEN
     });
 
   if (data.adminId) {

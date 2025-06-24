@@ -61,8 +61,9 @@ healthPostRouter.delete(
 healthPostRouter.put(
   "/:id",
   upload.array("images"),
-  authGuard(["SUPERADMIN"]),
+  authGuard(["SUPERADMIN", "ADMIN"]),
   validateSchema(updateHealthPostSchemaValidation),
+  uploadToCloudinary,
   languageMiddleware,
   updateHealthPostController
 );

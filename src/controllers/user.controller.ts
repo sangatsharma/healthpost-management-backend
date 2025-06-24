@@ -46,3 +46,23 @@ export const getAllUsersHandler = async (
     data: user
   });
 };
+
+export const getOneUserHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id as string;
+  const user = await RepoManager.userRepository.findById(id);
+
+  if (!user)
+    throw new customErrors.NotFoundError({
+      message: "User not found"
+    });
+
+  return successResponse({
+    res,
+    message: "Success",
+    data: user
+  });
+};

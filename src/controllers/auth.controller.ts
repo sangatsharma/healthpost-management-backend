@@ -19,9 +19,6 @@ import {
   OtpValidateType
 } from "@app/src/validations/index.validation";
 import {
-  allowedRolesByAccountType,
-} from "@app/constants/index.constant";
-import {
   jwtTokenGen,
   generateOTP,
   TokenHelper
@@ -29,7 +26,6 @@ import {
 import { RepoManager } from "@app/src/repository/index.repository";
 import { User } from "@prisma/client";
 import { ModifiedUser } from "@app/types/index.type";
-import healthPostRouter from "../routes/healthpost.route";
 
 const domain = CONFIG.ENV === "PROD" ? ".healthsync.me" : "localhost";
 
@@ -103,9 +99,6 @@ export const userRegisterController = async (
   try {
     const newUser = await RepoManager.userRepository.create({
       ...body,
-      healthPostId: body.role === "ADMIN" ? body.healthPostId
-        : body.accountType === "PATIENT" ? undefined
-          : user.healthPostId ? user.healthPostId : undefined,
       profileImage: profileUrl
     });
 
