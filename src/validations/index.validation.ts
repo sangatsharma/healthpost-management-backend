@@ -14,8 +14,12 @@ import {
   NewHealthPostType,
   UpdateHealthPostType,
   AssignUserToHealthPostType
-
 } from "./healthPost.validation";
+
+import {
+  updateUserValidation,
+  UpdateUserType
+} from "./user.validation";
 
 export {
   userLoginSchemaValidation,
@@ -31,4 +35,7 @@ export {
   NewHealthPostType,
   UpdateHealthPostType,
   AssignUserToHealthPostType,
+
+  updateUserValidation,
+  UpdateUserType
 };

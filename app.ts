@@ -18,7 +18,12 @@ const app = express();
 
 app.use(cors({
   credentials: true,
-  origin: ["https://healthpost.vercel.app", "http://localhost:3000", "https://www.healthsync.me"],
+  origin: [
+    "https://healthpost.vercel.app",
+    "http://localhost:3000",
+    "https://www.healthsync.me",
+    "http://10.10.2.134"
+  ],
 }));
 
 app.use(cookieParser());

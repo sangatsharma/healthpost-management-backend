@@ -3,7 +3,6 @@ import { AssignUserToHealthPostType, UserRegisterType } from "@app/src/validatio
 import { ModifiedUser } from "@app/types/index.type";
 import { RepoManager } from "./index.repository";
 
-
 const userModifierFunction = (user: User): ModifiedUser => {
   const {
     firstName,
@@ -12,6 +11,7 @@ const userModifierFunction = (user: User): ModifiedUser => {
     permission,
     otp,
     optCreatedAt,
+    profileImage,
     ...rest
   } = user;
 
@@ -22,6 +22,7 @@ const userModifierFunction = (user: User): ModifiedUser => {
       lastName
     },
     permissions: JSON.parse(permission as string),
+    profileImage: profileImage ? [profileImage] : [],
     ...rest
   };
 };
@@ -38,6 +39,7 @@ const allUserModifierFunction = (user: User | User & {
     permission,
     otp,
     optCreatedAt,
+    profileImage,
     ...rest
   } = user;
 
@@ -48,6 +50,7 @@ const allUserModifierFunction = (user: User | User & {
       lastName
     },
     permissions: JSON.parse(permission as string),
+    profileImage: profileImage ? [profileImage] : [],
     ...rest
   };
 };

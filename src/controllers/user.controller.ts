@@ -9,6 +9,7 @@ import {
   successResponse,
 } from "@app/utils/index.utils";
 import { RepoManager } from "@app/src/repository/index.repository";
+import { UpdateUserType } from "@app/src/validations/index.validation";
 
 export const getUserHandler = async (
   req: Request,
@@ -64,5 +65,29 @@ export const getOneUserHandler = async (
     res,
     message: "Success",
     data: user
+  });
+};
+
+export const updateUserHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id as string;
+  const body = req.body as UpdateUserType;
+
+  const user = await RepoManager.userRepository.findById(id);
+
+  if (!user)
+    throw new customErrors.NotFoundError({
+      message: "User not found"
+    });
+
+  const updatedUser = await RepoManager.userRepository.update(id, body);
+
+  return successResponse({
+    res,
+    message: "Success",
+    data: updatedUser
   });
 };

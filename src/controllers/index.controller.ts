@@ -19,7 +19,8 @@ import {
 import {
   getUserHandler,
   getOneUserHandler,
-  getAllUsersHandler
+  getAllUsersHandler,
+  updateUserHandler,
 } from "./user.controller";
 
 export {
@@ -39,5 +40,6 @@ export {
 
   getUserHandler,
   getOneUserHandler,
-  getAllUsersHandler
+  getAllUsersHandler,
+  updateUserHandler,
 };

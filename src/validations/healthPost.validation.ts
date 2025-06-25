@@ -1,6 +1,5 @@
 import z from "zod";
-import { np } from "./messages/userAuth.messages";
-import { en } from "./messages/userAuth.messages";
+import { np, en } from "./messages/userAuth.messages";
 import { HealthPostStatus } from "@prisma/client";
 
 export const newHealthPostSchemaValidation = (lang: string) => {

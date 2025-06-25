@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 
 export type ModifiedUser = Omit<
   User,
-  "firstName" | "middleName" | "lastName" | "permission" | "otp" | "optCreatedAt"
+  "firstName" | "middleName" | "lastName" | "permission" | "otp" | "optCreatedAt" | "profileImage"
 > & {
   fullName: {
     firstName: string;
@@ -10,4 +10,5 @@ export type ModifiedUser = Omit<
     lastName: string;
   };
   permissions: Record<string, string>[];
+  profileImage: string[]
 };
