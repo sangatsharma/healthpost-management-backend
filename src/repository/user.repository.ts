@@ -62,10 +62,11 @@ export class UserRepository {
   async create(dto: UserRegisterType & {
     profileImage?: string
   }): Promise<ModifiedUser> {
+    const { permissions, ...rest } = dto;
     const user = await this.prisma.create({
       data: {
-        ...dto,
-        permission: JSON.stringify(dto.permission),
+        ...rest,
+        permission: JSON.stringify(permissions),
       }
     });
 

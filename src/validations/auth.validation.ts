@@ -38,7 +38,7 @@ export const userRegisterSchemaValidation = (lang: string) => {
     accountType: z.nativeEnum(UserType),
     role: z.nativeEnum(ROLE),
     status: z.nativeEnum(STATUS).optional(),
-    permission: z.array(z.object({
+    permissions: z.array(z.object({
       action: z.nativeEnum(ACTION),
       resource: z.nativeEnum(RESOURCES)
     }, {

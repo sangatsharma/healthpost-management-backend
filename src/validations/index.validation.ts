@@ -18,7 +18,9 @@ import {
 
 import {
   updateUserValidation,
-  UpdateUserType
+  updateUserAdminValidation,
+  UpdateUserType,
+  UpdateUserAdminType,
 } from "./user.validation";
 
 export {
@@ -37,5 +39,7 @@ export {
   AssignUserToHealthPostType,
 
   updateUserValidation,
-  UpdateUserType
+  updateUserAdminValidation,
+  UpdateUserType,
+  UpdateUserAdminType,
 };

@@ -9,7 +9,7 @@ import {
   successResponse,
 } from "@app/utils/index.utils";
 import { RepoManager } from "@app/src/repository/index.repository";
-import { UpdateUserType } from "@app/src/validations/index.validation";
+import { UpdateUserAdminType, UpdateUserType } from "@app/src/validations/index.validation";
 
 export const getUserHandler = async (
   req: Request,
@@ -84,6 +84,42 @@ export const updateUserHandler = async (
     });
 
   const updatedUser = await RepoManager.userRepository.update(id, body);
+
+  return successResponse({
+    res,
+    message: "Success",
+    data: updatedUser
+  });
+};
+
+export const updateUserAdminHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id as string;
+  const user = res.locals.user as UserJwt;
+  const { userId, ...rest } = req.body as UpdateUserAdminType;
+
+  const userExists = await RepoManager.userRepository.findById(userId);
+  if (!userExists)
+    throw new customErrors.NotFoundError({
+      message: "Invalid userId"
+    });
+
+  if (userExists.accountType === "HP" && userExists.role !== "ADMIN") {
+    const adminUser = await RepoManager.userRepository.findById(user.id);
+    if (!adminUser)
+      throw new customErrors.NotFoundError({
+        message: "Invalid userId"
+      });
+    else if (adminUser.healthPostId !== userExists.healthPostId)
+      throw new customErrors.BadRequestError({
+        message: "Not admin"
+      });
+  }
+
+  const updatedUser = await RepoManager.userRepository.update(userId, rest);
 
   return successResponse({
     res,

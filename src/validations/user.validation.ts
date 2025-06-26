@@ -13,7 +13,7 @@ export const updateUserValidation = (lang: string) => {
       invalid_type_error: t.invalid_type_string
     }).optional(),
     lastName: z.string({
-      required_error: t.required,
+      invalid_type_error: t.invalid_type_string
     }).optional(),
     phoneNumber: z.string({
       invalid_type_error: t.invalid_type_string
@@ -24,7 +24,7 @@ export const updateUserValidation = (lang: string) => {
   }).refine((input) => {
     return Object.values(input).length !== 0;
   }, {
-    message: "Atleast one field required"
+    message: t.atleast_one_required,
   });
 };
 
@@ -32,8 +32,16 @@ export const updateUserAdminValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
 
   return z.object({
+    userId: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string,
+    }),
     role: z.nativeEnum(ROLE).optional(),
     status: z.nativeEnum(STATUS).optional(),
+  }).refine((input) => {
+    return Object.values(input).length !== 0;
+  }, {
+    message: t.atleast_one_required,
   });
 };
 
