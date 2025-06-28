@@ -21,6 +21,7 @@ import {
   getOneUserHandler,
   getAllUsersHandler,
   updateUserHandler,
+  updateUserAdminHandler
 } from "./user.controller";
 
 export {
@@ -42,4 +43,5 @@ export {
   getOneUserHandler,
   getAllUsersHandler,
   updateUserHandler,
+  updateUserAdminHandler,
 };

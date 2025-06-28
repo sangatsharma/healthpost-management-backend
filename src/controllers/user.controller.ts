@@ -99,31 +99,51 @@ export const updateUserAdminHandler = async (
 ) => {
   const id = req.params.id as string;
   const user = res.locals.user as UserJwt;
-  const { userId, ...rest } = req.body as UpdateUserAdminType;
+  const body = req.body as UpdateUserAdminType;
 
-  const userExists = await RepoManager.userRepository.findById(userId);
+  const userExists = await RepoManager.userRepository.findById(id);
   if (!userExists)
     throw new customErrors.NotFoundError({
       message: "Invalid userId"
     });
 
-  if (userExists.accountType === "HP" && userExists.role !== "ADMIN") {
+  if (user.role !== "SUPERADMIN") {
+
+    if (userExists.role === "ADMIN") {
+      throw new customErrors.AccessError({
+        name: "FORBIDDEN",
+        message: "Cannot perform this operation"
+      });
+    }
+
+    else if (userExists.accountType === "HP" && user.role !== "ADMIN") {
+      throw new customErrors.AccessError({
+        name: "FORBIDDEN",
+        message: "Cannot perform this operation"
+      });
+    }
+
     const adminUser = await RepoManager.userRepository.findById(user.id);
     if (!adminUser)
       throw new customErrors.NotFoundError({
-        message: "Invalid userId"
+        message: "Invalid adminId"
       });
+
     else if (adminUser.healthPostId !== userExists.healthPostId)
       throw new customErrors.BadRequestError({
         message: "Not admin"
       });
   }
-
-  const updatedUser = await RepoManager.userRepository.update(userId, rest);
+  const { permissions, ...rest } = body;
+  const updatedUser = await RepoManager.userRepository.update(id, {
+    ...rest,
+    permission: JSON.stringify(res.locals.user.permissions)
+  });
 
   return successResponse({
     res,
     message: "Success",
     data: updatedUser
   });
+  ;
 };

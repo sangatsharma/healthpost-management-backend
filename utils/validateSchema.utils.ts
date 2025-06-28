@@ -13,7 +13,7 @@ export function validateSchema(
     const lang = req.cookies["NEXT_LOCALE"];
     try {
 
-      if (req.path === "/register") {
+      if (req.path === "/register" || /^\/[^/]+\/admin$/.test(req.path)) {
         const rawPermissions: Record<string, Record<string, string>> = {};
 
         Object.keys(req.body).forEach(key => {

@@ -4,10 +4,16 @@ import {
   getOneUserHandler,
   getUserHandler,
   updateUserHandler,
+  updateUserAdminHandler
 } from "@app/src/controllers/index.controller";
-import { authGuard } from "@app/src/helpers/index.helper";
+import {
+  authGuard,
+} from "@app/src/helpers/index.helper";
 import { validateSchema } from "@app/utils/index.utils";
-import { updateUserValidation } from "@app/src/validations/index.validation";
+import {
+  updateUserAdminValidation,
+  updateUserValidation,
+} from "@app/src/validations/index.validation";
 
 const userRouter = express.Router();
 
@@ -33,8 +39,9 @@ userRouter.put(
 
 userRouter.put(
   "/:id/admin",
-  authGuard(),
-  getOneUserHandler
+  authGuard(["SUPERADMIN", "ADMIN"]),
+  validateSchema(updateUserAdminValidation),
+  updateUserAdminHandler
 );
 
 export default userRouter;

@@ -1,6 +1,6 @@
 import z from "zod";
 import { np, en } from "./messages/userAuth.messages";
-import { GENDER, ROLE, STATUS } from "@prisma/client";
+import { ACTION, GENDER, RESOURCES, ROLE, STATUS } from "@prisma/client";
 
 export const updateUserValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
@@ -32,12 +32,20 @@ export const updateUserAdminValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
 
   return z.object({
-    userId: z.string({
-      required_error: t.required,
-      invalid_type_error: t.invalid_type_string,
-    }),
+    // userId: z.string({
+    //   required_error: t.required,
+    //   invalid_type_error: t.invalid_type_string,
+    // }),
     role: z.nativeEnum(ROLE).optional(),
     status: z.nativeEnum(STATUS).optional(),
+    permissions: z.array(z.object({
+      action: z.nativeEnum(ACTION),
+      resource: z.nativeEnum(RESOURCES)
+    }, {
+      required_error: "FORMAT: {action: ACTION, resource:RESOURCE}"
+    }), {
+      required_error: "FORMAT: {action: ACTION, resource:RESOURCE}[]"
+    }),
   }).refine((input) => {
     return Object.values(input).length !== 0;
   }, {
