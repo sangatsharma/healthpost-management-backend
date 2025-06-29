@@ -6,6 +6,7 @@ import { TokenHelper } from "./token.helper";
 import languageMiddleware from "./responseLanguage.helper";
 import { uploadToCloudinary } from "./uploadToCloudinary.helper";
 import registerAuthGuard from "./registerGuard.helper";
+import LocationHelper from "./location.helper";
 
 export {
   authGuard,
@@ -15,5 +16,6 @@ export {
   TokenHelper,
   languageMiddleware,
   uploadToCloudinary,
-  registerAuthGuard
+  registerAuthGuard,
+  LocationHelper
 };

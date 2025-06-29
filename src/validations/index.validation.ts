@@ -23,6 +23,11 @@ import {
   UpdateUserAdminType,
 } from "./user.validation";
 
+import {
+  provinceSearchValidation,
+  ProvinceSearchType
+} from "./location.validation";
+
 export {
   userLoginSchemaValidation,
   userRegisterSchemaValidation,
@@ -42,4 +47,7 @@ export {
   updateUserAdminValidation,
   UpdateUserType,
   UpdateUserAdminType,
+
+  provinceSearchValidation,
+  ProvinceSearchType
 };

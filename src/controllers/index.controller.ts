@@ -24,6 +24,11 @@ import {
   updateUserAdminHandler
 } from "./user.controller";
 
+import {
+  getAllLocationHandler,
+  getProvinceDataHandler
+} from "./location.controller";
+
 export {
   userLoginController,
   userRegisterController,
@@ -44,4 +49,7 @@ export {
   getAllUsersHandler,
   updateUserHandler,
   updateUserAdminHandler,
+
+  getAllLocationHandler,
+  getProvinceDataHandler
 };

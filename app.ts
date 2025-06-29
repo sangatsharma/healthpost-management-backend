@@ -4,6 +4,7 @@ import {
   authRouter,
   healthPostRouter,
   userRouter,
+  locationRouter
 } from "@app/src/routes/index.route";
 import {
   errorHandler,
@@ -33,6 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/healthpost", healthPostRouter);
+app.use("/api/location", locationRouter);
 
 app.use(errorHandler);
 app.use(unknownEndpoint);
