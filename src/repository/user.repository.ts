@@ -178,7 +178,10 @@ export class UserRepository {
       where: {
         id: id
       },
-      data: data as Prisma.UserUpdateInput
+      data: {
+        ...data,
+        permission: JSON.stringify(data.permission)
+      }
     });
 
     return userModifierFunction(updatedUser);
@@ -211,5 +214,13 @@ export class UserRepository {
     });
 
     return userModifierFunction(user);
+  }
+
+  async deleteUser(id: string) {
+    await this.prisma.delete({
+      where: {
+        id: id
+      }
+    });
   }
 }

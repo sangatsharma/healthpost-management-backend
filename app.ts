@@ -4,7 +4,8 @@ import {
   authRouter,
   healthPostRouter,
   userRouter,
-  locationRouter
+  locationRouter,
+  commonRouter
 } from "@app/src/routes/index.route";
 import {
   errorHandler,
@@ -35,6 +36,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/healthpost", healthPostRouter);
 app.use("/api/location", locationRouter);
+app.use("/api/common", commonRouter);
 
 app.use(errorHandler);
 app.use(unknownEndpoint);

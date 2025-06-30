@@ -76,6 +76,9 @@ export const updateUserHandler = async (
   const id = req.params.id as string;
   const body = req.body as UpdateUserType;
 
+  const profileUrl = res.locals.urls[0] || null;
+  const publicId = res.locals.publicIds[0] || null;
+
   const user = await RepoManager.userRepository.findById(id);
 
   if (!user)
@@ -83,12 +86,54 @@ export const updateUserHandler = async (
       message: "User not found"
     });
 
-  const updatedUser = await RepoManager.userRepository.update(id, body);
+  const updatedUser = await RepoManager.userRepository.update(id, {
+    ...body,
+    profileImage: profileUrl,
+  });
 
   return successResponse({
     res,
     message: "Success",
     data: updatedUser
+  });
+};
+
+export const deleteUserHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id as string;
+  const user = res.locals.user as UserJwt;
+
+
+  const userExists = await RepoManager.userRepository.findById(id);
+  if (!userExists)
+    throw new customErrors.NotFoundError({
+      message: "Invalid userId"
+    });
+
+  if (id !== user.id && user.role !== "SUPERADMIN") {
+    const requestingUser = await RepoManager.userRepository.findById(id);
+
+    if (requestingUser?.role !== "ADMIN")
+      throw new customErrors.AccessError({
+        name: "FORBIDDEN",
+        message: "Not enough permission"
+      });
+
+    else if (requestingUser.healthPostId !== userExists.healthPostId)
+      throw new customErrors.AccessError({
+        name: "FORBIDDEN",
+        message: "Not enough permission"
+      });
+  }
+
+  await RepoManager.userRepository.deleteUser(id);
+
+  return successResponse({
+    res,
+    message: "User deleted successfully",
   });
 };
 
@@ -137,7 +182,7 @@ export const updateUserAdminHandler = async (
   const { permissions, ...rest } = body;
   const updatedUser = await RepoManager.userRepository.update(id, {
     ...rest,
-    permission: JSON.stringify(res.locals.user.permissions)
+    permission: permissions
   });
 
   return successResponse({

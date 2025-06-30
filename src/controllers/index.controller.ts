@@ -21,13 +21,18 @@ import {
   getOneUserHandler,
   getAllUsersHandler,
   updateUserHandler,
-  updateUserAdminHandler
+  updateUserAdminHandler,
+  deleteUserHandler
 } from "./user.controller";
 
 import {
   getAllLocationHandler,
   getProvinceDataHandler
 } from "./location.controller";
+
+import {
+  removeImageHandler
+} from "./common.controller";
 
 export {
   userLoginController,
@@ -49,7 +54,10 @@ export {
   getAllUsersHandler,
   updateUserHandler,
   updateUserAdminHandler,
+  deleteUserHandler,
 
   getAllLocationHandler,
-  getProvinceDataHandler
+  getProvinceDataHandler,
+
+  removeImageHandler
 };

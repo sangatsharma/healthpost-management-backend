@@ -12,10 +12,10 @@ export function validateSchema(
   ) => {
     const lang = req.cookies["NEXT_LOCALE"];
     try {
-
-      if (req.path === "/register" || /^\/[^/]+\/admin$/.test(req.path)) {
+      if (req.path === "/register"
+        // || (/^\/[^/]+\/admin$/.test(req.path) && req.method === "PUT")
+      ) {
         const rawPermissions: Record<string, Record<string, string>> = {};
-
         Object.keys(req.body).forEach(key => {
           const match = key.match(/^permissions\[(\d+)\]\.(action|resource)$/);
           if (match) {

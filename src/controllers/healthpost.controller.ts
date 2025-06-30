@@ -4,6 +4,7 @@ import {
   NextFunction,
 } from "express";
 import {
+  cloudinary,
   customErrors,
   successResponse,
 } from "@app/utils/index.utils";
@@ -117,54 +118,68 @@ export const removeHealthPostController = async (
 export const updateHealthPostController = async (
   req: Request,
   res: Response,
-  _: NextFunction
+  next: NextFunction
 ) => {
   const response = res.locals.message;
   const healthPostId = req.params.id;
   const data = req.body as UpdateHealthPostType;
   const user = res.locals.user as UserJwt;
 
-  const profileUrl = res.locals.urls[0] || null;
-  const publicId = res.locals.publicIds[0] || null;
+  const profileUrl = res.locals.urls || null;
+  const publicId = res.locals.publicIds || null;
 
-  const healthPostExists = await RepoManager.healthPostRepository.findById(
-    healthPostId,
-  );
-  if (!healthPostExists)
-    throw new customErrors.NotFoundError({
-      message: response.COMMON.NOT_FOUND
-    });
-  else if (user.role === "ADMIN" && healthPostExists.adminId !== user.id)
-    throw new customErrors.AccessError({
-      name: "FORBIDDEN",
-      message: response.COMMON.FORBIDDEN
-    });
-
-  if (data.adminId) {
-    const adminExists = await RepoManager.userRepository.findById(
-      data.adminId
+  try {
+    const healthPostExists = await RepoManager.healthPostRepository.findById(
+      healthPostId,
     );
-
-    if (!adminExists || adminExists.role !== "ADMIN")
-      throw new customErrors.BadRequestError({
-        message: response.UPDATE_HEALTHPOST.FAIL.INVALID_ADMIN_ID
+    if (!healthPostExists)
+      throw new customErrors.NotFoundError({
+        message: response.COMMON.NOT_FOUND
       });
-  }
+    else if (user.role === "ADMIN" && healthPostExists.adminId !== user.id)
+      throw new customErrors.AccessError({
+        name: "FORBIDDEN",
+        message: response.COMMON.FORBIDDEN
+      });
 
-  const updatedHealthPost = await RepoManager.healthPostRepository.update(
-    healthPostId,
-    data
-  ) as HealthPost;
-  if (data.adminId)
-    await RepoManager.userRepository.update(data.adminId, {
-      healthPostId: healthPostId
+    if (data.adminId) {
+      const adminExists = await RepoManager.userRepository.findById(
+        data.adminId
+      );
+
+      if (!adminExists || adminExists.role !== "ADMIN")
+        throw new customErrors.BadRequestError({
+          message: response.UPDATE_HEALTHPOST.FAIL.INVALID_ADMIN_ID
+        });
+    }
+
+    const updatedHealthPost = await RepoManager.healthPostRepository.update(
+      healthPostId,
+      {
+        ...data,
+        images: profileUrl.length >= 1 ? profileUrl : undefined,
+      },
+    ) as HealthPost;
+    if (data.adminId)
+      await RepoManager.userRepository.update(data.adminId, {
+        healthPostId: healthPostId
+      });
+
+    return successResponse({
+      res,
+      message: response.UPDATE_HEALTHPOST.SUCCESS,
+      data: updatedHealthPost
     });
 
-  return successResponse({
-    res,
-    message: response.UPDATE_HEALTHPOST.SUCCESS,
-    data: updatedHealthPost
-  });
+  }
+  catch (err) {
+    if (profileUrl.length > 1) {
+      await Promise.all(publicId.forEach(async (id: string) => {
+        cloudinary.uploader.destroy(id);
+      }));
+    }
+    return next(err);
+  }
 };
 
 

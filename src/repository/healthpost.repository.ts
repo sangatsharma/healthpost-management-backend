@@ -45,12 +45,24 @@ export class HealthPostRepository {
     return healthPost;
   }
 
-  async update(id: string, dto: UpdateHealthPostType): Promise<HealthPost | null> {
+  async update(id: string, dto: UpdateHealthPostType & {
+    images?: string[]
+  }): Promise<HealthPost | null> {
+    const { images, ...rest } = dto;
+    console.log(images);
+
     const updatedHealthPost = await this.prisma.update({
       where: {
         id: id
       },
-      data: dto
+      data: {
+        ...rest,
+        ...(images ? {
+          images: {
+            push: images
+          }
+        } : {})
+      }
     });
 
     return updatedHealthPost;

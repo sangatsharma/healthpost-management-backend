@@ -4,12 +4,14 @@ import {
   getOneUserHandler,
   getUserHandler,
   updateUserHandler,
-  updateUserAdminHandler
+  updateUserAdminHandler,
+  deleteUserHandler
 } from "@app/src/controllers/index.controller";
 import {
   authGuard,
+  uploadToCloudinary,
 } from "@app/src/helpers/index.helper";
-import { validateSchema } from "@app/utils/index.utils";
+import { upload, validateSchema } from "@app/utils/index.utils";
 import {
   updateUserAdminValidation,
   updateUserValidation,
@@ -33,7 +35,9 @@ userRouter.get(
 userRouter.put(
   "/:id",
   authGuard(),
+  upload.array("profileImage"), // Parse multipart formdata
   validateSchema(updateUserValidation),
+  uploadToCloudinary,
   updateUserHandler
 );
 
@@ -42,6 +46,12 @@ userRouter.put(
   authGuard(["SUPERADMIN", "ADMIN"]),
   validateSchema(updateUserAdminValidation),
   updateUserAdminHandler
+);
+
+userRouter.delete(
+  "/:id",
+  authGuard(),
+  deleteUserHandler
 );
 
 export default userRouter;
