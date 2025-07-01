@@ -26,7 +26,8 @@ import {
 
 import {
   getAllLocationHandler,
-  getProvinceDataHandler
+  getProvinceDataHandler,
+  getDistrictDataHandler,
 } from "./location.controller";
 
 import {
@@ -56,6 +57,7 @@ export {
 
   getAllLocationHandler,
   getProvinceDataHandler,
+  getDistrictDataHandler,
 
   removeImageHandler
 };

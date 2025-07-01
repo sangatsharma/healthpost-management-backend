@@ -25,7 +25,9 @@ import {
 
 import {
   provinceSearchValidation,
-  ProvinceSearchType
+  districtSearchValidation,
+  ProvinceSearchType,
+  DistrictSearchType
 } from "./location.validation";
 
 export {
@@ -49,5 +51,7 @@ export {
   UpdateUserAdminType,
 
   provinceSearchValidation,
-  ProvinceSearchType
+  districtSearchValidation,
+  ProvinceSearchType,
+  DistrictSearchType
 };

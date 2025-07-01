@@ -10,4 +10,13 @@ export const provinceSearchValidation = (lang: string) => {
   });
 };
 
+export const districtSearchValidation = (lang: string) => {
+  const t = lang === "np" ? np : en;
+
+  return z.object({
+    district: z.string(),
+  });
+};
+
 export type ProvinceSearchType = z.infer<ReturnType<typeof provinceSearchValidation>>
+export type DistrictSearchType = z.infer<ReturnType<typeof districtSearchValidation>>
