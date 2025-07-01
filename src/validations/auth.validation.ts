@@ -38,14 +38,15 @@ export const userRegisterSchemaValidation = (lang: string) => {
     accountType: z.nativeEnum(UserType),
     role: z.nativeEnum(ROLE),
     status: z.nativeEnum(STATUS).optional(),
-    permissions: z.array(z.object({
-      action: z.nativeEnum(ACTION),
-      resource: z.nativeEnum(RESOURCES)
-    }, {
-      required_error: "FORMAT: {action: ACTION, resource:RESOURCE}"
-    }), {
-      required_error: "FORMAT: {action: ACTION, resource:RESOURCE}[]"
-    }),
+    // permissions: z.array(z.object({
+    //   action: z.nativeEnum(ACTION),
+    //   resource: z.nativeEnum(RESOURCES)
+    // }, {
+    //   required_error: "FORMAT: {action: ACTION, resource:RESOURCE}"
+    // }), {
+    //   required_error: "FORMAT: {action: ACTION, resource:RESOURCE}[]"
+    // }),
+    permissions: z.string().optional(),
     healthPostId: z.string({
       invalid_type_error: t.invalid_type_string
     }).optional()

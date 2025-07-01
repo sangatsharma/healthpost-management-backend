@@ -11,30 +11,31 @@ export function validateSchema(
     next: NextFunction
   ) => {
     const lang = req.cookies["NEXT_LOCALE"];
+    console.log(req.body);
     try {
-      if (req.path === "/register"
-        // || (/^\/[^/]+\/admin$/.test(req.path) && req.method === "PUT")
-      ) {
-        const rawPermissions: Record<string, Record<string, string>> = {};
-        Object.keys(req.body).forEach(key => {
-          const match = key.match(/^permissions\[(\d+)\]\.(action|resource)$/);
-          if (match) {
-            const index = parseInt(match[1], 10);
-            const field = match[2];
-            if (!rawPermissions[index])
-              rawPermissions[index] = {};
-            rawPermissions[index][field] = req.body[key];
-            delete req.body[key];
-          }
-        });
-
-        const permissions: Record<string, string>[] = [];
-
-        Object.keys(rawPermissions).forEach((key) => {
-          permissions.push(rawPermissions[key]);
-        });
-        req.body.permissions = permissions;
-      }
+      // if (req.path === "/register"
+      // || (/^\/[^/]+\/admin$/.test(req.path) && req.method === "PUT")
+      // ) {
+      //   const rawPermissions: Record<string, Record<string, string>> = {};
+      //   Object.keys(req.body).forEach(key => {
+      //     const match = key.match(/^permissions\[(\d+)\]\.(action|resource)$/);
+      //     if (match) {
+      //       const index = parseInt(match[1], 10);
+      //       const field = match[2];
+      //       if (!rawPermissions[index])
+      //         rawPermissions[index] = {};
+      //       rawPermissions[index][field] = req.body[key];
+      //       delete req.body[key];
+      //     }
+      //   });
+      //
+      //   const permissions: Record<string, string>[] = [];
+      //
+      //   Object.keys(rawPermissions).forEach((key) => {
+      //     permissions.push(rawPermissions[key]);
+      //   });
+      //   req.body.permissions = permissions;
+      // }
 
       const parshed_data = schema(lang).parse(req.body);
       req.body = parshed_data;

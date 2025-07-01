@@ -66,10 +66,9 @@ export class UserRepository {
     const user = await this.prisma.create({
       data: {
         ...rest,
-        permission: JSON.stringify(permissions),
+        ...(permissions ? { permission: permissions } : { permission: [] }),
       }
     });
-
     return userModifierFunction(user);
   }
 
@@ -172,16 +171,15 @@ export class UserRepository {
 
   async update(
     id: string,
-    data: Partial<User>,
+    data: Partial<User> & {
+      permission?: string | undefined
+    },
   ): Promise<ModifiedUser> {
     const updatedUser = await this.prisma.update({
       where: {
         id: id
       },
-      data: {
-        ...data,
-        permission: JSON.stringify(data.permission)
-      }
+      data: data
     });
 
     return userModifierFunction(updatedUser);

@@ -290,6 +290,13 @@ export const refreshAccessToken = async (
   const oldAccessToken = req.cookies["accessToken"] as string;
 
   if (!oldAccessToken || !refreshToken) {
+    res.clearCookie("accessToken", {
+      expires: new Date("1990-10-10")
+    });
+
+    res.clearCookie("refreshToken", {
+      expires: new Date("1990-10-10")
+    });
     throw new customErrors.AccessError({
       name: "UNAUTHORIZED",
       message: "Login first"
@@ -301,11 +308,19 @@ export const refreshAccessToken = async (
 
   const user = await RepoManager.userRepository.findById(userRefresh.id);
 
-  if (!user)
+  if (!user) {
+    res.clearCookie("accessToken", {
+      expires: new Date("1990-10-10")
+    });
+
+    res.clearCookie("refreshToken", {
+      expires: new Date("1990-10-10")
+    });
     throw new customErrors.AccessError({
       name: "UNAUTHORIZED",
       message: "Login first"
     });
+  }
 
   const { accessToken } = TokenHelper.regenRefresh(user);
 

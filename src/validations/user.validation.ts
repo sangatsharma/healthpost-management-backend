@@ -1,6 +1,6 @@
 import z from "zod";
 import { np, en } from "./messages/userAuth.messages";
-import { ACTION, GENDER, RESOURCES, ROLE, STATUS } from "@prisma/client";
+import { GENDER, STATUS } from "@prisma/client";
 
 export const updateUserValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
@@ -19,10 +19,11 @@ export const updateUserValidation = (lang: string) => {
       invalid_type_error: t.invalid_type_string
     }).optional(),
     gender: z.nativeEnum(GENDER).optional(),
-  }, {
-    required_error: "Body is empty",
+    status: z.nativeEnum(STATUS).optional(),
+    permissions: z.string().optional(),
+    profileImage: z.string().optional(),
   }).refine((input) => {
-    return Object.values(input).length !== 0;
+    return Object.values(input).some(value => value !== undefined);
   }, {
     message: t.atleast_one_required,
   });
@@ -31,26 +32,7 @@ export const updateUserValidation = (lang: string) => {
 export const updateUserAdminValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
 
-  return z.object({
-    // userId: z.string({
-    //   required_error: t.required,
-    //   invalid_type_error: t.invalid_type_string,
-    // }),
-    role: z.nativeEnum(ROLE).optional(),
-    status: z.nativeEnum(STATUS).optional(),
-    permissions: z.array(z.object({
-      action: z.nativeEnum(ACTION),
-      resource: z.nativeEnum(RESOURCES)
-    }, {
-      required_error: "FORMAT: {action: ACTION, resource:RESOURCE}"
-    }), {
-      required_error: "FORMAT: {action: ACTION, resource:RESOURCE}[]"
-    }),
-  }).refine((input) => {
-    return Object.values(input).length !== 0;
-  }, {
-    message: t.atleast_one_required,
-  });
+  return z.object({});
 };
 
 export type UpdateUserType = z.infer<ReturnType<typeof updateUserValidation>>

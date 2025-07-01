@@ -24,7 +24,6 @@ app.use(cors({
     "https://healthpost.vercel.app",
     "http://localhost:3000",
     "https://www.healthsync.me",
-    "http://10.10.2.134"
   ],
 }));
 

@@ -49,7 +49,6 @@ export class HealthPostRepository {
     images?: string[]
   }): Promise<HealthPost | null> {
     const { images, ...rest } = dto;
-    console.log(images);
 
     const updatedHealthPost = await this.prisma.update({
       where: {

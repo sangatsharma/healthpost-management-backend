@@ -4,7 +4,6 @@ import {
   getOneUserHandler,
   getUserHandler,
   updateUserHandler,
-  updateUserAdminHandler,
   deleteUserHandler
 } from "@app/src/controllers/index.controller";
 import {
@@ -13,7 +12,6 @@ import {
 } from "@app/src/helpers/index.helper";
 import { upload, validateSchema } from "@app/utils/index.utils";
 import {
-  updateUserAdminValidation,
   updateUserValidation,
 } from "@app/src/validations/index.validation";
 
@@ -41,16 +39,9 @@ userRouter.put(
   updateUserHandler
 );
 
-userRouter.put(
-  "/:id/admin",
-  authGuard(["SUPERADMIN", "ADMIN"]),
-  validateSchema(updateUserAdminValidation),
-  updateUserAdminHandler
-);
-
 userRouter.delete(
   "/:id",
-  authGuard(),
+  authGuard(["SUPERADMIN", "ADMIN"]),
   deleteUserHandler
 );
 

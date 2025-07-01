@@ -35,7 +35,7 @@ authRouter.post(
   "/register",
   upload.array("profileImage"), // Parse multipart formdata
   validateSchema(userRegisterSchemaValidation),
-  registerAuthGuard,
+  // registerAuthGuard,
   uploadToCloudinary,
   languageMiddleware,
   userRegisterController,
