@@ -103,9 +103,11 @@ export const updateUserHandler = async (
       }
       delete body.profileImage;
     }
-
+    const { permissions, ...rest } = body;
+    console.log(rest);
     const updatedUser = await RepoManager.userRepository.update(id, {
-      ...body,
+      ...rest,
+      ...(permissions ? { permission: permissions } : {}),
       ...(profileUrl ? { profileImage: profileUrl } : {}),
     });
 

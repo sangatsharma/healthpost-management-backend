@@ -1,6 +1,6 @@
 import z from "zod";
 import { np, en } from "./messages/userAuth.messages";
-import { GENDER, STATUS } from "@prisma/client";
+import { GENDER, ROLE, STATUS } from "@prisma/client";
 
 export const updateUserValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
@@ -21,6 +21,7 @@ export const updateUserValidation = (lang: string) => {
     gender: z.nativeEnum(GENDER).optional(),
     status: z.nativeEnum(STATUS).optional(),
     permissions: z.string().optional(),
+    role: z.nativeEnum(ROLE).optional(),
     profileImage: z.string().optional(),
   }).refine((input) => {
     return Object.values(input).some(value => value !== undefined);
