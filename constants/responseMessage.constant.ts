@@ -28,6 +28,21 @@ export const responseMessageEnglish = {
   REGEN_ACCESS: {
     SUCCESS: "New token generated"
   },
+  PATIENT: {
+    GET: {
+      SUCCESS: "Successfully fetched patient data",
+      ERROR: {
+        NOT_FOUND: "Patient profile not found",
+      }
+    },
+    CREATE: {
+      ERROR: {
+        HEALTHPOST_ID: "User not registered to any healthpost",
+        PEMISSION: "You don't have necessary permission to perform this action"
+      },
+      SUCCESS: "Successfully created patient profile"
+    }
+  },
 
   CREATE_HEALTHPOST: {
     SUCCESS: "Successfully created healthpost",
@@ -62,6 +77,7 @@ export const responseMessageEnglish = {
   },
   COMMON: {
     NOT_FOUND: "Resource not found",
+    SUCCESS: "Success",
   }
 };
 

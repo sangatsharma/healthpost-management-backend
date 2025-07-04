@@ -22,6 +22,12 @@ import {
   UpdateUserType,
   UpdateUserAdminType,
 } from "./user.validation";
+import {
+  newPatientValidation,
+  updatePatientValidation,
+  NewPatientType,
+  UpdatePatientType
+} from "./patient.validation";
 
 import {
   provinceSearchValidation,
@@ -53,5 +59,10 @@ export {
   provinceSearchValidation,
   districtSearchValidation,
   ProvinceSearchType,
-  DistrictSearchType
+  DistrictSearchType,
+
+  newPatientValidation,
+  NewPatientType,
+  updatePatientValidation,
+  UpdatePatientType
 };

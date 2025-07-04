@@ -7,6 +7,7 @@ import {
 import {
   assignToHealthPost,
   newHealthPostSchemaValidation,
+  newPatientValidation,
   updateHealthPostSchemaValidation,
 } from "@app/src/validations/index.validation";
 import {
@@ -22,6 +23,7 @@ import {
   languageMiddleware,
   uploadToCloudinary,
 } from "@app/src/helpers/index.helper";
+import { createPatientHandler, getPatientHandler } from "../controllers/patient.controller";
 
 const healthPostRouter = express.Router();
 
@@ -73,6 +75,19 @@ healthPostRouter.patch(
   validateSchema(assignToHealthPost),
   languageMiddleware,
   assignUserToHealthPost
+);
+healthPostRouter.post(
+  "/:id/patient",
+  authGuard(["SUPERADMIN", "ADMIN"]),
+  validateSchema(newPatientValidation),
+  languageMiddleware,
+  createPatientHandler,
+);
+healthPostRouter.get(
+  "/:id/patient",
+  authGuard(["SUPERADMIN", "ADMIN"]),
+  languageMiddleware,
+  getPatientHandler,
 );
 
 export default healthPostRouter;

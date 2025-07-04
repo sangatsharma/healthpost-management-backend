@@ -2,11 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import { prisma } from "@app/utils/index.utils";
 import { UserRepository } from "./user.repository";
 import { HealthPostRepository } from "./healthpost.repository";
+import { PatientRepository } from "./patient.repository";
 
 export class RepoManager {
   private static prisma: PrismaClient = prisma;
   private static userRepo: UserRepository;
   private static healthPostRepo: HealthPostRepository;
+  private static patientRepo: PatientRepository;
 
   static get userRepository() {
     if (!this.userRepo)
@@ -20,5 +22,12 @@ export class RepoManager {
       this.healthPostRepo = new HealthPostRepository(this.prisma.healthPost);
 
     return this.healthPostRepo;
+  }
+
+  static get patientRepository() {
+    if (!this.patientRepository)
+      this.patientRepo = new PatientRepository(this.prisma.patient);
+
+    return this.patientRepo;
   }
 }

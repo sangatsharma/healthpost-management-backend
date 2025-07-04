@@ -1,0 +1,89 @@
+model Patient {
+  id                     String                  @id @default(uuid())
+  userId                 String
+  user                   User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  healthPostId           String
+  healthPost             HealthPost              @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
+  dobBs                  String
+  dobAd                  String?
+  casteType              CasteType
+  citizenshipNumber      String?
+  nationlId              String?
+  nationality            Nationality
+  emergencyContact       String
+  districtId             String
+  palityId               String
+  wardNo                 Int
+  tole                   String
+  tDistrictId            String?
+  tPalityId              String?
+  tWardNo                Int?
+  tTole                  String?
+  fatherName             String
+  motherName             String
+  guardianName           String?
+  spouseName             String?
+  lockReport             Boolean
+  bloodGroup             BloodGroup
+  disabilityIdentityType DisabilityIdentityType?
+  nshiNumber             String
+  bank                   String?
+  bankBranch             String?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+
+  @@unique([userId, healthPostId])
+}
+
+enum CasteType {
+  BRAMAN_CHHETRI
+  DALIT
+  JANAJATI
+  MUSLIM
+  MADESHI
+  OTHERS
+}
+
+enum Nationality {
+  NEPALI
+  INDIAN
+  OTHER
+}
+
+enum MarriageStatus {
+  MARRIED
+  UNMARRIED
+  DIVORCED
+  WIDOWED
+  SEPARATED
+  OTHER
+}
+
+enum BloodGroup {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum DisabilityType {
+  PHYSICAL
+  VISUAL
+  HEARING
+  INTELLECTUAL
+  MENTAL
+  MULTIPLE
+  OTHER
+}
+
+enum DisabilityIdentityType {
+  NATIONAL_CARD
+  PROVINCIAL_CARD
+  LOCAL_CARD
+  HOSPITAL_CERTIFICATE
+  OTHER
+}

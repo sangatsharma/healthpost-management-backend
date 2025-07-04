@@ -12,6 +12,7 @@ model HealthPost {
   adminId      String?          @unique
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+  Patient      Patient[]
 
   @@map("healthpost")
 }
