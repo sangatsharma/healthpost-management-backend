@@ -25,7 +25,7 @@ export class RepoManager {
   }
 
   static get patientRepository() {
-    if (!this.patientRepository)
+    if (!this.patientRepo)
       this.patientRepo = new PatientRepository(this.prisma.patient);
 
     return this.patientRepo;

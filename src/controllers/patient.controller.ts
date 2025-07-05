@@ -16,7 +16,8 @@ export const createPatientHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.body.user as UserJwt;
+  const user = res.locals.user as UserJwt;
+  const healthPostId = req.params.id;
   const response = res.locals.message;
   const body = req.body as NewPatientType;
 
@@ -31,52 +32,120 @@ export const createPatientHandler = async (
       message: response.PATIENT.CREATE.ERROR.HEALTHPOST_ID
     });
 
-  const adminUser = await RepoManager.userRepository.findById(user.id);
-
-  if (!adminUser?.healthPostId || userExists.healthPostId !== adminUser?.healthPostId)
+  const healthPostExists = await RepoManager.healthPostRepository.findById(healthPostId);
+  if (!healthPostExists)
     throw new customErrors.NotFoundError({
-      message: response.PATIENT.CREATE.ERROR.HEALTHPOST_ID
+      message: response.COMMON.NOT_FOUND
     });
-  const patientData = await RepoManager.patientRepository.create({
-    ...body,
-    healthPostId: adminUser.healthPostId,
-  });
 
-  return successResponse({
-    res,
-    message: response.PATIENT.CREATE.SUCCESS,
-    data: patientData
-  });
+  if (user.role !== "SUPERADMIN") {
+    const adminUser = await RepoManager.userRepository.findById(user.id);
+
+    if (!adminUser?.healthPostId || userExists.healthPostId !== adminUser?.healthPostId)
+      throw new customErrors.NotFoundError({
+        message: response.PATIENT.CREATE.ERROR.HEALTHPOST_ID
+      });
+
+
+    const patientData = await RepoManager.patientRepository.create({
+      ...body,
+      healthPostId: healthPostId,
+    });
+
+    return successResponse({
+      res,
+      message: response.PATIENT.CREATE.SUCCESS,
+      data: patientData
+    });
+  };
 };
 
 
-export const getPatientHandler = async (
+export const getAPatientHandler = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const user = res.locals.user as UserJwt;
+  const userId = req.params.userId;
+  const healthPostId = req.params.id;
   const response = res.locals.message;
 
-  const userExists = await RepoManager.userRepository.findById(user.id);
+  const healthPost = await RepoManager.healthPostRepository.findById(healthPostId);
+  if (!healthPost)
+    throw new customErrors.NotFoundError({
+      message: response.COMMON.NOT_FOUND
+    });
+
+  const userExists = await RepoManager.userRepository.findById(userId);
   if (!userExists)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });
 
-  // TODO: healthPostId
-  const id = "123";
+  if (user.role !== "SUPERADMIN") {
+    const admin = await RepoManager.userRepository.findById(user.id);
 
-  const patientData = await RepoManager.patientRepository.getById(user.id, id);
-  if (!patientData)
+    if (!admin)
+      throw new customErrors.NotFoundError({
+        message: response.COMMON.NOT_FOUND
+      });
+    else if (!admin.healthPostId || admin.healthPostId !== healthPostId)
+      throw new customErrors.BadRequestError({
+        message: "FORBIDDEN"
+      });
+  }
+
+  const patientInfo = await RepoManager.patientRepository.findByUserId(
+    userId,
+    healthPostId
+  );
+
+  if (!patientInfo)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });
 
   return successResponse({
     res,
+    message: "Success",
+    data: patientInfo
+  });
+};
+
+export const getAllPatientHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = res.locals.user as UserJwt;
+  const healthPostId = req.params.id;
+  const response = res.locals.message;
+
+  const healthPost = await RepoManager.healthPostRepository.findById(healthPostId);
+  if (!healthPost)
+    throw new customErrors.NotFoundError({
+      message: response.COMMON.NOT_FOUND
+    });
+
+  if (user.role !== "SUPERADMIN") {
+    const admin = await RepoManager.userRepository.findById(user.id);
+    if (!admin)
+      throw new customErrors.NotFoundError({
+        message: response.COMMON.NOT_FOUND
+      });
+    else if (!admin.healthPostId || admin.healthPostId !== healthPostId)
+      throw new customErrors.BadRequestError({
+        message: "FORBIDDEN"
+      });
+  }
+
+  const patientsData = await RepoManager.patientRepository.getAllMin();
+
+  return successResponse({
+    res,
     message: response.COMMON.SUCCESS,
-    data: patientData
+    data: patientsData
   });
 };
 
@@ -107,16 +176,37 @@ export const deletePatientRecordHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const id = req.params.id as string;
+  const userId = req.params.userId as string;
+  const healthPostId = req.params.id as string;
+  const user = res.locals.user as UserJwt;
   const response = res.locals.message;
 
-  const patientData = await RepoManager.patientRepository.findById(id);
+  const healthPost = await RepoManager.healthPostRepository.findById(healthPostId);
+  if (!healthPost)
+    throw new customErrors.NotFoundError({
+      message: response.COMMON.NOT_FOUND
+    });
+
+  const patientData = await RepoManager.patientRepository.findById(userId);
   if (!patientData)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });
 
-  await RepoManager.patientRepository.delete(id);
+  if (user.role !== "SUPERADMIN") {
+
+    const admin = await RepoManager.userRepository.findById(user.id);
+    if (!admin)
+      throw new customErrors.NotFoundError({
+        message: response.COMMON.NOT_FOUND
+      });
+    else if (!admin.healthPostId || (admin.healthPostId !== healthPostId))
+      throw new customErrors.NotFoundError({
+        message: response.COMMON.NOT_FOUND
+      });
+  }
+
+  await RepoManager.patientRepository.delete(userId);
 
   return successResponse({
     res,

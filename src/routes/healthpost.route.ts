@@ -23,7 +23,12 @@ import {
   languageMiddleware,
   uploadToCloudinary,
 } from "@app/src/helpers/index.helper";
-import { createPatientHandler, getPatientHandler } from "../controllers/patient.controller";
+import {
+  createPatientHandler,
+  deletePatientRecordHandler,
+  getAllPatientHandler,
+  getAPatientHandler
+} from "../controllers/patient.controller";
 
 const healthPostRouter = express.Router();
 
@@ -87,7 +92,19 @@ healthPostRouter.get(
   "/:id/patient",
   authGuard(["SUPERADMIN", "ADMIN"]),
   languageMiddleware,
-  getPatientHandler,
+  getAllPatientHandler
+);
+healthPostRouter.get(
+  "/:id/patient/:userId",
+  authGuard(["SUPERADMIN", "ADMIN"]),
+  languageMiddleware,
+  getAPatientHandler
+);
+healthPostRouter.delete(
+  "/:id/patient/:userId",
+  authGuard(["SUPERADMIN", "ADMIN"]),
+  languageMiddleware,
+  deletePatientRecordHandler
 );
 
 export default healthPostRouter;
