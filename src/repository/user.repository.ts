@@ -21,7 +21,8 @@ const userModifierFunction = (user: User): ModifiedUser => {
       middleName,
       lastName
     },
-    permissions: JSON.parse(permission as string),
+    // permissions: JSON.parse(permission as string),
+    permissions: permission?.toString() !== "" ? JSON.parse(permission as string) : [],
     profileImage: profileImage ? [profileImage] : [],
     ...rest
   };
@@ -49,7 +50,7 @@ const allUserModifierFunction = (user: User | User & {
       middleName,
       lastName
     },
-    permissions: JSON.parse(permission as string),
+    permissions: permission?.toString() !== "" ? JSON.parse(permission as string) : [],
     profileImage: profileImage ? [profileImage] : [],
     ...rest
   };
