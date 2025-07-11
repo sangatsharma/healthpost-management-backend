@@ -80,7 +80,10 @@ export const newPatientValidation = (lang: string) => {
     spouseName: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
-    lockReport: z.boolean({
+    // lockReport: z.boolean({
+    //   required_error: t.required,
+    // }),
+    lockReport: z.coerce.boolean({
       required_error: t.required,
     }),
     bloodGroup: z.nativeEnum(BloodGroup, {

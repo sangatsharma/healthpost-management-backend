@@ -25,13 +25,13 @@ export const createPatientHandler = async (
 
   if (!userExists)
     throw new customErrors.NotFoundError({
-      message: response.COMMON.NOT_FOUND
+      message: response.PATIENT.CREATE.ERROR.USER_NOT_FOUND
     });
 
   const healthPostExists = await RepoManager.healthPostRepository.findById(healthPostId);
   if (!healthPostExists)
     throw new customErrors.NotFoundError({
-      message: response.COMMON.NOT_FOUND
+      message: response.PATIENT.CREATE.ERROR.HP_NOT_FOUND
     });
 
   if (user.role !== "SUPERADMIN") {

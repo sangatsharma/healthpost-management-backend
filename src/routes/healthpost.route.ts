@@ -83,6 +83,7 @@ healthPostRouter.patch(
 );
 healthPostRouter.post(
   "/:id/patient",
+  upload.array("images"),
   authGuard(["SUPERADMIN", "ADMIN"]),
   validateSchema(newPatientValidation),
   languageMiddleware,

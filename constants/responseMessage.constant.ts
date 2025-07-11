@@ -38,7 +38,9 @@ export const responseMessageEnglish = {
     CREATE: {
       ERROR: {
         HEALTHPOST_ID: "User not registered to any healthpost",
-        PEMISSION: "You don't have necessary permission to perform this action"
+        PEMISSION: "You don't have necessary permission to perform this action",
+        HP_NOT_FOUND: "Healthpost not found",
+        USER_NOT_FOUND: "User not found",
       },
       SUCCESS: "Successfully created patient profile"
     }
