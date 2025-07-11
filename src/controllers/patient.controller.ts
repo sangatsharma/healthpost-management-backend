@@ -20,15 +20,12 @@ export const createPatientHandler = async (
   const healthPostId = req.params.id;
   const response = res.locals.message;
   const body = req.body as NewPatientType;
+
   const userExists = await RepoManager.userRepository.findById(body.userId);
+
   if (!userExists)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
-    });
-
-  else if (!userExists.healthPostId)
-    throw new customErrors.NotFoundError({
-      message: response.PATIENT.CREATE.ERROR.HEALTHPOST_ID
     });
 
   const healthPostExists = await RepoManager.healthPostRepository.findById(healthPostId);
@@ -44,8 +41,8 @@ export const createPatientHandler = async (
       throw new customErrors.NotFoundError({
         message: response.PATIENT.CREATE.ERROR.HEALTHPOST_ID
       });
-
   }
+
   const patientData = await RepoManager.patientRepository.create({
     ...body,
     healthPostId: healthPostId,
