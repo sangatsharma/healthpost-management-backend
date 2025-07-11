@@ -20,7 +20,6 @@ export const createPatientHandler = async (
   const healthPostId = req.params.id;
   const response = res.locals.message;
   const body = req.body as NewPatientType;
-
   const userExists = await RepoManager.userRepository.findById(body.userId);
   if (!userExists)
     throw new customErrors.NotFoundError({
@@ -46,18 +45,17 @@ export const createPatientHandler = async (
         message: response.PATIENT.CREATE.ERROR.HEALTHPOST_ID
       });
 
+  }
+  const patientData = await RepoManager.patientRepository.create({
+    ...body,
+    healthPostId: healthPostId,
+  });
 
-    const patientData = await RepoManager.patientRepository.create({
-      ...body,
-      healthPostId: healthPostId,
-    });
-
-    return successResponse({
-      res,
-      message: response.PATIENT.CREATE.SUCCESS,
-      data: patientData
-    });
-  };
+  return successResponse({
+    res,
+    message: response.PATIENT.CREATE.SUCCESS,
+    data: patientData
+  });
 };
 
 
