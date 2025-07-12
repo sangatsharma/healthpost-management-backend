@@ -64,7 +64,6 @@ export const getAHealthPostController = async (
 ) => {
   const response = res.locals.message;
 
-  const user = res.locals.user as UserJwt;
   const healthPostId = req.params.id;
 
   const healthPost = await RepoManager.healthPostRepository.findById(
@@ -72,10 +71,6 @@ export const getAHealthPostController = async (
   );
 
   if (!healthPost)
-    throw new customErrors.NotFoundError({
-      message: response.COMMON.NOT_FOUND
-    });
-  else if (user.role === "ADMIN" && healthPost.adminId !== user.id)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });

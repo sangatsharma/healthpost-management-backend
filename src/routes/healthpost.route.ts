@@ -55,7 +55,7 @@ healthPostRouter.get(
 );
 healthPostRouter.get(
   "/:id",
-  authGuard(["SUPERADMIN", "ADMIN"]),
+  authGuard(),
   languageMiddleware,
   getAHealthPostController
 );

@@ -6,7 +6,7 @@
   "scripts": {
     "start:dev": "nodemon",
     "start:prod": "node dist/app.js",
-    "build": "prisma generate --schema ./prisma/schema/ && tsc --build && tsc-alias",
+    "build": "prisma migrate reset --force && prisma generate --schema ./prisma/schema/ && tsc --build && tsc-alias",
     "build:prod": "prisma generate --schema  ./prisma/schema/ && prisma migrate deploy && tsc --build && ts-alias",
     "studio": "prisma studio --schema  ./prisma/schema/",
     "db:migrate": "prisma generate --schema ./prisma/schema/ && prisma migrate  dev --schema ./prisma/schema ",
