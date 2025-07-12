@@ -57,9 +57,6 @@ export const updateHealthPostSchemaValidation = (lang: string) => {
     }).optional().transform((value) => value ? Number(value) : undefined),
     status: z.nativeEnum(HealthPostStatus).optional(),
   })
-    .refine((input) => Object.keys(input).length >= 1, {
-      message: "Atleast one field required"
-    })
     .transform((fields) => {
       const transformed = { ...fields };
       if (transformed.name === "null") transformed.name = null;

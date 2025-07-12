@@ -21,11 +21,15 @@ export const createPatientHandler = async (
   const response = res.locals.message;
   const body = req.body as NewPatientType;
 
-  const userExists = await RepoManager.userRepository.findById(body.userId);
-
-  if (!userExists)
+  const userExists = await RepoManager.userRepository.findByEmail(body.email);
+  if (userExists)
     throw new customErrors.NotFoundError({
-      message: response.PATIENT.CREATE.ERROR.USER_NOT_FOUND
+      message: response.PATIENT.CREATE.ERROR.PATIENT_EXISTS
+    });
+  const patientExists = await RepoManager.patientRepository.findByEmail(body.email);
+  if (patientExists)
+    throw new customErrors.NotFoundError({
+      message: response.PATIENT.CREATE.ERROR.PATIENT_EXISTS
     });
 
   const healthPostExists = await RepoManager.healthPostRepository.findById(healthPostId);
@@ -37,21 +41,24 @@ export const createPatientHandler = async (
   if (user.role !== "SUPERADMIN") {
     const adminUser = await RepoManager.userRepository.findById(user.id);
 
-    if (!adminUser?.healthPostId || userExists.healthPostId !== adminUser?.healthPostId)
+    if (!adminUser?.healthPostId)
       throw new customErrors.NotFoundError({
         message: response.PATIENT.CREATE.ERROR.HEALTHPOST_ID
       });
   }
-
   const patientData = await RepoManager.patientRepository.create({
     ...body,
     healthPostId: healthPostId,
   });
+  const count = patientData.count;
+  const code = healthPostExists.name?.slice(0, 3).toUpperCase() + String(body.wardNo) + "-" + String(count);
+
+  const newPatientData = await RepoManager.patientRepository.addCode(patientData.id, code);
 
   return successResponse({
     res,
     message: response.PATIENT.CREATE.SUCCESS,
-    data: patientData
+    data: newPatientData
   });
 };
 
@@ -91,12 +98,13 @@ export const getAPatientHandler = async (
       });
   }
 
-  const patientInfo = await RepoManager.patientRepository.findByUserId(
-    userId,
-    healthPostId
-  );
+  const patientInfo = await RepoManager.patientRepository.findById(userId);
 
   if (!patientInfo)
+    throw new customErrors.NotFoundError({
+      message: response.COMMON.NOT_FOUND
+    });
+  else if (patientInfo.healthPostId !== healthPostId)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });

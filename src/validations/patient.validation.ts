@@ -11,10 +11,21 @@ export const newPatientValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
 
   return z.object({
-    userId: z.string({
+    firstName: z.string({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string,
-    }).uuid(),
+    }),
+    middleName: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional().nullable(),
+    lastName: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string,
+    }),
+    email: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string,
+    }).email(),
     dobBs: z.string({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string,
@@ -28,12 +39,15 @@ export const newPatientValidation = (lang: string) => {
     citizenshipNumber: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
-    nationlId: z.string({
+    nationalId: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
     nationality: z.nativeEnum(Nationality, {
       required_error: t.required,
     }),
+    height: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional().nullable(),
     emergencyContact: z.string({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string,

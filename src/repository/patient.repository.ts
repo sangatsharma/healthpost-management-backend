@@ -8,11 +8,25 @@ export class PatientRepository {
     healthPostId: string
   }): Promise<Patient> {
     const patient = await this.prisma.create({
-      data: dto
+      data: {
+        ...dto,
+        role: "PATIENT",
+      }
     });
 
     return patient;
   };
+
+  async addCode(id: string, code: string) {
+    return await this.prisma.update({
+      where: {
+        id: id
+      },
+      data: {
+        patientCode: code
+      }
+    });
+  }
 
   async getAll(): Promise<Patient[]> {
     const patients = await this.prisma.findMany({});
@@ -22,37 +36,20 @@ export class PatientRepository {
   async getAllMin() {
     const patients = await this.prisma.findMany({
       select: {
-        userId: true,
-        user: {
-          select: {
-            firstName: true,
-            middleName: true,
-            lastName: true
-          }
-        }
+        id: true,
+        firstName: true,
+        middleName: true,
+        lastName: true
       }
-      // include: {
-      //   user: {
-      //     select: {
-      //       id: true,
-      //       firstName: true,
-      //       middleName: true,
-      //       lastName: true,
-      //     },
-      //   },
-      // }
     });
 
     return patients;
   }
 
-  async getById(userId: string, healthPostId: string): Promise<Patient | null> {
+  async getById(id: string): Promise<Patient | null> {
     const patient = await this.prisma.findUnique({
       where: {
-        userId_healthPostId: {
-          userId,
-          healthPostId
-        }
+        id
       }
     });
     return patient;
@@ -68,13 +65,20 @@ export class PatientRepository {
     return patient;
   }
 
-  async findByUserId(userId: string, healthPostId: string): Promise<Patient | null> {
+  async findByUserId(userId: string): Promise<Patient | null> {
     const patient = await this.prisma.findUnique({
       where: {
-        userId_healthPostId: {
-          userId: userId,
-          healthPostId: healthPostId
-        }
+        id: userId
+      }
+    });
+
+    return patient;
+  }
+
+  async findByEmail(email: string): Promise<Patient | null> {
+    const patient = await this.prisma.findUnique({
+      where: {
+        email: email
       }
     });
 
@@ -90,17 +94,4 @@ export class PatientRepository {
 
     return deletedPatient;
   }
-
-  // async update(id: string, dto: UpdatePatientType): Promise<Patient> {
-  //   const updatedPatient = await this.prisma.update({
-  //     where: {
-  //       id: id
-  //     },
-  //     data: {
-  //       ...dto,
-  //     }
-  //   });
-  //
-  //   return updatedPatient;
-  // }
 }

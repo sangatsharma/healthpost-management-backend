@@ -41,6 +41,7 @@ export const responseMessageEnglish = {
         PEMISSION: "You don't have necessary permission to perform this action",
         HP_NOT_FOUND: "Healthpost not found",
         USER_NOT_FOUND: "User not found",
+        PATIENT_EXISTS: "User with this email already exists",
       },
       SUCCESS: "Successfully created patient profile"
     }

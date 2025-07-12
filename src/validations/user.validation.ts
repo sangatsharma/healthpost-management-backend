@@ -23,11 +23,12 @@ export const updateUserValidation = (lang: string) => {
     permissions: z.string().optional(),
     role: z.nativeEnum(ROLE).optional(),
     profileImage: z.string().optional(),
-  }).refine((input) => {
-    return Object.values(input).some(value => value !== undefined);
-  }, {
-    message: t.atleast_one_required,
   });
+  //   .refine((input) => {
+  //   return Object.values(input).some(value => value !== undefined);
+  // }, {
+  //   message: t.atleast_one_required,
+  // });
 };
 
 export const updateUserAdminValidation = (lang: string) => {

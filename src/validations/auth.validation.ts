@@ -3,9 +3,7 @@ import { np } from "./messages/userAuth.messages";
 import { en } from "./messages/userAuth.messages";
 import {
   ROLE,
-  ACTION,
   UserType,
-  RESOURCES,
   GENDER,
   STATUS,
 } from "@prisma/client";

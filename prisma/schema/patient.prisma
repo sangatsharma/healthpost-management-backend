@@ -1,14 +1,24 @@
 model Patient {
   id                     String                  @id @default(uuid())
-  userId                 String
-  user                   User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  count                  Int                     @default(autoincrement())
+  patientCode            String?                 @unique
+  firstName              String
+  middleName             String?
+  lastName               String
+  email                  String                  @unique
+  role                   ROLE
+  status                 STATUS                  @default(ACTIVE)
+  accountType            UserType                @default(PATIENT)
+  profileImage           String?
+  gender                 GENDER?
   healthPostId           String
   healthPost             HealthPost              @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
   dobBs                  String
   dobAd                  String?
   casteType              CasteType
   citizenshipNumber      String?
-  nationlId              String?
+  nationalId             String?
+  height                 String?
   nationality            Nationality
   emergencyContact       String
   districtId             String
@@ -29,10 +39,12 @@ model Patient {
   nshiNumber             String
   bank                   String?
   bankBranch             String?
+  weight                 String?
+  isVaccineCompleted     Boolean?
+  isMinor                Boolean?
+  isEligibleForSgc       Boolean?
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
-
-  @@unique([userId, healthPostId])
 }
 
 enum CasteType {
