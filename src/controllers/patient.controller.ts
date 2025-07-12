@@ -21,6 +21,9 @@ export const createPatientHandler = async (
   const response = res.locals.message;
   const body = req.body as NewPatientType;
 
+  const profileUrl = res.locals.urls || null;
+  const publicId = res.locals.publicIds || null;
+
   const userExists = await RepoManager.userRepository.findByEmail(body.email);
   if (userExists)
     throw new customErrors.NotFoundError({
@@ -49,6 +52,7 @@ export const createPatientHandler = async (
   const patientData = await RepoManager.patientRepository.create({
     ...body,
     healthPostId: healthPostId,
+    profileImage: profileUrl ? profileUrl[0] : null
   });
   const count = patientData.count;
   const code = healthPostExists.name?.slice(0, 3).toUpperCase() + String(body.wardNo) + "-" + String(count);

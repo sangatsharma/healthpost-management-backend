@@ -83,9 +83,10 @@ healthPostRouter.patch(
 );
 healthPostRouter.post(
   "/:id/patient",
-  upload.array("images"),
+  upload.array("profileImage"),
   authGuard(["SUPERADMIN", "ADMIN"]),
   validateSchema(newPatientValidation),
+  uploadToCloudinary,
   languageMiddleware,
   createPatientHandler,
 );

@@ -1,36 +1,46 @@
 import { Patient, PrismaClient } from "@prisma/client";
 import { NewPatientType } from "@app/src/validations/index.validation";
 //
+//
+function modifyImage(data: Patient) {
+  const { profileImage, ...rest } = data;
+  return {
+    ...rest,
+    profileImage: profileImage ? [profileImage] : []
+  };
+}
 export class PatientRepository {
   constructor(private readonly prisma: PrismaClient["patient"]) { }
 
   async create(dto: NewPatientType & {
-    healthPostId: string
-  }): Promise<Patient> {
+    healthPostId: string,
+    profileImage: string
+  }) {
     const patient = await this.prisma.create({
       data: {
         ...dto,
+        profileImage: dto.profileImage,
         role: "PATIENT",
       }
     });
 
-    return patient;
+    return modifyImage(patient);
   };
 
   async addCode(id: string, code: string) {
-    return await this.prisma.update({
+    return modifyImage(await this.prisma.update({
       where: {
         id: id
       },
       data: {
         patientCode: code
       }
-    });
+    }));
   }
 
-  async getAll(): Promise<Patient[]> {
+  async getAll() {
     const patients = await this.prisma.findMany({});
-    return patients;
+    return patients.map((patient) => modifyImage(patient));
   }
 
   async getAllMin() {
