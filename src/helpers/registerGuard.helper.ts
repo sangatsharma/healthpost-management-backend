@@ -33,10 +33,6 @@ const registerAuthGuard = async (
       message: "Cannot create superadmin"
     });
 
-  else if (body.accountType === "PATIENT")
-    return next();
-
-
   if (!accessToken || !refreshToken) {
     throw new customErrors.AccessError({
       name: "UNAUTHORIZED",

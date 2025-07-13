@@ -2,10 +2,11 @@ import { CONFIG } from "@app/utils/config.utils";
 import { ModifiedUser } from "@app/types/index.type";
 import * as jwt from "jsonwebtoken";
 import { RepoManager } from "../repository/index.repository";
+import { Patient } from "@prisma/client";
 
 export class TokenHelper {
 
-  static async genTokens(user: ModifiedUser): Promise<{
+  static async genTokens(user: ModifiedUser | Patient): Promise<{
     accessToken: string,
     refreshToken: string
   }> {
@@ -13,7 +14,7 @@ export class TokenHelper {
       id: user.id,
       email: user.email,
       role: user.role,
-      permissions: user.permissions,
+      permissions: (user as ModifiedUser).permissions || [],
       accountType: user.accountType,
     };
 

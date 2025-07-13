@@ -24,7 +24,7 @@ import {
   TokenHelper
 } from "@app/src/helpers/index.helper";
 import { RepoManager } from "@app/src/repository/index.repository";
-import { User } from "@prisma/client";
+import { Patient, User } from "@prisma/client";
 import { ModifiedUser } from "@app/types/index.type";
 
 const domain = CONFIG.ENV === "PROD" ? ".healthsync.me" : "localhost";
@@ -89,6 +89,7 @@ export const userRegisterController = async (
   next: NextFunction
 ) => {
   const body = req.body as UserRegisterType;
+  // NOTE: For later
   const user = res.locals.user as UserJwt & {
     healthPostId: string | undefined | null
   };
@@ -132,16 +133,22 @@ export const userLoginController = async (
 
   const body = req.body as UserLoginType;
 
-  const existingUser = await RepoManager.userRepository.findByEmail(body.email) as User | null;
+  let existingUser: User | Patient | null;
+  if (body.accountType === "PATIENT") {
+    existingUser = await RepoManager.patientRepository.findByEmail(body.email) as Patient | null;
+  }
+  else {
+    existingUser = await RepoManager.userRepository.findByEmail(body.email) as User | null;
+  }
 
   if (!existingUser)
     throw new customErrors.NotFoundError({
       message: response.LOGIN.FAIL.INVALID_EMAIL
     });
-  else if (existingUser.accountType !== body.accountType)
-    throw new customErrors.BadRequestError({
-      message: `Login from ${existingUser.accountType} portal`
-    });
+  // else if (existingUser.accountType !== body.accountType)
+  //   throw new customErrors.BadRequestError({
+  //     message: `Login from ${existingUser.accountType} portal`
+  //   });
 
   // Check if OTP was generated within last 2 min
   const oldOtpCreated = existingUser.optCreatedAt;
@@ -197,10 +204,19 @@ export const valiadteOtpController = async (
       message: response.LOGIN.FAIL.ALREADY_LOGGED_IN
     });
 
-  const user = await RepoManager.userRepository
-    .findByEmail(body.email, true) as ModifiedUser | null;
 
-  if (!user)
+  let existingUser: ModifiedUser | Patient | null;
+  existingUser = await RepoManager.userRepository.findByEmail(body.email) as ModifiedUser | null;
+  if (!existingUser) {
+    const tmpUser = await RepoManager.patientRepository.findByEmail(body.email) as Patient | null;
+    if (tmpUser)
+      existingUser = {
+        ...tmpUser,
+        permissions: []
+      };
+  }
+
+  if (!existingUser)
     throw new customErrors.NotFoundError({
       message: response.LOGIN.FAIL.INVALID_EMAIL
     });
@@ -234,9 +250,9 @@ export const valiadteOtpController = async (
   const {
     accessToken,
     refreshToken
-  } = await TokenHelper.genTokens(user);
+  } = await TokenHelper.genTokens(existingUser);
 
-  await RepoManager.userRepository.clearOtp(user.id);
+  // await RepoManager.userRepository.clearOtp(existingUser.id);
 
   res.cookie("accessToken", accessToken, cookieOptions);
   res.cookie("refreshToken", refreshToken, cookieOptions);
@@ -249,7 +265,7 @@ export const valiadteOtpController = async (
         accessToken,
         refreshToken
       },
-      user: user
+      user: existingUser
     }
   });
 };

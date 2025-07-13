@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, User } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { AssignUserToHealthPostType, UserRegisterType } from "@app/src/validations/index.validation";
 import { ModifiedUser } from "@app/types/index.type";
 import { RepoManager } from "./index.repository";

@@ -11,6 +11,9 @@ import {
 export const userRegisterSchemaValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
 
+  const { PATIENT: PATIENT_ROLE, ...RestRole } = ROLE;
+  const { PATIENT: PATIENT_TYPE, ...RestUserType } = UserType;
+
   return z.object({
     firstName: z.string({
       required_error: t.required,
@@ -33,17 +36,9 @@ export const userRegisterSchemaValidation = (lang: string) => {
       invalid_type_error: t.invalid_type_string
     }).optional(),
     gender: z.nativeEnum(GENDER).optional(),
-    accountType: z.nativeEnum(UserType),
-    role: z.nativeEnum(ROLE),
+    accountType: z.nativeEnum(RestUserType),
+    role: z.nativeEnum(RestRole),
     status: z.nativeEnum(STATUS).optional(),
-    // permissions: z.array(z.object({
-    //   action: z.nativeEnum(ACTION),
-    //   resource: z.nativeEnum(RESOURCES)
-    // }, {
-    //   required_error: "FORMAT: {action: ACTION, resource:RESOURCE}"
-    // }), {
-    //   required_error: "FORMAT: {action: ACTION, resource:RESOURCE}[]"
-    // }),
     permissions: z.string().optional(),
     healthPostId: z.string({
       invalid_type_error: t.invalid_type_string
