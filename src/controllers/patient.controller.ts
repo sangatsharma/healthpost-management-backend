@@ -147,7 +147,7 @@ export const getAllPatientHandler = async (
       });
   }
 
-  const patientsData = await RepoManager.patientRepository.getAllMin();
+  const patientsData = await RepoManager.patientRepository.getAll();
 
   return successResponse({
     res,
