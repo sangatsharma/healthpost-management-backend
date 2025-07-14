@@ -125,27 +125,7 @@ export const getAllPatientHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = res.locals.user as UserJwt;
-  const healthPostId = req.params.id;
   const response = res.locals.message;
-
-  const healthPost = await RepoManager.healthPostRepository.findById(healthPostId);
-  if (!healthPost)
-    throw new customErrors.NotFoundError({
-      message: response.COMMON.NOT_FOUND
-    });
-
-  if (user.role !== "SUPERADMIN") {
-    const admin = await RepoManager.userRepository.findById(user.id);
-    if (!admin)
-      throw new customErrors.NotFoundError({
-        message: response.COMMON.NOT_FOUND
-      });
-    else if (!admin.healthPostId || admin.healthPostId !== healthPostId)
-      throw new customErrors.BadRequestError({
-        message: "FORBIDDEN"
-      });
-  }
 
   const patientsData = await RepoManager.patientRepository.getAll();
 

@@ -13,6 +13,7 @@ import {
 } from "@app/utils/index.utils";
 import { CONFIG } from "./utils/config.utils";
 import cors from "cors";
+import patientRouter from "./src/routes/patient.route";
 
 const port = CONFIG.PORT || 3000;
 
@@ -36,6 +37,7 @@ app.use("/api/user", userRouter);
 app.use("/api/healthpost", healthPostRouter);
 app.use("/api/location", locationRouter);
 app.use("/api/common", commonRouter);
+app.use("/api/patient", patientRouter);
 
 app.use(errorHandler);
 app.use(unknownEndpoint);
