@@ -12,6 +12,9 @@ const userModifierFunction = (user: User): ModifiedUser => {
     otp,
     optCreatedAt,
     profileImage,
+    signature,
+    signaturePublicId,
+    profileImagePublicId,
     ...rest
   } = user;
 
@@ -24,6 +27,7 @@ const userModifierFunction = (user: User): ModifiedUser => {
     // permissions: JSON.parse(permission as string),
     permissions: permission?.toString() !== "" ? JSON.parse(permission as string) : [],
     profileImage: profileImage ? [profileImage] : [],
+    signature: signature ? [signature] : [],
     ...rest
   };
 };
@@ -41,6 +45,9 @@ const allUserModifierFunction = (user: User | User & {
     otp,
     optCreatedAt,
     profileImage,
+    signature,
+    signaturePublicId,
+    profileImagePublicId,
     ...rest
   } = user;
 
@@ -52,6 +59,7 @@ const allUserModifierFunction = (user: User | User & {
     },
     permissions: permission?.toString() !== "" ? JSON.parse(permission as string) : [],
     profileImage: profileImage ? [profileImage] : [],
+    signature: signature ? [signature] : [],
     ...rest
   };
 };
@@ -61,7 +69,10 @@ export class UserRepository {
 
 
   async create(dto: UserRegisterType & {
-    profileImage?: string
+    profileImage?: string,
+    profileImagePublicId?: string,
+    signature?: string,
+    signaturePublicId?: string,
   }): Promise<ModifiedUser> {
     const { permissions, ...rest } = dto;
     const user = await this.prisma.create({

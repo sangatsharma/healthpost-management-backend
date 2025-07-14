@@ -1,25 +1,28 @@
 // Superadmin and Admin
 model User {
-  id           String      @id @default(uuid())
-  firstName    String
-  middleName   String?
-  lastName     String
-  email        String      @unique
-  role         ROLE
-  status       STATUS      @default(ACTIVE)
-  accountType  UserType
-  permission   Json
-  isVerified   Boolean     @default(false)
-  phoneNumber  String?
-  gender       GENDER?
-  profileImage String?
-  healthPostId String?
-  refreshToken String?
-  otp          String?
-  optCreatedAt DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  HealthPost   HealthPost?
+  id                   String      @id @default(uuid())
+  firstName            String
+  middleName           String?
+  lastName             String
+  email                String      @unique
+  role                 ROLE
+  status               STATUS      @default(ACTIVE)
+  accountType          UserType
+  permission           Json
+  isVerified           Boolean     @default(false)
+  phoneNumber          String?
+  gender               GENDER?
+  profileImage         String?
+  profileImagePublicId String?
+  signature            String?
+  signaturePublicId    String?
+  healthPostId         String?
+  refreshToken         String?
+  otp                  String?
+  optCreatedAt         DateTime?
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  HealthPost           HealthPost?
 
   @@map("user")
 }

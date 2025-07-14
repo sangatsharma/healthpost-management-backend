@@ -93,14 +93,26 @@ export const userRegisterController = async (
   const user = res.locals.user as UserJwt & {
     healthPostId: string | undefined | null
   };
-  const profileUrl = res.locals.urls[0] || null;
-  const publicId = res.locals.publicIds[0] || null;
+
   const response = res.locals.message;
+
+  // Extract profile image and signature from multer
+  const profileImage = res.locals.uploads?.profileImage || null;
+  const signature = res.locals.uploads?.signature || null;
+
+  const profileUrl = profileImage?.secure_url || null;
+  const signatureUrl = signature?.secure_url || null;
+
+  const profilePublicId = profileImage?.public_id || null;
+  const signaturePublicId = signature?.public_id || null;
 
   try {
     const newUser = await RepoManager.userRepository.create({
       ...body,
-      profileImage: profileUrl
+      signature: signatureUrl,
+      signaturePublicId: signaturePublicId,
+      profileImage: profileUrl,
+      profileImagePublicId: profilePublicId,
     });
 
     return successResponse({
@@ -112,11 +124,13 @@ export const userRegisterController = async (
   }
   catch (err) {
     if (profileUrl) {
-      await cloudinary.uploader.destroy(publicId);
+      await cloudinary.uploader.destroy(profileImage?.public_id);
+    }
+    if (signatureUrl) {
+      await cloudinary.uploader.destroy(signature?.public_id);
     }
     return next(err);
   }
-
 };
 
 export const userLoginController = async (
