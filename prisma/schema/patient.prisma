@@ -35,6 +35,7 @@ model Patient {
   spouseName             String?
   lockReport             Boolean
   bloodGroup             BloodGroup
+  disabilityType         DisabilityType?
   disabilityIdentityType DisabilityIdentityType?
   nshiNumber             String
   bank                   String?

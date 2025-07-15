@@ -5,6 +5,7 @@ import {
   Nationality,
   BloodGroup,
   DisabilityIdentityType,
+  DisabilityType,
 } from "@prisma/client";
 
 export const newPatientValidation = (lang: string) => {
@@ -103,6 +104,8 @@ export const newPatientValidation = (lang: string) => {
     bloodGroup: z.nativeEnum(BloodGroup, {
       required_error: t.required,
     }),
+    disabilityType: z.nativeEnum(DisabilityType, {
+    }).optional().nullable(),
     disabilityIdentityType: z.nativeEnum(DisabilityIdentityType, {
     }).optional().nullable(),
     nshiNumber: z.string({
