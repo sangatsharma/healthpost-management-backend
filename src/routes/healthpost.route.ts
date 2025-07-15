@@ -27,7 +27,8 @@ import {
   createPatientHandler,
   deletePatientRecordHandler,
   getAllPatientHandler,
-  getAPatientHandler
+  getAPatientHandler,
+  getHealthPostStaffController,
 } from "../controllers/patient.controller";
 
 const healthPostRouter = express.Router();
@@ -91,6 +92,13 @@ healthPostRouter.post(
   uploadToCloudinary,
   languageMiddleware,
   createPatientHandler,
+);
+
+healthPostRouter.get(
+  "/:id/staff",
+  authGuard(["SUPERADMIN", "ADMIN"]),
+  languageMiddleware,
+  getHealthPostStaffController
 );
 healthPostRouter.get(
   "/:id/patient",

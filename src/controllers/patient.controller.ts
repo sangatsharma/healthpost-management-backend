@@ -136,28 +136,6 @@ export const getAllPatientHandler = async (
   });
 };
 
-// export const updatePatientHandler = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const id = req.params.id as string;
-//   const response = res.locals.message;
-//   const body = req.body as UpdatePatientType;
-//
-//   const patientData = await RepoManager.patientRepository.(user.id);
-//   if (!patientData)
-//     throw new customErrors.NotFoundError({
-//       message: response.COMMON.NOT_FOUND
-//     });
-//
-//   return successResponse({
-//     res,
-//     message: response.COMMON.SUCCESS,
-//     data: patientData
-//   });
-// };
-
 export const deletePatientRecordHandler = async (
   req: Request,
   res: Response,
@@ -199,5 +177,36 @@ export const deletePatientRecordHandler = async (
     res,
     message: response.COMMON.SUCCESS,
     data: patientData
+  });
+};
+
+
+export const getHealthPostStaffController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const healthPostId = req.params.id as string;
+  const user = res.locals.user as UserJwt;
+  const response = res.locals.message;
+
+  const healthPost = await RepoManager.healthPostRepository.findById(healthPostId);
+
+  if (!healthPost)
+    throw new customErrors.NotFoundError({
+      message: response.COMMON.NOT_FOUND
+    });
+
+  else if (user.role !== "SUPERADMIN" && healthPost.adminId !== user.id)
+    throw new customErrors.NotFoundError({
+      message: response.COMMON.FORBIDDEN
+    });
+
+  const staffs = await RepoManager.userRepository.getAllStaff(healthPostId);
+
+  return successResponse({
+    res,
+    message: response.COMMON.SUCCESS,
+    data: staffs
   });
 };

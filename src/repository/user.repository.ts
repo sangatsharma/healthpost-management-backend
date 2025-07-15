@@ -92,6 +92,19 @@ export class UserRepository {
     return updatedUsers;
   }
 
+
+  async getAllStaff(healthPostId: string): Promise<ModifiedUser[]> {
+    const staffs = await this.prisma.findMany({
+      where: {
+        healthPostId: healthPostId
+      }
+    });
+
+    const updatedUsers = staffs.map(userModifierFunction);
+
+    return updatedUsers;
+  }
+
   async getAllWithHealthpost() {
     const users = await this.prisma.findMany({});
     const hpUser = await Promise.all(users.map(async (user) => {
