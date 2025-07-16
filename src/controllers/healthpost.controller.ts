@@ -29,7 +29,13 @@ export const addNewHealthPostController = async (
   const response = res.locals.message;
   const body = req.body as NewHealthPostType;
 
-  const images = res.locals.urls as string[];
+  const uploads = res.locals.uploads as Record<
+    string,
+    { secure_url: string; public_id: string }[] // All fields now have array of uploads
+  >;
+
+  // Extract expected fields
+  const images = uploads?.images || [];
   const newHealthPost = await RepoManager.healthPostRepository.create(
     body,
     images

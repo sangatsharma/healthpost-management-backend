@@ -6,6 +6,7 @@ import {
   BloodGroup,
   DisabilityIdentityType,
   DisabilityType,
+  GENDER,
 } from "@prisma/client";
 
 export const newPatientValidation = (lang: string) => {
@@ -31,9 +32,16 @@ export const newPatientValidation = (lang: string) => {
       required_error: t.required,
       invalid_type_error: t.invalid_type_string,
     }),
+    gender: z.nativeEnum(GENDER).optional(),
     dobAd: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
+    weight: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional().nullable(),
+    isVaccineCompleted: z.coerce.boolean().optional(),
+    isMinor: z.coerce.boolean().optional(),
+    isEligibleForSgc: z.coerce.boolean().optional(),
     casteType: z.nativeEnum(CasteType, {
       required_error: t.required,
     }),
@@ -126,42 +134,67 @@ export const updatePatientValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
 
   return z.object({
-    userId: z.string({
+    patientId: z.string({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string,
     }).uuid(),
+    firstName: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional(),
+    middleName: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional().nullable(),
+    lastName: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional(),
     dobBs: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional(),
+    gender: z.nativeEnum(GENDER).optional(),
+    height: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional().nullable(),
+    disabilityType: z.nativeEnum(
+      DisabilityType
+    ).optional().nullable(),
+    weight: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional().nullable(),
+    isVaccineCompleted: z.coerce.boolean().optional(),
+    isMinor: z.coerce.boolean().optional(),
+    isEligibleForSgc: z.coerce.boolean().optional(),
+    profileImage: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
     dobAd: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
     casteType: z.nativeEnum(CasteType, {
-    }).optional().nullable(),
+    }).optional(),
     citizenshipNumber: z.string({
       invalid_type_error: t.invalid_type_string,
-    }).optional().nullable(),
-    nationlId: z.string({
+    }).optional(),
+    nationalId: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
     nationality: z.nativeEnum(Nationality, {
       required_error: t.required,
-    }).optional().nullable(),
+    }).optional(),
     emergencyContact: z.string({
       invalid_type_error: t.invalid_type_string,
-    }).optional().nullable(),
+    }).optional(),
     districtId: z.string({
       invalid_type_error: t.invalid_type_string,
-    }).optional().nullable(),
+    }).optional(),
     palityId: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional(),
     wardNo: z.string({
       invalid_type_error: t.invalid_type_string,
-    }).transform((input) => Number(input)).optional().nullable(),
+    }).transform((input) => Number(input)).optional(),
     tole: z.string({
       invalid_type_error: t.invalid_type_string,
-    }).optional().nullable(),
+    }).optional(),
     tDistrictId: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
@@ -176,25 +209,25 @@ export const updatePatientValidation = (lang: string) => {
     }).optional().nullable(),
     fatherName: z.string({
       invalid_type_error: t.invalid_type_string,
-    }).optional().nullable(),
+    }).optional(),
     motherName: z.string({
       invalid_type_error: t.invalid_type_string,
-    }).optional().nullable(),
+    }).optional(),
     guardianName: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
     spouseName: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
-    lockReport: z.boolean({
-    }).optional().nullable(),
+    lockReport: z.coerce.boolean({
+    }).optional(),
     bloodGroup: z.nativeEnum(BloodGroup, {
-    }).optional().nullable(),
+    }).optional(),
     disabilityIdentityType: z.nativeEnum(DisabilityIdentityType, {
     }).optional().nullable(),
     nshiNumber: z.string({
       invalid_type_error: t.invalid_type_string,
-    }).optional().nullable(),
+    }).optional(),
     bank: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),

@@ -95,10 +95,15 @@ export const userRegisterController = async (
   };
 
   const response = res.locals.message;
+  const uploads = res.locals.uploads as Record<
+    string,
+    { secure_url: string; public_id: string }[] // All fields now have array of uploads
+  >;
+
 
   // Extract profile image and signature from multer
-  const profileImage = res.locals.uploads?.profileImage || null;
-  const signature = res.locals.uploads?.signature || null;
+  const profileImage = uploads?.profileImage?.[0];
+  const signature = uploads?.signature?.[0];
 
   const profileUrl = profileImage?.secure_url || null;
   const signatureUrl = signature?.secure_url || null;

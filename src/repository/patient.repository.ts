@@ -1,7 +1,6 @@
 import { Patient, PrismaClient } from "@prisma/client";
-import { NewPatientType } from "@app/src/validations/index.validation";
-//
-//
+import { NewPatientType, UpdatePatientType } from "@app/src/validations/index.validation";
+
 function modifyImage(data: Patient) {
   const { profileImage, ...rest } = data;
   return {
@@ -14,7 +13,7 @@ export class PatientRepository {
 
   async create(dto: NewPatientType & {
     healthPostId: string,
-    profileImage: string
+    profileImage: string | null
   }) {
     const patient = await this.prisma.create({
       data: {
@@ -26,6 +25,19 @@ export class PatientRepository {
 
     return modifyImage(patient);
   };
+
+  async update(dto: UpdatePatientType) {
+    const { patientId, ...rest } = dto;
+    const updatedPatient = await this.prisma.update({
+      data: rest
+      ,
+      where: {
+        id: patientId
+      }
+    });
+
+    return modifyImage(updatedPatient);
+  }
 
   async addCode(id: string, code: string) {
     return modifyImage(await this.prisma.update({
@@ -103,5 +115,19 @@ export class PatientRepository {
     });
 
     return deletedPatient;
+  }
+
+  async countPatientPerHealthpost(healthPostId: string) {
+    const patientCount = await this.prisma.count({
+      where: {
+        healthPostId: healthPostId
+      }
+    });
+
+    return patientCount;
+  }
+
+  async rankByPatientCountHp() {
+    const ranked = await this.prisma.count;
   }
 }

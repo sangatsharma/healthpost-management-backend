@@ -69,10 +69,10 @@ export class UserRepository {
 
 
   async create(dto: UserRegisterType & {
-    profileImage?: string,
-    profileImagePublicId?: string,
-    signature?: string,
-    signaturePublicId?: string,
+    profileImage?: string | null,
+    profileImagePublicId?: string | null,
+    signature?: string | null,
+    signaturePublicId?: string | null,
   }): Promise<ModifiedUser> {
     const { permissions, ...rest } = dto;
     const user = await this.prisma.create({
@@ -246,4 +246,20 @@ export class UserRepository {
       }
     });
   }
+
+  /*
+   * ANALYTICS
+  */
+  async countNewUser(startDate: Date) {
+    const newUserCount = await this.prisma.count({
+      where: {
+        createdAt: {
+          gte: startDate
+        }
+      }
+    });
+
+    return newUserCount;
+  }
+
 }

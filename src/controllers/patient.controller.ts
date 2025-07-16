@@ -3,7 +3,7 @@ import {
   Response,
   NextFunction,
 } from "express";
-import { NewPatientType } from "@app/src/validations/index.validation";
+import { NewPatientType, UpdatePatientType } from "@app/src/validations/index.validation";
 import { UserJwt } from "@app/types/index.type";
 import { RepoManager } from "@app/src/repository/index.repository";
 import {
@@ -21,8 +21,14 @@ export const createPatientHandler = async (
   const response = res.locals.message;
   const body = req.body as NewPatientType;
 
-  const profileUrl = res.locals.urls || null;
-  const publicId = res.locals.publicIds || null;
+  const uploads = res.locals.uploads as Record<
+    string,
+    { secure_url: string; public_id: string }[] // All fields now have array of uploads
+  >;
+
+  const profileImage = uploads?.profileImage?.[0];
+  const profileUrl = profileImage?.secure_url || null;
+  const profilePublicId = profileImage?.public_id || null;
 
   const userExists = await RepoManager.userRepository.findByEmail(body.email);
   if (userExists)
@@ -52,7 +58,7 @@ export const createPatientHandler = async (
   const patientData = await RepoManager.patientRepository.create({
     ...body,
     healthPostId: healthPostId,
-    profileImage: profileUrl ? profileUrl[0] : null
+    profileImage: profileUrl
   });
   const count = patientData.count;
   const code = healthPostExists.name?.slice(0, 3).toUpperCase() + String(body.wardNo) + "-" + String(count);
@@ -63,6 +69,58 @@ export const createPatientHandler = async (
     res,
     message: response.PATIENT.CREATE.SUCCESS,
     data: newPatientData
+  });
+};
+
+export const updatePatientHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = res.locals.user as UserJwt;
+  const healthPostId = req.params.id;
+  const response = res.locals.message;
+  const body = req.body as UpdatePatientType;
+
+  const uploads = res.locals.uploads as Record<
+    string,
+    { secure_url: string; public_id: string }[] // All fields now have array of uploads
+  >;
+
+  const profileImage = uploads?.profileImage?.[0];
+  const profileUrl = profileImage?.secure_url || null;
+  const profilePublicId = profileImage?.public_id || null;
+
+  const patientExists = await RepoManager.patientRepository.findById(body.patientId);
+  if (!patientExists)
+    throw new customErrors.NotFoundError({
+      message: response.PATIENT.CREATE.ERROR.PATIENT_EXISTS
+    });
+
+  const healthPostExists = await RepoManager.healthPostRepository.findById(healthPostId);
+  if (!healthPostExists)
+    throw new customErrors.NotFoundError({
+      message: response.PATIENT.CREATE.ERROR.HP_NOT_FOUND
+    });
+  console.log(body);
+  console.log(profileUrl);
+  if (user.role !== "SUPERADMIN") {
+    const adminUser = await RepoManager.userRepository.findById(user.id);
+
+    if (!adminUser?.healthPostId)
+      throw new customErrors.NotFoundError({
+        message: response.PATIENT.CREATE.ERROR.HEALTHPOST_ID
+      });
+  }
+  const patientData = await RepoManager.patientRepository.update({
+    ...body,
+    profileImage: body.profileImage ?? profileUrl
+  });
+
+  return successResponse({
+    res,
+    message: response.PATIENT.CREATE.SUCCESS,
+    data: patientData
   });
 };
 

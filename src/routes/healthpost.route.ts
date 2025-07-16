@@ -9,6 +9,7 @@ import {
   newHealthPostSchemaValidation,
   newPatientValidation,
   updateHealthPostSchemaValidation,
+  updatePatientValidation,
 } from "@app/src/validations/index.validation";
 import {
   addNewHealthPostController,
@@ -29,6 +30,7 @@ import {
   getAllPatientHandler,
   getAPatientHandler,
   getHealthPostStaffController,
+  updatePatientHandler,
 } from "../controllers/patient.controller";
 
 const healthPostRouter = express.Router();
@@ -41,7 +43,9 @@ const healthPostRouter = express.Router();
  */
 healthPostRouter.post(
   "",
-  upload.array("images"),
+  upload.fields([
+    { name: "images", maxCount: 5 },
+  ]),
   authGuard(["SUPERADMIN"]),
   validateSchema(newHealthPostSchemaValidation),
   uploadToCloudinary,
@@ -68,10 +72,12 @@ healthPostRouter.delete(
 );
 healthPostRouter.put(
   "/:id",
-  upload.array("images"),
+  upload.fields([
+    { name: "images", maxCount: 5 },
+  ]),
   authGuard(["SUPERADMIN", "ADMIN"]),
   validateSchema(updateHealthPostSchemaValidation),
-  uploadToCloudinary,
+  // uploadToCloudinary,
   languageMiddleware,
   updateHealthPostController
 );
@@ -92,6 +98,18 @@ healthPostRouter.post(
   uploadToCloudinary,
   languageMiddleware,
   createPatientHandler,
+);
+
+healthPostRouter.put(
+  "/:id/patient",
+  upload.fields([
+    { name: "profileImage", maxCount: 1 },
+  ]),
+  authGuard(["SUPERADMIN", "ADMIN"]),
+  validateSchema(updatePatientValidation),
+  uploadToCloudinary,
+  languageMiddleware,
+  updatePatientHandler,
 );
 
 healthPostRouter.get(
