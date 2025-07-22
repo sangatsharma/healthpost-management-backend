@@ -36,6 +36,11 @@ import {
   DistrictSearchType
 } from "./location.validation";
 
+import {
+  createOpdVisitSchema,
+  OpdVisitType
+} from "./opd.validation";
+
 export {
   userLoginSchemaValidation,
   userRegisterSchemaValidation,
@@ -64,5 +69,8 @@ export {
   newPatientValidation,
   NewPatientType,
   updatePatientValidation,
-  UpdatePatientType
+  UpdatePatientType,
+
+  createOpdVisitSchema,
+  OpdVisitType
 };

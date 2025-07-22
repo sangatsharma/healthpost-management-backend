@@ -49,6 +49,7 @@ model Patient {
   optCreatedAt           DateTime?
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
+  OpdVisit               OpdVisit[]
 }
 
 enum CasteType {

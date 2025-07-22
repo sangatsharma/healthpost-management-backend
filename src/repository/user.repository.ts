@@ -17,15 +17,14 @@ const userModifierFunction = (user: User): ModifiedUser => {
     profileImagePublicId,
     ...rest
   } = user;
-
   return {
     fullName: {
       firstName,
       middleName,
       lastName
     },
-    // permissions: JSON.parse(permission as string),
-    permissions: permission?.toString() !== "" ? JSON.parse(permission as string) : [],
+    permissions: JSON.parse(permission as string),
+    // permissions: permission?.toString() !== "" ? JSON.parse(permission as string) : [],
     profileImage: profileImage ? [profileImage] : [],
     signature: signature ? [signature] : [],
     ...rest

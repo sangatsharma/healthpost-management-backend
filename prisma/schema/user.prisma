@@ -23,6 +23,7 @@ model User {
   createdAt            DateTime    @default(now())
   updatedAt            DateTime    @updatedAt
   HealthPost           HealthPost?
+  OpdVisit             OpdVisit[]
 
   @@map("user")
 }

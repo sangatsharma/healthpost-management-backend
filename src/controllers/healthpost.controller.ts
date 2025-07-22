@@ -126,9 +126,10 @@ export const updateHealthPostController = async (
   const data = req.body as UpdateHealthPostType;
   const user = res.locals.user as UserJwt;
 
-  const profileUrl = res.locals.urls || null;
-  const publicId = res.locals.publicIds || null;
+  // const profileUrl = res.locals.urls || null;
+  // const publicId = res.locals.publicIds || null;
 
+  const uploads = res.locals.urls;
   try {
     const healthPostExists = await RepoManager.healthPostRepository.findById(
       healthPostId,
@@ -158,7 +159,7 @@ export const updateHealthPostController = async (
       healthPostId,
       {
         ...data,
-        images: profileUrl.length >= 1 ? profileUrl : undefined,
+        images: uploads.images >= 1 ? uploads.images : undefined,
       },
     ) as HealthPost;
     if (data.adminId)
@@ -174,9 +175,9 @@ export const updateHealthPostController = async (
 
   }
   catch (err) {
-    if (profileUrl.length > 1) {
-      await Promise.all(publicId.forEach(async (id: string) => {
-        cloudinary.uploader.destroy(id);
+    if (uploads.images.length > 1) {
+      await Promise.all(uploads.images.forEach(async (image: { public_id: string }) => {
+        cloudinary.uploader.destroy(image.public_id);
       }));
     }
     return next(err);

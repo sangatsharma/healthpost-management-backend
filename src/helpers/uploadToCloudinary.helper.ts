@@ -38,7 +38,6 @@ export const uploadToCloudinary = async (
           (err: UploadApiErrorResponse | undefined, result: UploadApiResponse | undefined) => {
             if (err) return reject(err);
             if (!result) return reject(new Error("Cloudinary upload result is undefined"));
-
             resolve({
               secure_url: result.secure_url,
               public_id: result.public_id,

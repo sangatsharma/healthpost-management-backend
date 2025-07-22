@@ -1,0 +1,88 @@
+model OpdVisit {
+  id                  String         @id @default(uuid())
+  visitedDate         DateTime
+  patientId           String
+  examinerId          String
+  healthPostId        String
+  complaints          String
+  diagnosis           String
+  observedExamination String
+  treatment           String
+  followUpRequired    Boolean?
+  followUpDate        DateTime?
+  isGenderViolence    Boolean?
+  isPregenant         Boolean?
+  treatementType      TreatementType
+  visitType           VisitType
+  prescriptions       Prescription[]
+  medicines           String[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  // Relations
+  patient    Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  examiner   User       @relation(fields: [examinerId], references: [id], onDelete: Cascade)
+  healthPost HealthPost @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
+  Vitals     Vitals[]
+}
+
+model Vitals {
+  id          String  @id
+  bp          String?
+  pulse       String?
+  temperature String?
+  respiration String?
+  weight      String?
+  height      String?
+  mucus       String?
+
+  opdVisit OpdVisit @relation(fields: [id], references: [id])
+
+  @@index([id])
+}
+
+model Prescription {
+  id          String   @id @default(uuid())
+  opdVisitId  String
+  opdVisit    OpdVisit @relation(fields: [opdVisitId], references: [id])
+  name        String
+  duration    String
+  frequency   String
+  intakeTime  String
+  quantity    String
+  intakeRoute String
+  timing      Timing // enum: beforeMeal, afterMeal, anytime
+  dosage      String
+}
+
+model Medicine {
+  id    String  @id
+  label String?
+}
+
+enum VisitType {
+  CONSULTATION
+  FOLLOW_UP
+  EMERGENCY
+  ROUTINE_CHECKUP
+  TELEMEDICINE
+  HOME_VISIT
+  GENERAL
+  OTHER
+}
+
+enum TreatementType {
+  MEDICATION
+  SURGERY
+  THERAPY
+  DIAGNOSTIC_TEST
+  REHABILITATION
+  PALLIATIVE_CARE
+  OTHER
+}
+
+enum Timing {
+  beforeMeal
+  afterMeal
+  anytime
+}

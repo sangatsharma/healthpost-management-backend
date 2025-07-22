@@ -225,7 +225,7 @@ export const valiadteOtpController = async (
 
 
   let existingUser: ModifiedUser | Patient | null;
-  existingUser = await RepoManager.userRepository.findByEmail(body.email) as ModifiedUser | null;
+  existingUser = await RepoManager.userRepository.findByEmail(body.email, true) as ModifiedUser | null;
   if (!existingUser) {
     const tmpUser = await RepoManager.patientRepository.findByEmail(body.email) as Patient | null;
     if (tmpUser)

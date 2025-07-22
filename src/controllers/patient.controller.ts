@@ -102,8 +102,7 @@ export const updatePatientHandler = async (
     throw new customErrors.NotFoundError({
       message: response.PATIENT.CREATE.ERROR.HP_NOT_FOUND
     });
-  console.log(body);
-  console.log(profileUrl);
+
   if (user.role !== "SUPERADMIN") {
     const adminUser = await RepoManager.userRepository.findById(user.id);
 
