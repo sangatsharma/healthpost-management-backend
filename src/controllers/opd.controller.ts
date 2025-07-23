@@ -7,6 +7,7 @@ import { OpdVisitType } from "../validations/opd.validation";
 import { RepoManager } from "../repository/index.repository";
 import customErrors from "@app/utils/customErrors.utils";
 import { UserJwt } from "@app/types/index.type";
+import { successResponse } from "@app/utils/response.utils";
 
 export const createNewOpd = async (
   req: Request,
@@ -33,20 +34,13 @@ export const createNewOpd = async (
     throw new customErrors.NotFoundError({
       message: "Healthpost not found"
     });
-  const medicines = body.medicines.map((m) => m.id);
 
-  try {
-    await Promise.all([
-      medicines.map((id) => {
-        RepoManager.medicineRepository.find(id);
-      })
-    ]);
-    const newOpdVisit = RepoManager.opkl;
-  }
-  catch (err) {
-    throw new customErrors.BadRequestError({
-      message: "One or more medicine id are invalid"
-    });
-  }
+  const newOpd = await RepoManager.opdVisitRepository.create(body);
+
+  return successResponse({
+    res,
+    message: "Success",
+    data: newOpd
+  });
 
 };

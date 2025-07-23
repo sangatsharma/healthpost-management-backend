@@ -36,12 +36,6 @@ const PrescriptionSchema = z.object({
   }),
 });
 
-const MedicineSchema = z.object({
-  id: z.string({
-    invalid_type_error: en.invalid_type_string,
-  }).uuid(),
-});
-
 const VitalsSchema = z.object({
   bp: z.string({
     invalid_type_error: en.invalid_type_string,
@@ -70,7 +64,7 @@ export const createOpdVisitSchema = (lang: string) => {
   const t = lang === "np" ? np : en;
 
   return z.object({
-    visitedDate: z.date({
+    visitedDate: z.coerce.date({
       required_error: t.required,
     }),
     patientId: z.string({
@@ -102,7 +96,7 @@ export const createOpdVisitSchema = (lang: string) => {
       invalid_type_error: t.invalid_type_string,
     }),
     followUpRequired: z.boolean().optional(),
-    followUpDate: z.date().optional().nullable(),
+    followUpDate: z.coerce.date().optional().nullable(),
     isGenderViolence: z.boolean().optional(),
     isPregenant: z.boolean().optional(),
     treatementType: z.nativeEnum(TreatementType, {
@@ -114,9 +108,7 @@ export const createOpdVisitSchema = (lang: string) => {
     prescriptions: z.array(PrescriptionSchema, {
       required_error: t.required,
     }),
-    medicines: z.array(MedicineSchema, {
-      required_error: t.required,
-    }),
+    medicines: z.array(z.string()),
     Vitals: z.array(VitalsSchema, {
       required_error: t.required,
     }),

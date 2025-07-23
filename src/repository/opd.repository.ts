@@ -26,7 +26,6 @@ export class OpdVisitRepository {
       medicines,
       Vitals,
     } = dto;
-    const meds = medicines.map((m) => m.id);
 
     return this.prisma.create({
       data: {
@@ -56,7 +55,7 @@ export class OpdVisitRepository {
             dosage: prescription.dosage,
           })),
         },
-        medicines: meds,
+        medicines,
         Vitals: {
           create: Vitals.map((vital) => ({
             bp: vital.bp,
@@ -70,5 +69,43 @@ export class OpdVisitRepository {
         },
       },
     });
+  }
+
+  async getAllPatient(
+    patientId: string,
+    healthPostId?: string,
+    examinerId?: string
+  ) {
+    const allDatas = await this.prisma.findMany({
+      where: {
+        patientId,
+        healthPostId,
+        examinerId
+      }
+    });
+
+    return allDatas;
+  }
+
+  async getOne(
+    id: string
+  ) {
+    const oneOpd = await this.prisma.findMany({
+      where: {
+        id
+      }
+    });
+
+    return oneOpd;
+  }
+
+  async getAllHealthPost(healthPostId: string) {
+    const allOpd = await this.prisma.findMany({
+      where: {
+        healthPostId
+      }
+    });
+
+    return healthPostId;
   }
 }
