@@ -46,6 +46,7 @@ export const newPatientValidation = (lang: string) => {
       required_error: t.required,
     }),
     phone: z.string().optional(),
+    phoneNumber: z.string().optional(),
     citizenshipNumber: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),

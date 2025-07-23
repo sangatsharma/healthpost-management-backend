@@ -33,21 +33,34 @@ const authGuard = (role?: string[]) => {
       return next();
     }
 
-    const user = jwt.verify(accessToken, "secret") as UserJwt;
+    try {
 
-    if (role) {
-      const userRole = user.role;
-      const roleMatch = role.some((r) => r === userRole);
+      const user = jwt.verify(accessToken, "secret") as UserJwt;
 
-      if (!roleMatch)
-        throw new customErrors.AccessError({
-          name: "FORBIDDEN",
-          message: response.AUTH_GUARD.ROLE
-        });
+      if (role) {
+        const userRole = user.role;
+        const roleMatch = role.some((r) => r === userRole);
+
+        if (!roleMatch)
+          throw new customErrors.AccessError({
+            name: "FORBIDDEN",
+            message: response.AUTH_GUARD.ROLE
+          });
+      }
+
+      res.locals.user = user;
+      next();
+
     }
+    catch (err) {
+      if (err instanceof jwt.TokenExpiredError) {
+        res.clearCookie("accessToken", {
+          expires: new Date("1990-10-10")
+        });
+      }
 
-    res.locals.user = user;
-    next();
+      throw err;
+    }
   };
 };
 

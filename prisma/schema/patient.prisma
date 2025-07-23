@@ -12,6 +12,7 @@ model Patient {
   profileImage           String?
   gender                 GENDER?
   phone                  String?
+  phoneNumber            String?
   healthPostId           String
   healthPost             HealthPost              @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
   dobBs                  String
