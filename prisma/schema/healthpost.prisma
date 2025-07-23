@@ -1,5 +1,5 @@
 model HealthPost {
-  id           String           @id @default(uuid())
+  id           String            @id @default(uuid())
   name         String?
   email        String?
   municipality String?
@@ -7,15 +7,24 @@ model HealthPost {
   phone        String
   status       HealthPostStatus
   wardNo       Int
-  images       String[]         @default([])
-  admin        User?            @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  adminId      String?          @unique
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  images       String[]          @default([])
+  admin        User?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  adminId      String?           @unique
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
   Patient      Patient[]
   OpdVisit     OpdVisit[]
+  config       HealthPostConfig?
 
   @@map("healthpost")
+}
+
+model HealthPostConfig {
+  id         String     @id
+  isOpen     Boolean?
+  healthPost HealthPost @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@map("healthpostconfig")
 }
 
 enum HealthPostStatus {

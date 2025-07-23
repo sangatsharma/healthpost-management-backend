@@ -32,7 +32,7 @@ import {
   getHealthPostStaffController,
   updatePatientHandler,
 } from "../controllers/patient.controller";
-import { getHealthPostPatient } from "../controllers/healthpost.controller";
+import { getHealthPostPatient, toggleHealthPostActive } from "../controllers/healthpost.controller";
 
 const healthPostRouter = express.Router();
 
@@ -136,6 +136,11 @@ healthPostRouter.delete(
   authGuard(["SUPERADMIN", "ADMIN"]),
   languageMiddleware,
   deletePatientRecordHandler
+);
+healthPostRouter.patch(
+  "/:id/config/isopen",
+  authGuard(["SUPERADMIN", "ADMIN", "ANM"]),
+  toggleHealthPostActive
 );
 
 export default healthPostRouter;

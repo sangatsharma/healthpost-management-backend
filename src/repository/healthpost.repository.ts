@@ -5,19 +5,30 @@ import {
 } from "@app/src/validations/index.validation";
 
 export class HealthPostRepository {
-  constructor(private readonly prisma: PrismaClient["healthPost"]) { }
+  constructor(
+    private readonly prisma: PrismaClient["healthPost"],
+    private readonly healthPostConfig: PrismaClient["healthPostConfig"],
+  ) { }
 
   async create(dto: NewHealthPostType, images: {
     secure_url: string; public_id: string
   }[]): Promise<HealthPost> {
     const imageUrls = images.map((image) => image.secure_url);
-
+    const { isOpen, ...rest } = dto;
     const healthPost = await this.prisma.create({
       data: {
-        ...dto,
+        ...rest,
         images: {
           set: imageUrls
-        }
+        },
+        config: {
+          create: {
+            isOpen
+          }
+        },
+      },
+      include: {
+        config: true
       }
     });
 
@@ -25,7 +36,11 @@ export class HealthPostRepository {
   }
 
   async getAll(): Promise<HealthPost[]> {
-    const healthPosts = await this.prisma.findMany({});
+    const healthPosts = await this.prisma.findMany({
+      include: {
+        config: true
+      }
+    });
     return healthPosts;
   }
 
@@ -33,6 +48,9 @@ export class HealthPostRepository {
     const healthPost = await this.prisma.findUnique({
       where: {
         id: id
+      },
+      include: {
+        config: true
       }
     });
 
@@ -69,5 +87,16 @@ export class HealthPostRepository {
     });
 
     return updatedHealthPost;
+  }
+
+  async toggleIsOpen(id: string, isOpen: boolean) {
+    return await this.healthPostConfig.update({
+      where: {
+        id
+      },
+      data: {
+        isOpen
+      },
+    });
   }
 }

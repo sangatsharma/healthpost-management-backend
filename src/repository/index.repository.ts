@@ -23,7 +23,10 @@ export class RepoManager {
 
   static get healthPostRepository() {
     if (!this.healthPostRepo)
-      this.healthPostRepo = new HealthPostRepository(this.prisma.healthPost);
+      this.healthPostRepo = new HealthPostRepository(
+        this.prisma.healthPost,
+        this.prisma.healthPostConfig
+      );
 
     return this.healthPostRepo;
   }

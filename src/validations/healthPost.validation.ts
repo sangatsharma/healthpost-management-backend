@@ -26,7 +26,8 @@ export const newHealthPostSchemaValidation = (lang: string) => {
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
     }).transform((input) => Number(input)),
-    status: z.nativeEnum(HealthPostStatus)
+    status: z.nativeEnum(HealthPostStatus),
+    isOpen: z.coerce.boolean({}).optional()
   });
 };
 
@@ -56,6 +57,7 @@ export const updateHealthPostSchemaValidation = (lang: string) => {
       invalid_type_error: t.invalid_type_string
     }).optional().transform((value) => value ? Number(value) : undefined),
     status: z.nativeEnum(HealthPostStatus).optional(),
+    isOpen: z.coerce.boolean({}).optional()
   })
     .transform((fields) => {
       const transformed = { ...fields };

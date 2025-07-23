@@ -240,3 +240,18 @@ export const assignUserToHealthPost = async (
     data: assignedUser
   });
 };
+
+
+export const toggleHealthPostActive = async (
+  req: Request,
+  res: Response,
+  _: NextFunction
+) => {
+  const body = req.body;
+  await RepoManager.healthPostRepository.toggleIsOpen(body.id, body.isOpen);
+
+  return successResponse({
+    res,
+    message: "Success",
+  });
+};
