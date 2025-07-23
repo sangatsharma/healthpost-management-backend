@@ -23,7 +23,7 @@ model OpdVisit {
   patient    Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
   examiner   User       @relation(fields: [examinerId], references: [id], onDelete: Cascade)
   healthPost HealthPost @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
-  Vitals     Vitals[]
+  vitals     Vitals[]
 }
 
 model Vitals {

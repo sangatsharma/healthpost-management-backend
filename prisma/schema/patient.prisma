@@ -11,6 +11,7 @@ model Patient {
   accountType            UserType                @default(PATIENT)
   profileImage           String?
   gender                 GENDER?
+  phone                  String?
   healthPostId           String
   healthPost             HealthPost              @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
   dobBs                  String

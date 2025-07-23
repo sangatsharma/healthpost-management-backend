@@ -56,18 +56,14 @@ export class OpdVisitRepository {
           })),
         },
         medicines,
-        Vitals: {
-          create: Vitals.map((vital) => ({
-            bp: vital.bp,
-            pulse: vital.pulse,
-            temperature: vital.temperature,
-            respiration: vital.respiration,
-            weight: vital.weight,
-            height: vital.height,
-            mucus: vital.mucus,
-          })),
+        vitals: {
+          create: Vitals
         },
       },
+      include: {
+        vitals: true,
+        prescriptions: true
+      }
     });
   }
 

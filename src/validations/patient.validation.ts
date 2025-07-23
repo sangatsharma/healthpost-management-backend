@@ -45,6 +45,7 @@ export const newPatientValidation = (lang: string) => {
     casteType: z.nativeEnum(CasteType, {
       required_error: t.required,
     }),
+    phone: z.string().optional(),
     citizenshipNumber: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
