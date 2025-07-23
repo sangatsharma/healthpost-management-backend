@@ -67,23 +67,19 @@ export class OpdVisitRepository {
     });
   }
 
-  async getAllPatient(
+  async getByPatientId(
     patientId: string,
-    healthPostId?: string,
-    examinerId?: string
   ) {
     const allDatas = await this.prisma.findMany({
       where: {
         patientId,
-        healthPostId,
-        examinerId
       }
     });
 
     return allDatas;
   }
 
-  async getOne(
+  async getById(
     id: string
   ) {
     const oneOpd = await this.prisma.findMany({
@@ -93,15 +89,5 @@ export class OpdVisitRepository {
     });
 
     return oneOpd;
-  }
-
-  async getAllHealthPost(healthPostId: string) {
-    const allOpd = await this.prisma.findMany({
-      where: {
-        healthPostId
-      }
-    });
-
-    return healthPostId;
   }
 }

@@ -126,9 +126,6 @@ export const updateHealthPostController = async (
   const data = req.body as UpdateHealthPostType;
   const user = res.locals.user as UserJwt;
 
-  // const profileUrl = res.locals.urls || null;
-  // const publicId = res.locals.publicIds || null;
-
   const uploads = res.locals.urls;
   try {
     const healthPostExists = await RepoManager.healthPostRepository.findById(
@@ -184,6 +181,21 @@ export const updateHealthPostController = async (
   }
 };
 
+
+export const getHealthPostPatient = async (
+  req: Request,
+  res: Response,
+  _: NextFunction
+) => {
+  const id = req.params.id;
+
+  const patients = await RepoManager.patientRepository.getPatientByHp(id);
+  return successResponse({
+    res,
+    message: "Fetched",
+    data: patients
+  });
+};
 
 
 /*

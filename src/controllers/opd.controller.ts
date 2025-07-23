@@ -42,5 +42,40 @@ export const createNewOpd = async (
     message: "Success",
     data: newOpd
   });
+};
 
+
+export const getByPatientId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = res.locals.user as UserJwt;
+  const patientOpd = await RepoManager.opdVisitRepository.getByPatientId(user.id);
+
+  return successResponse({
+    res,
+    message: "Fetched",
+    data: patientOpd
+  });
+};
+
+export const getById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = res.locals.id;
+  const opd = await RepoManager.opdVisitRepository.getById(id);
+
+  if (!opd)
+    throw new customErrors.NotFoundError({
+      message: "Opd data not found"
+    });
+
+  return successResponse({
+    res,
+    message: "Fetched",
+    data: opd
+  });
 };

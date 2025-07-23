@@ -32,6 +32,7 @@ import {
   getHealthPostStaffController,
   updatePatientHandler,
 } from "../controllers/patient.controller";
+import { getHealthPostPatient } from "../controllers/healthpost.controller";
 
 const healthPostRouter = express.Router();
 
@@ -122,7 +123,7 @@ healthPostRouter.get(
   "/:id/patient",
   authGuard(["SUPERADMIN", "ADMIN"]),
   languageMiddleware,
-  getAllPatientHandler
+  getHealthPostPatient
 );
 healthPostRouter.get(
   "/:id/patient/:userId",

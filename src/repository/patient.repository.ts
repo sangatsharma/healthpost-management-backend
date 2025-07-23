@@ -68,6 +68,17 @@ export class PatientRepository {
     return patients;
   }
 
+  async getPatientByHp(hpId: string) {
+    const patients = await this.prisma.findMany({
+      where: {
+        role: "PATIENT",
+        healthPostId: hpId
+      }
+    });
+
+    return patients;
+  }
+
   async getById(id: string): Promise<Patient | null> {
     const patient = await this.prisma.findUnique({
       where: {
@@ -125,9 +136,5 @@ export class PatientRepository {
     });
 
     return patientCount;
-  }
-
-  async rankByPatientCountHp() {
-    const ranked = await this.prisma.count;
   }
 }
