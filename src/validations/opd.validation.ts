@@ -1,6 +1,6 @@
-import z, { string } from "zod";
+import z from "zod";
 import { np, en } from "./messages/userAuth.messages";
-import { Timing, TreatementType, VisitType } from "@prisma/client";
+import { TreatementType, VisitType } from "@prisma/client";
 
 const PrescriptionSchema = z.object({
   name: z.string({
@@ -27,7 +27,7 @@ const PrescriptionSchema = z.object({
     required_error: en.required,
     invalid_type_error: en.invalid_type_string,
   }),
-  timing: z.nativeEnum(Timing, {
+  timing: z.string({
     required_error: en.required,
   }),
   dosage: z.string({

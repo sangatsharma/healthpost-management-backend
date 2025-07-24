@@ -51,7 +51,7 @@ model Prescription {
   intakeTime  String
   quantity    String
   intakeRoute String
-  timing      Timing // enum: beforeMeal, afterMeal, anytime
+  timing      String // enum: beforeMeal, afterMeal, anytime
   dosage      String
 }
 
@@ -79,10 +79,4 @@ enum TreatementType {
   REHABILITATION
   PALLIATIVE_CARE
   OTHER
-}
-
-enum Timing {
-  beforeMeal
-  afterMeal
-  anytime
 }
