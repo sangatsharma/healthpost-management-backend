@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { Patient, PrismaClient, User } from "@prisma/client";
 import { AssignUserToHealthPostType, UserRegisterType } from "@app/src/validations/index.validation";
 import { ModifiedUser } from "@app/types/index.type";
 import { RepoManager } from "./index.repository";
@@ -64,7 +64,10 @@ const allUserModifierFunction = (user: User | User & {
 };
 
 export class UserRepository {
-  constructor(private readonly prisma: PrismaClient["user"]) { }
+  constructor(
+    private readonly prisma: PrismaClient["user"],
+    private readonly patient: PrismaClient["patient"]
+  ) { }
 
 
   async create(dto: UserRegisterType & {
@@ -149,33 +152,60 @@ export class UserRepository {
     return modify ? user ? userModifierFunction(user) : null : user;
   }
 
-  async updateOtp(id: string, otp: string): Promise<User | null> {
-    const user = await this.prisma.update({
-      where: {
-        id: id
-      },
-      data: {
-        otp: otp,
-        optCreatedAt: new Date()
-      }
-    });
+  async updateOtp(id: string, otp: string, accountType: string): Promise<User | Patient | null> {
+    if (accountType === "PATIENT") {
+      return await this.patient.update({
+        where: {
+          id: id
+        },
+        data: {
+          otp: otp,
+          optCreatedAt: new Date()
+        }
+      });
+    }
+    else {
+      return await this.prisma.update({
+        where: {
+          id: id
+        },
+        data: {
+          otp: otp,
+          optCreatedAt: new Date()
+        }
+      });
 
-    return user;
+    }
   }
 
-  async updateToken(id: string, refreshToken: string): Promise<ModifiedUser | null> {
-    const user = await this.prisma.update({
-      where: {
-        id: id
-      },
-      data: {
-        refreshToken: refreshToken,
-        otp: null,
-        optCreatedAt: null,
-      }
-    });
+  async updateToken(id: string, refreshToken: string, accountType: string): Promise<Patient | ModifiedUser | null> {
+    if (accountType === "PATIENT") {
+      return await this.patient.update({
+        where: {
+          id: id
+        },
+        data: {
+          refreshToken: refreshToken,
+          otp: null,
+          optCreatedAt: null,
+        }
+      });
+    }
+    else {
 
-    return userModifierFunction(user);
+      const user = await this.prisma.update({
+        where: {
+          id: id
+        },
+        data: {
+          refreshToken: refreshToken,
+          otp: null,
+          optCreatedAt: null,
+        }
+      });
+      return userModifierFunction(user);
+
+    }
   }
 
   async updateLogout(id: string): Promise<undefined> {

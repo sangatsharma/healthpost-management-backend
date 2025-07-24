@@ -201,7 +201,7 @@ export const userLoginController = async (
   //   });
   // }
 
-  await RepoManager.userRepository.updateOtp(existingUser.id, otp);
+  await RepoManager.userRepository.updateOtp(existingUser.id, otp, body.accountType);
 
   return successResponse({
     res,

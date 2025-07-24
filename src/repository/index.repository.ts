@@ -16,7 +16,10 @@ export class RepoManager {
 
   static get userRepository() {
     if (!this.userRepo)
-      this.userRepo = new UserRepository(this.prisma.user);
+      this.userRepo = new UserRepository(
+        this.prisma.user,
+        this.prisma.patient,
+      );
 
     return this.userRepo;
   }

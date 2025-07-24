@@ -65,7 +65,7 @@ export const getById = async (
   res: Response,
   next: NextFunction
 ) => {
-  const id = res.locals.id;
+  const id = req.params.id;
   const opd = await RepoManager.opdVisitRepository.getById(id);
 
   if (!opd)

@@ -82,9 +82,9 @@ export class OpdVisitRepository {
   async getById(
     id: string
   ) {
-    const oneOpd = await this.prisma.findMany({
+    const oneOpd = await this.prisma.findUnique({
       where: {
-        id
+        id: id
       }
     });
 

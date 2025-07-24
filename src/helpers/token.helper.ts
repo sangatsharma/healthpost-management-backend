@@ -30,7 +30,7 @@ export class TokenHelper {
       expiresIn: "7d"
     });
 
-    await RepoManager.userRepository.updateToken(user.id, jwtRefreshToken);
+    await RepoManager.userRepository.updateToken(user.id, jwtRefreshToken, user.accountType);
 
     return {
       accessToken: jwtAccessToken,
