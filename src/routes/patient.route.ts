@@ -14,7 +14,7 @@ patientRouter.get(
 );
 
 patientRouter.get(
-  "",
+  "/:id",
   authGuard(["SUPERADMIN", "PATIENT"]),
   languageMiddleware,
   getByPatientId

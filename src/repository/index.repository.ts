@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { HealthPostAssets, PrismaClient } from "@prisma/client";
 import { prisma } from "@app/utils/index.utils";
 import { UserRepository } from "./user.repository";
 import { HealthPostRepository } from "./healthpost.repository";
@@ -13,6 +13,7 @@ export class RepoManager {
   private static patientRepo: PatientRepository;
   private static medicineRepo: MedicineRepository;
   private static opdVisitRepo: OpdVisitRepository;
+  private static healthPostAssetsRepo: HealthPostAssets;
 
   static get userRepository() {
     if (!this.userRepo)
@@ -54,4 +55,11 @@ export class RepoManager {
 
     return this.opdVisitRepo;
   }
+
+  // static get healthPostAssetsRepository() {
+  //   if (!this.healthPostAssetsRepo)
+  //     this.healthPostAssetsRepo = new this.healthPostAssetsRepository(this.prisma.opdVisit);
+  //
+  //   return this.opdVisitRepo;
+  // }
 }

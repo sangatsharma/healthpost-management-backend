@@ -50,8 +50,8 @@ export const getByPatientId = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = res.locals.user as UserJwt;
-  const patientOpd = await RepoManager.opdVisitRepository.getByPatientId(user.id);
+  const id = req.params.id as string;
+  const patientOpd = await RepoManager.opdVisitRepository.getByPatientId(id);
 
   return successResponse({
     res,
