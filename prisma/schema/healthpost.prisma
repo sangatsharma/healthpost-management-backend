@@ -1,20 +1,21 @@
 model HealthPost {
-  id           String            @id @default(uuid())
-  name         String?
-  email        String?
-  municipality String?
-  location     String?
-  phone        String
-  status       HealthPostStatus
-  wardNo       Int
-  images       String[]          @default([])
-  admin        User?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  adminId      String?           @unique
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  Patient      Patient[]
-  OpdVisit     OpdVisit[]
-  config       HealthPostConfig?
+  id               String            @id @default(uuid())
+  name             String?
+  email            String?
+  municipality     String?
+  location         String?
+  phone            String
+  status           HealthPostStatus
+  wardNo           Int
+  images           String[]          @default([])
+  admin            User?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  adminId          String?           @unique
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  Patient          Patient[]
+  OpdVisit         OpdVisit[]
+  config           HealthPostConfig?
+  healthPostAssets HealthPostAssets?
 
   @@map("healthpost")
 }
@@ -25,6 +26,18 @@ model HealthPostConfig {
   healthPost HealthPost @relation(fields: [id], references: [id], onDelete: Cascade)
 
   @@map("healthpostconfig")
+}
+
+model HealthPostAssets {
+  id                    String     @id
+  ambulanceCount        Int        @default(0)
+  ambulanceEngaged      Int        @default(0)
+  oxygenCylinderCount   Int        @default(0)
+  oxygenCylinderEngaged Int        @default(0)
+  healthPost            HealthPost @relation(fields: [id], references: [id], onDelete: Cascade)
+  updatedAt             DateTime   @updatedAt
+
+  @@map("healthpostassets")
 }
 
 enum HealthPostStatus {
