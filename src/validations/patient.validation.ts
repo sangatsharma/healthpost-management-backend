@@ -7,6 +7,7 @@ import {
   DisabilityIdentityType,
   DisabilityType,
   GENDER,
+  MarriageStatus,
 } from "@prisma/client";
 
 export const newPatientValidation = (lang: string) => {
@@ -33,6 +34,7 @@ export const newPatientValidation = (lang: string) => {
       invalid_type_error: t.invalid_type_string,
     }),
     gender: z.nativeEnum(GENDER).optional(),
+    maritalStatus: z.nativeEnum(MarriageStatus).optional(),
     dobAd: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),

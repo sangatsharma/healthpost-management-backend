@@ -31,6 +31,7 @@ model Patient {
   tPalityId              String?
   tWardNo                Int?
   tTole                  String?
+  maritalStatus          MarriageStatus?
   fatherName             String
   motherName             String
   guardianName           String?
