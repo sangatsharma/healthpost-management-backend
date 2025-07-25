@@ -169,11 +169,17 @@ export const getAPatientHandler = async (
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });
+  const { profileImage, ...rest } = patientInfo;
 
   return successResponse({
     res,
     message: "Success",
-    data: patientInfo
+    data: {
+      profileImage: [
+        profileImage
+      ],
+      ...rest
+    }
   });
 };
 
