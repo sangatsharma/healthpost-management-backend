@@ -1,6 +1,7 @@
 model OpdVisit {
   id                  String         @id @default(uuid())
   visitedDate         DateTime
+  opdNo               Int            @default(autoincrement())
   patientId           String
   examinerId          String
   healthPostId        String
