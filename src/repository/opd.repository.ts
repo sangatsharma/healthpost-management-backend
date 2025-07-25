@@ -61,6 +61,11 @@ export class OpdVisitRepository {
         },
       },
       include: {
+        patient: {
+          select: {
+            palityId: true
+          }
+        },
         vitals: true,
         prescriptions: true
       }
@@ -80,7 +85,8 @@ export class OpdVisitRepository {
           select: {
             firstName: true,
             middleName: true,
-            lastName: true
+            lastName: true,
+            palityId: true
           }
         },
         healthPost: {
@@ -112,6 +118,7 @@ export class OpdVisitRepository {
             dobBs: true,
             patientCode: true,
             districtId: true,
+            palityId: true,
             tole: true,
             wardNo: true,
             gender: true,

@@ -129,55 +129,25 @@ export const getAPatientHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = res.locals.user as UserJwt;
-  const userId = req.params.userId;
-  const healthPostId = req.params.id;
+  const patientId = req.params.id;
   const response = res.locals.message;
 
-  const healthPost = await RepoManager.healthPostRepository.findById(healthPostId);
-  if (!healthPost)
+  const patient = await RepoManager.patientRepository.findById(patientId);
+  if (!patient)
     throw new customErrors.NotFoundError({
       message: response.COMMON.NOT_FOUND
     });
 
-  const userExists = await RepoManager.userRepository.findById(userId);
-  if (!userExists)
-    throw new customErrors.NotFoundError({
-      message: response.COMMON.NOT_FOUND
-    });
 
-  if (user.role !== "SUPERADMIN") {
-    const admin = await RepoManager.userRepository.findById(user.id);
-
-    if (!admin)
-      throw new customErrors.NotFoundError({
-        message: response.COMMON.NOT_FOUND
-      });
-    else if (!admin.healthPostId || admin.healthPostId !== healthPostId)
-      throw new customErrors.BadRequestError({
-        message: "FORBIDDEN"
-      });
-  }
-
-  const patientInfo = await RepoManager.patientRepository.findById(userId);
-
-  if (!patientInfo)
-    throw new customErrors.NotFoundError({
-      message: response.COMMON.NOT_FOUND
-    });
-  else if (patientInfo.healthPostId !== healthPostId)
-    throw new customErrors.NotFoundError({
-      message: response.COMMON.NOT_FOUND
-    });
-  const { profileImage, ...rest } = patientInfo;
+  const { profileImage, ...rest } = patient;
 
   return successResponse({
     res,
     message: "Success",
     data: {
-      profileImage: [
+      profileImage: profileImage ? [
         profileImage
-      ],
+      ] : [],
       ...rest
     }
   });
