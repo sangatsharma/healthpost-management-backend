@@ -54,7 +54,7 @@ export class PatientRepository {
     const patients = await this.prisma.findMany({});
     return patients.map(({ profileImage, ...rest }) => (
       {
-        profileImage: [profileImage],
+        profileImage: profileImage ? [profileImage] : [],
         ...rest
       }
     ));
@@ -83,13 +83,13 @@ export class PatientRepository {
 
     return patients.map(({ profileImage, ...rest }) => (
       {
-        profileImage: [profileImage],
+        profileImage: profileImage ? [profileImage] : [],
         ...rest
       }
     ));
   }
 
-  async getById(id: string): Promise<Patient | null> {
+  async getById(id: string) {
     const patient = await this.prisma.findUnique({
       where: {
         id
