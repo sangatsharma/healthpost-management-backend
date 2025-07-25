@@ -75,6 +75,7 @@ export class OpdVisitRepository {
         patientId,
       },
       include: {
+        vitals: true,
         patient: {
           select: {
             firstName: true,
@@ -102,6 +103,7 @@ export class OpdVisitRepository {
         id: id
       },
       include: {
+        vitals: true,
         patient: {
           select: {
             firstName: true,
@@ -138,6 +140,7 @@ export class OpdVisitRepository {
         healthPostId: id
       },
       include: {
+        vitals: true,
         patient: {
           select: {
             firstName: true,
@@ -169,6 +172,7 @@ export class OpdVisitRepository {
   async getAll() {
     const opds = await this.prisma.findMany({
       include: {
+        vitals: true,
         patient: {
           select: {
             firstName: true,
