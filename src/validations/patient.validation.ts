@@ -225,6 +225,7 @@ export const updatePatientValidation = (lang: string) => {
     }).optional().nullable(),
     lockReport: z.coerce.boolean({
     }).optional(),
+    phoneNumber: z.string().optional(),
     bloodGroup: z.nativeEnum(BloodGroup, {
     }).optional(),
     disabilityIdentityType: z.nativeEnum(DisabilityIdentityType, {
