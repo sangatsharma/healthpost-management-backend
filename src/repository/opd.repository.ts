@@ -73,6 +73,20 @@ export class OpdVisitRepository {
     const allDatas = await this.prisma.findMany({
       where: {
         patientId,
+      },
+      include: {
+        patient: {
+          select: {
+            firstName: true,
+            middleName: true,
+            lastName: true
+          }
+        },
+        healthPost: {
+          select: {
+            name: true
+          }
+        }
       }
     });
 

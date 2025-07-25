@@ -15,13 +15,13 @@ opdRouter.post(
 
 opdRouter.get(
   "/:id",
-  authGuard(["SUPERADMIN", "ADMIN", "ANM", "HEALTH_ASSISTANT"]),
+  authGuard(),
   getById
 );
 
 opdRouter.get(
   "/patient/:id",
-  authGuard(["SUPERADMIN", "ADMIN", "ANM", "HEALTH_ASSISTANT", "PATIENT"]),
+  authGuard(),
   getByPatientId
 );
 
