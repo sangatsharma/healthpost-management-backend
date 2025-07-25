@@ -114,13 +114,13 @@ healthPostRouter.put(
 
 healthPostRouter.get(
   "/:id/staff",
-  authGuard(["SUPERADMIN", "ADMIN"]),
+  authGuard(),
   languageMiddleware,
   getHealthPostStaffController
 );
 healthPostRouter.get(
   "/:id/patient",
-  authGuard(["SUPERADMIN", "ADMIN"]),
+  authGuard(),
   languageMiddleware,
   getHealthPostPatient
 );
