@@ -27,7 +27,6 @@ import {
 import {
   createPatientHandler,
   deletePatientRecordHandler,
-  getAllPatientHandler,
   getAPatientHandler,
   getHealthPostStaffController,
   updatePatientHandler,
