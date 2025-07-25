@@ -99,9 +99,70 @@ export class OpdVisitRepository {
     const oneOpd = await this.prisma.findUnique({
       where: {
         id: id
+      },
+      include: {
+        patient: {
+          select: {
+            firstName: true,
+            middleName: true,
+            lastName: true,
+          },
+        },
+        healthPost: {
+          select: {
+            name: true
+          }
+        }
       }
     });
 
     return oneOpd;
+  }
+
+  async getByHpId(
+    id: string
+  ) {
+    const opds = await this.prisma.findMany({
+      where: {
+        healthPostId: id
+      },
+      include: {
+        patient: {
+          select: {
+            firstName: true,
+            middleName: true,
+            lastName: true,
+          },
+        },
+        healthPost: {
+          select: {
+            name: true
+          }
+        }
+      }
+    });
+
+    return opds;
+  }
+
+  async getAll() {
+    const opds = await this.prisma.findMany({
+      include: {
+        patient: {
+          select: {
+            firstName: true,
+            middleName: true,
+            lastName: true,
+          },
+        },
+        healthPost: {
+          select: {
+            name: true
+          }
+        }
+      }
+    });
+
+    return opds;
   }
 }

@@ -79,3 +79,32 @@ export const getById = async (
     data: opd
   });
 };
+
+export const getByHpId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id;
+  const opd = await RepoManager.opdVisitRepository.getByHpId(id);
+
+  return successResponse({
+    res,
+    message: "Fetched",
+    data: opd
+  });
+};
+
+export const getAllOpd = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const opd = await RepoManager.opdVisitRepository.getAll();
+
+  return successResponse({
+    res,
+    message: "Fetched",
+    data: opd
+  });
+};
