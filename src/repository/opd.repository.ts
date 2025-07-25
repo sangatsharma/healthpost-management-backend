@@ -86,7 +86,8 @@ export class OpdVisitRepository {
           select: {
             name: true
           }
-        }
+        },
+        prescriptions: true
       }
     });
 
@@ -112,7 +113,8 @@ export class OpdVisitRepository {
           select: {
             name: true
           }
-        }
+        },
+        prescriptions: true
       }
     });
 
@@ -138,7 +140,8 @@ export class OpdVisitRepository {
           select: {
             name: true
           }
-        }
+        },
+        prescriptions: true
       }
     });
 
@@ -159,7 +162,8 @@ export class OpdVisitRepository {
           select: {
             name: true
           }
-        }
+        },
+        prescriptions: true
       }
     });
 
