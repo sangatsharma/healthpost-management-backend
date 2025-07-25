@@ -87,7 +87,7 @@ export class OpdVisitRepository {
             name: true
           }
         },
-        prescriptions: true
+        prescriptions: true,
       }
     });
 
@@ -107,6 +107,15 @@ export class OpdVisitRepository {
             firstName: true,
             middleName: true,
             lastName: true,
+            dobBs: true,
+            patientCode: true,
+            districtId: true,
+            tole: true,
+            wardNo: true,
+            gender: true,
+            nationality: true,
+            phoneNumber: true,
+            emergencyContact: true,
           },
         },
         healthPost: {
@@ -134,6 +143,15 @@ export class OpdVisitRepository {
             firstName: true,
             middleName: true,
             lastName: true,
+            dobBs: true,
+            patientCode: true,
+            districtId: true,
+            tole: true,
+            wardNo: true,
+            gender: true,
+            nationality: true,
+            phoneNumber: true,
+            emergencyContact: true,
           },
         },
         healthPost: {
@@ -156,6 +174,15 @@ export class OpdVisitRepository {
             firstName: true,
             middleName: true,
             lastName: true,
+            dobBs: true,
+            patientCode: true,
+            districtId: true,
+            tole: true,
+            wardNo: true,
+            gender: true,
+            nationality: true,
+            phoneNumber: true,
+            emergencyContact: true,
           },
         },
         healthPost: {

@@ -2,7 +2,6 @@ import express from "express";
 import { getAllPatientHandler, getAPatientHandler } from "../controllers/patient.controller";
 import authGuard from "../helpers/authGuard.helper";
 import languageMiddleware from "../helpers/responseLanguage.helper";
-import { getByPatientId } from "../controllers/opd.controller";
 
 const patientRouter = express.Router();
 
@@ -17,7 +16,7 @@ patientRouter.get(
   "/:id",
   authGuard(),
   languageMiddleware,
-  getByPatientId
+  getAPatientHandler
 );
 
 export default patientRouter;
