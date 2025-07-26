@@ -35,10 +35,14 @@ export const getUserHandler = async (
         message: "User not found"
       });
     else {
+      const { profileImage, ...rest } = patient;
       return successResponse({
         res,
         message: "Success",
-        data: patient
+        data: {
+          profileImage: profileImage ? [profileImage] : null,
+          ...rest
+        }
       });
     }
   }

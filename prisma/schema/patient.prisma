@@ -21,6 +21,7 @@ model Patient {
   lockReport             Boolean
   bloodGroup             BloodGroup
   disabilityIdentityType DisabilityIdentityType?
+  hpVisitCount           Int?                    @default(0)
   nshiNumber             String
   bank                   String?
   bankBranch             String?

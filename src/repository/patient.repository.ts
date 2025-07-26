@@ -147,4 +147,17 @@ export class PatientRepository {
 
     return patientCount;
   }
+
+  async updateVisitCount(patientId: string) {
+    await this.prisma.update({
+      where: {
+        id: patientId
+      },
+      data: {
+        hpVisitCount: {
+          increment: 1
+        }
+      }
+    });
+  }
 }

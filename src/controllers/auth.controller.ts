@@ -276,6 +276,7 @@ export const valiadteOtpController = async (
   res.cookie("accessToken", accessToken, cookieOptions);
   res.cookie("refreshToken", refreshToken, cookieOptions);
 
+  const { profileImage, ...rest } = existingUser;
   return successResponse({
     res,
     message: response.LOGIN.SUCCESS,
@@ -284,7 +285,10 @@ export const valiadteOtpController = async (
         accessToken,
         refreshToken
       },
-      user: existingUser
+      user: {
+        profileImage: profileImage ? [profileImage] : [],
+        ...rest
+      }
     }
   });
 };

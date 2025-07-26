@@ -36,6 +36,7 @@ export const createNewOpd = async (
     });
 
   const newOpd = await RepoManager.opdVisitRepository.create(body);
+  await RepoManager.patientRepository.updateVisitCount(patientExists.id);
 
   return successResponse({
     res,

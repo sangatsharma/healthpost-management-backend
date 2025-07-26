@@ -220,7 +220,6 @@ export const getHealthPostStaffController = async (
   next: NextFunction
 ) => {
   const healthPostId = req.params.id as string;
-  const user = res.locals.user as UserJwt;
   const response = res.locals.message;
 
   const healthPost = await RepoManager.healthPostRepository.findById(healthPostId);
@@ -230,10 +229,10 @@ export const getHealthPostStaffController = async (
       message: response.COMMON.NOT_FOUND
     });
 
-  else if (user.role !== "SUPERADMIN" && healthPost.adminId !== user.id)
-    throw new customErrors.NotFoundError({
-      message: response.COMMON.FORBIDDEN
-    });
+  // else if (user.role !== "SUPERADMIN" && healthPost.adminId !== user.id)
+  //   throw new customErrors.NotFoundError({
+  //     message: response.COMMON.FORBIDDEN
+  //   });
 
   const staffs = await RepoManager.userRepository.getAllStaff(healthPostId);
 
