@@ -1,29 +1,28 @@
-// Superadmin and Admin
 model User {
   id                   String      @id @default(uuid())
-  firstName            String
-  middleName           String?
-  lastName             String
   email                String      @unique
   role                 ROLE
-  status               STATUS      @default(ACTIVE)
-  accountType          UserType
-  permission           Json
   isVerified           Boolean     @default(false)
-  phoneNumber          String?
-  gender               GENDER?
-  profileImage         String?
-  profileImagePublicId String?
-  signature            String?
-  signaturePublicId    String?
-  healthPostId         String?
-  refreshToken         String?
-  otp                  String?
-  optCreatedAt         DateTime?
   createdAt            DateTime    @default(now())
   updatedAt            DateTime    @updatedAt
-  HealthPost           HealthPost?
+  refreshToken         String?
+  optCreatedAt         DateTime?
+  otp                  String?
+  accountType          UserType
+  permission           Json
+  firstName            String
+  lastName             String
+  middleName           String?
+  gender               GENDER?
+  healthPostId         String?
+  phoneNumber          String?
+  profileImage         String?
+  status               STATUS      @default(ACTIVE)
+  signature            String?
+  profileImagePublicId String?
+  signaturePublicId    String?
   OpdVisit             OpdVisit[]
+  HealthPost           HealthPost?
 
   @@map("user")
 }
@@ -55,26 +54,19 @@ enum UserType {
 enum RESOURCES {
   ALL
   SYSTEM_CONFIG
-
   DASHBOARD
-
   PATIENT_RECORDS
-
   PRESCRIBE_MEDICATION
   ORDER_LAB_TESTS
   VACCINATION_RECORD
   MATERNAL_HEALTH_EDIT
-
   LAB_RESULT_UPLOAD
   LAB_RESULTS_VERIFY
-
   COMMUNITY_REPORTS
   HOME_VISIT_RECORD
-
   INVENTORY_NEW
   INVENTORY_MANAGE
   MEDICINE_DISPENSE
-
   USER_MANAGE
   REPORTS_GENERATE
   DATA_EXPORT

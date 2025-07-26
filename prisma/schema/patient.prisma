@@ -1,26 +1,9 @@
 model Patient {
   id                     String                  @id @default(uuid())
-  count                  Int                     @default(autoincrement())
-  patientCode            String?                 @unique
-  firstName              String
-  middleName             String?
-  lastName               String
-  email                  String                  @unique
-  role                   ROLE
-  status                 STATUS                  @default(ACTIVE)
-  accountType            UserType                @default(PATIENT)
-  profileImage           String?
-  gender                 GENDER?
-  phone                  String?
-  phoneNumber            String?
-  healthPostId           String
-  healthPost             HealthPost              @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
   dobBs                  String
   dobAd                  String?
   casteType              CasteType
   citizenshipNumber      String?
-  nationalId             String?
-  height                 String?
   nationality            Nationality
   emergencyContact       String
   districtId             String
@@ -31,29 +14,45 @@ model Patient {
   tPalityId              String?
   tWardNo                Int?
   tTole                  String?
-  maritalStatus          MarriageStatus?
   fatherName             String
   motherName             String
   guardianName           String?
   spouseName             String?
   lockReport             Boolean
   bloodGroup             BloodGroup
-  disabilityType         DisabilityType?
   disabilityIdentityType DisabilityIdentityType?
   nshiNumber             String
   bank                   String?
   bankBranch             String?
-  weight                 String?
-  isVaccineCompleted     Boolean?
-  isMinor                Boolean?
-  isEligibleForSgc       Boolean?
-  refreshToken           String?
-  otp                    String?
-  familyHistory          String?
-  optCreatedAt           DateTime?
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
+  healthPostId           String
+  accountType            UserType                @default(PATIENT)
+  email                  String                  @unique
+  firstName              String
+  gender                 GENDER?
+  height                 String?
+  isEligibleForSgc       Boolean?
+  isMinor                Boolean?
+  isVaccineCompleted     Boolean?
+  lastName               String
+  middleName             String?
+  nationalId             String?
+  patientCode            String?                 @unique
+  profileImage           String?
+  role                   ROLE
+  status                 STATUS                  @default(ACTIVE)
+  weight                 String?
+  count                  Int                     @default(autoincrement())
+  optCreatedAt           DateTime?
+  otp                    String?
+  refreshToken           String?
+  disabilityType         DisabilityType?
+  phone                  String?
+  phoneNumber            String?
+  maritalStatus          MarriageStatus?
   OpdVisit               OpdVisit[]
+  healthPost             HealthPost              @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
 }
 
 enum CasteType {

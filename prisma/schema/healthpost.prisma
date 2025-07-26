@@ -1,21 +1,21 @@
 model HealthPost {
   id               String            @id @default(uuid())
   name             String?
+  location         String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  adminId          String?           @unique
   email            String?
   municipality     String?
-  location         String?
   phone            String
   status           HealthPostStatus
   wardNo           Int
   images           String[]          @default([])
-  admin            User?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  adminId          String?           @unique
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  Patient          Patient[]
   OpdVisit         OpdVisit[]
-  config           HealthPostConfig?
+  Patient          Patient[]
+  admin            User?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
   healthPostAssets HealthPostAssets?
+  config           HealthPostConfig?
 
   @@map("healthpost")
 }
@@ -34,8 +34,8 @@ model HealthPostAssets {
   ambulanceEngaged      Int        @default(0)
   oxygenCylinderCount   Int        @default(0)
   oxygenCylinderEngaged Int        @default(0)
-  healthPost            HealthPost @relation(fields: [id], references: [id], onDelete: Cascade)
   updatedAt             DateTime   @updatedAt
+  healthPost            HealthPost @relation(fields: [id], references: [id], onDelete: Cascade)
 
   @@map("healthpostassets")
 }

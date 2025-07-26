@@ -1,7 +1,6 @@
 model OpdVisit {
   id                  String         @id @default(uuid())
   visitedDate         DateTime
-  opdNo               Int            @default(autoincrement())
   patientId           String
   examinerId          String
   healthPostId        String
@@ -15,20 +14,19 @@ model OpdVisit {
   isPregenant         Boolean?
   treatementType      TreatementType
   visitType           VisitType
-  prescriptions       Prescription[]
-  medicines           String[]
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
-
-  // Relations
-  patient    Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  examiner   User       @relation(fields: [examinerId], references: [id], onDelete: Cascade)
-  healthPost HealthPost @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
-  vitals     Vitals[]
+  medicines           String[]
+  opdNo               Int            @default(autoincrement())
+  examiner            User           @relation(fields: [examinerId], references: [id], onDelete: Cascade)
+  healthPost          HealthPost     @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
+  patient             Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  prescriptions       Prescription[]
+  vitals              Vitals?
 }
 
 model Vitals {
-  id          String  @id
+  id          String   @id
   bp          String?
   pulse       String?
   temperature String?
@@ -36,8 +34,7 @@ model Vitals {
   weight      String?
   height      String?
   mucus       String?
-
-  opdVisit OpdVisit @relation(fields: [id], references: [id])
+  opdVisit    OpdVisit @relation(fields: [id], references: [id])
 
   @@index([id])
 }
@@ -45,15 +42,15 @@ model Vitals {
 model Prescription {
   id          String   @id @default(uuid())
   opdVisitId  String
-  opdVisit    OpdVisit @relation(fields: [opdVisitId], references: [id])
   name        String
   duration    String
   frequency   String
   intakeTime  String
   quantity    String
   intakeRoute String
-  timing      String // enum: beforeMeal, afterMeal, anytime
   dosage      String
+  timing      String
+  opdVisit    OpdVisit @relation(fields: [opdVisitId], references: [id])
 }
 
 model Medicine {
