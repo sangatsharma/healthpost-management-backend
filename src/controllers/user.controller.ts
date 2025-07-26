@@ -21,17 +21,28 @@ export const getUserHandler = async (
   const userJwt = res.locals.user as UserJwt;
 
   const user = await RepoManager.userRepository.findById(userJwt.id);
-
-  if (!user)
-    throw new customErrors.NotFoundError({
-      message: "User not found"
+  if (user) {
+    return successResponse({
+      res,
+      message: "Success",
+      data: user
     });
+  }
+  else {
+    const patient = await RepoManager.patientRepository.findById(userJwt.id);
+    if (!patient)
+      throw new customErrors.NotFoundError({
+        message: "User not found"
+      });
+    else {
+      return successResponse({
+        res,
+        message: "Success",
+        data: patient
+      });
+    }
+  }
 
-  return successResponse({
-    res,
-    message: "Success",
-    data: user
-  });
 };
 
 export const getAllUsersHandler = async (
@@ -132,31 +143,46 @@ export const deleteUserHandler = async (
   const user = res.locals.user as UserJwt;
 
   const userExists = await RepoManager.userRepository.findById(id);
-  if (!userExists)
-    throw new customErrors.NotFoundError({
-      message: "Invalid userId"
+  // if (!userExists)
+  //   throw new customErrors.NotFoundError({
+  //     message: "Invalid userId"
+  //   });
+
+  // if (id !== user.id && user.role !== "SUPERADMIN") {
+  //   const requestingUser = await RepoManager.userRepository.findById(id);
+  //
+  //   if (requestingUser?.role !== "ADMIN")
+  //     throw new customErrors.AccessError({
+  //       name: "FORBIDDEN",
+  //       message: "Not enough permission"
+  //     });
+  //
+  //   else if (requestingUser.healthPostId !== userExists.healthPostId)
+  //     throw new customErrors.AccessError({
+  //       name: "FORBIDDEN",
+  //       message: "Not enough permission"
+  //     });
+  // }
+
+  if (userExists) {
+    await RepoManager.userRepository.deleteUser(id);
+
+    return successResponse({
+      res,
+      message: "User deleted successfully",
     });
-
-  if (id !== user.id && user.role !== "SUPERADMIN") {
-    const requestingUser = await RepoManager.userRepository.findById(id);
-
-    if (requestingUser?.role !== "ADMIN")
-      throw new customErrors.AccessError({
-        name: "FORBIDDEN",
-        message: "Not enough permission"
-      });
-
-    else if (requestingUser.healthPostId !== userExists.healthPostId)
-      throw new customErrors.AccessError({
-        name: "FORBIDDEN",
-        message: "Not enough permission"
-      });
   }
+  else {
+    const patientExists = await RepoManager.patientRepository.findById(id);
+    if (!patientExists)
+      throw new customErrors.NotFoundError({
+        message: "Invalid userId"
+      });
 
-  await RepoManager.userRepository.deleteUser(id);
-
-  return successResponse({
-    res,
-    message: "User deleted successfully",
-  });
+    await RepoManager.patientRepository.delete(id);
+    return successResponse({
+      res,
+      message: "User deleted successfully",
+    });
+  }
 };

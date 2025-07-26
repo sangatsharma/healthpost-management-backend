@@ -1,5 +1,0 @@
--- CreateEnum
-CREATE TYPE "STATUS" AS ENUM ('ACTIVE', 'INACTIVE');
-
--- AlterTable
-ALTER TABLE "user" ADD COLUMN     "status" "STATUS" NOT NULL DEFAULT 'ACTIVE';

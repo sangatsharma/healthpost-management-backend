@@ -45,6 +45,7 @@ model Patient {
   weight                 String?
   count                  Int                     @default(autoincrement())
   optCreatedAt           DateTime?
+  familyHistory          String?
   otp                    String?
   refreshToken           String?
   disabilityType         DisabilityType?
