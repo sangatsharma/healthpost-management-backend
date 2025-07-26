@@ -10,6 +10,17 @@ import {
   MarriageStatus,
 } from "@prisma/client";
 
+
+const nullableEnum = <T extends Record<string, string | number>>(enumObj: T) =>
+  z.string()
+    .transform(val => val === "" ? null : val)
+    .nullable()
+    .optional()
+    .refine(val => val === null || Object.values(enumObj).includes(val as T[keyof T]), {
+      message: "Invalid enum value",
+    })
+    .transform(val => val === null ? null : val as T[keyof T]);
+
 export const newPatientValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
 
@@ -65,6 +76,9 @@ export const newPatientValidation = (lang: string) => {
       required_error: t.required,
       invalid_type_error: t.invalid_type_string,
     }),
+    familyHistory: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional().nullable(),
     districtId: z.string({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string,
@@ -154,13 +168,19 @@ export const updatePatientValidation = (lang: string) => {
     dobBs: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional(),
-    gender: z.nativeEnum(GENDER).optional(),
+    // gender: z.nativeEnum(GENDER).optional(),
+    gender: nullableEnum(GENDER),
     height: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
-    disabilityType: z.nativeEnum(
-      DisabilityType
-    ).optional().nullable(),
+    disabilityType: z.string()
+      .transform(val => val === "" ? null : val) // Convert empty string to null
+      .nullable()
+      .optional()
+      .refine(val => val === null || Object.values(DisabilityType).includes(val as DisabilityType), {
+        message: "Invalid disability type",
+      })
+      .transform(val => val === null ? null : val as DisabilityType),
     weight: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
@@ -171,10 +191,10 @@ export const updatePatientValidation = (lang: string) => {
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
     dobAd: z.string({
-      invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
     casteType: z.nativeEnum(CasteType, {
     }).optional(),
+    disabilityIdentityType: nullableEnum(DisabilityIdentityType),
     citizenshipNumber: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional(),
@@ -190,6 +210,9 @@ export const updatePatientValidation = (lang: string) => {
     districtId: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional(),
+    familyHistory: z.string({
+      invalid_type_error: t.invalid_type_string,
+    }).optional().nullable(),
     palityId: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional(),
@@ -228,8 +251,8 @@ export const updatePatientValidation = (lang: string) => {
     phoneNumber: z.string().optional(),
     bloodGroup: z.nativeEnum(BloodGroup, {
     }).optional(),
-    disabilityIdentityType: z.nativeEnum(DisabilityIdentityType, {
-    }).optional().nullable(),
+    // disabilityIdentityType: z.nativeEnum(DisabilityIdentityType, {
+    // }).optional().nullable(),
     nshiNumber: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional(),

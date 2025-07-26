@@ -49,6 +49,7 @@ model Patient {
   isEligibleForSgc       Boolean?
   refreshToken           String?
   otp                    String?
+  familyHistory          String?
   optCreatedAt           DateTime?
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
