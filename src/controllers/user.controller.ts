@@ -41,7 +41,26 @@ export const getUserHandler = async (
         message: "Success",
         data: {
           profileImage: profileImage ? [profileImage] : null,
-          ...rest
+          id: patient.id,
+          accountType: patient.accountType,
+          fullName: {
+            firstName: patient.firstName,
+            middleName: patient.middleName,
+            lastName: patient.lastName
+          },
+          email: patient.email,
+          role: patient.role,
+          phoneNumber: patient.phoneNumber,
+          status: patient.status,
+          permissions: [],
+          healthPostId: patient.healthPostId,
+          gender: patient.gender,
+          signature: [],
+          healthPost: {
+            name: patient.healthPost.name,
+          },
+          createdAt: patient.createdAt,
+          refreshToken: patient.updatedAt,
         }
       });
     }

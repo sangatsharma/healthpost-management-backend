@@ -99,10 +99,17 @@ export class PatientRepository {
     return patient;
   }
 
-  async findById(id: string): Promise<Patient | null> {
+  async findById(id: string) {
     const patient = await this.prisma.findUnique({
       where: {
         id: id
+      },
+      include: {
+        healthPost: {
+          select: {
+            name: true
+          }
+        }
       }
     });
 

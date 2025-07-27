@@ -286,7 +286,7 @@ export const valiadteOtpController = async (
         refreshToken
       },
       user: {
-        profileImage: profileImage ? [profileImage] : [],
+        profileImage: profileImage,
         ...rest
       }
     }
