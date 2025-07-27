@@ -136,6 +136,8 @@ export class PatientRepository {
     if (!patient)
       return null;
     return {
+      id: patient.id,
+      accountType: patient.accountType,
       fullName: {
         firstName: patient.firstName,
         middleName: patient.middleName,
