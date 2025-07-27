@@ -15,12 +15,17 @@ export const opdReferalSchemaValidation = (lang: string) => {
       invalid_type_error: t.invalid_type_string
     }).uuid(),
 
-    referedHealthPostId: z.string({
+    referredHealthPostId: z.string({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
     }).uuid(),
 
     patientId: z.string({
+      required_error: t.required,
+      invalid_type_error: t.invalid_type_string
+    }).uuid(),
+
+    opdId: z.string({
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
     }).uuid(),

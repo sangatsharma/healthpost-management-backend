@@ -1,21 +1,23 @@
 model HealthPost {
-  id               String            @id @default(uuid())
-  name             String?
-  location         String?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  adminId          String?           @unique
-  email            String?
-  municipality     String?
-  phone            String
-  status           HealthPostStatus
-  wardNo           Int
-  images           String[]          @default([])
-  OpdVisit         OpdVisit[]
-  Patient          Patient[]
-  admin            User?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  healthPostAssets HealthPostAssets?
-  config           HealthPostConfig?
+  id                String            @id @default(uuid())
+  name              String?
+  location          String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  adminId           String?           @unique
+  email             String?
+  municipality      String?
+  phone             String
+  status            HealthPostStatus
+  wardNo            Int
+  images            String[]          @default([])
+  OpdVisit          OpdVisit[]
+  Patient           Patient[]
+  admin             User?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  config            HealthPostConfig?
+  HealthPostAsset   HealthPostAsset[]
+  referralsMade     OpdReferral[]     @relation("ReferringHealthPost")
+  referralsReceived OpdReferral[]     @relation("ReferredToHealthPost")
 
   @@map("healthpost")
 }
@@ -28,16 +30,38 @@ model HealthPostConfig {
   @@map("healthpostconfig")
 }
 
-model HealthPostAssets {
-  id                    String     @id
-  ambulanceCount        Int        @default(0)
-  ambulanceEngaged      Int        @default(0)
-  oxygenCylinderCount   Int        @default(0)
-  oxygenCylinderEngaged Int        @default(0)
-  updatedAt             DateTime   @updatedAt
-  healthPost            HealthPost @relation(fields: [id], references: [id], onDelete: Cascade)
+model HealthPostAssetType {
+  id          String            @id @default(uuid())
+  name        String // e.g., "Ambulance", "Oxygen Cylinder", "Bed"
+  description String?
+  assets      HealthPostAsset[]
+}
 
-  @@map("healthpostassets")
+model HealthPostAsset {
+  id           String @id @default(uuid())
+  healthPostId String
+  assetTypeId  String
+  totalCount   Int    @default(0)
+  engagedCount Int    @default(0)
+
+  healthPost  HealthPost          @relation(fields: [healthPostId], references: [id])
+  assetType   HealthPostAssetType @relation(fields: [assetTypeId], references: [id])
+  engagements AssetEngagement[]
+
+  @@unique([healthPostId, assetTypeId])
+}
+
+model AssetEngagement {
+  id         String    @id @default(uuid())
+  assetId    String
+  patientId  String
+  opdVisitId String?
+  engagedAt  DateTime  @default(now())
+  releasedAt DateTime?
+
+  asset    HealthPostAsset @relation(fields: [assetId], references: [id])
+  patient  Patient         @relation(fields: [patientId], references: [id])
+  opdVisit OpdVisit?       @relation(fields: [opdVisitId], references: [id])
 }
 
 enum HealthPostStatus {

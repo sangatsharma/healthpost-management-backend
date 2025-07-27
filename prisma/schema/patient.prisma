@@ -55,6 +55,8 @@ model Patient {
   maritalStatus          MarriageStatus?
   OpdVisit               OpdVisit[]
   healthPost             HealthPost              @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
+  AssetEngagement        AssetEngagement[]
+  referrals              OpdReferral[]
 }
 
 enum CasteType {

@@ -1,5 +1,5 @@
 model OpdVisit {
-  id                  String         @id @default(uuid())
+  id                  String            @id @default(uuid())
   visitedDate         DateTime
   patientId           String
   examinerId          String
@@ -14,15 +14,17 @@ model OpdVisit {
   isPregenant         Boolean?
   treatementType      TreatementType
   visitType           VisitType
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
   medicines           String[]
-  opdNo               Int            @default(autoincrement())
-  examiner            User           @relation(fields: [examinerId], references: [id], onDelete: Cascade)
-  healthPost          HealthPost     @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
-  patient             Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  opdNo               Int               @default(autoincrement())
+  examiner            User              @relation(fields: [examinerId], references: [id], onDelete: Cascade)
+  healthPost          HealthPost        @relation(fields: [healthPostId], references: [id], onDelete: Cascade)
+  patient             Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
   prescriptions       Prescription[]
   vitals              Vitals?
+  AssetEngagement     AssetEngagement[]
+  referral            OpdReferral?
 }
 
 model Vitals {
@@ -58,14 +60,28 @@ model Medicine {
   label String?
 }
 
-model OpdReferal {
-  id                  String   @id @default(uuid())
-  staffId             String
-  healthPostId        String
-  referedHealthPostId String
-  patientId           String
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+model OpdReferral {
+  id                   String        @id @default(uuid())
+  staffId              String
+  healthPostId         String
+  referredHealthPostId String
+  patientId            String
+  opdId                String        @unique()
+  referralStatus       OpdStatusType @default(PENDING)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  staff              User       @relation(fields: [staffId], references: [id])
+  healthPost         HealthPost @relation("ReferringHealthPost", fields: [healthPostId], references: [id])
+  referredHealthPost HealthPost @relation("ReferredToHealthPost", fields: [referredHealthPostId], references: [id])
+  patient            Patient    @relation(fields: [patientId], references: [id])
+  opdVisit           OpdVisit   @relation(fields: [opdId], references: [id])
+}
+
+enum OpdStatusType {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum VisitType {

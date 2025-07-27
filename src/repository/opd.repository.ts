@@ -1,9 +1,11 @@
 import { PrismaClient, OpdVisit } from "@prisma/client";
 import { OpdVisitType } from "../validations/opd.validation";
+import { CreateOpdReferralInput } from "../validations/opdReferral.validation";
 
 export class OpdVisitRepository {
   constructor(
-    private readonly prisma: PrismaClient["opdVisit"]
+    private readonly prisma: PrismaClient["opdVisit"],
+    private readonly opdReferral: PrismaClient["opdReferral"]
   ) { }
 
   async create(dto: OpdVisitType): Promise<OpdVisit> {
@@ -208,5 +210,99 @@ export class OpdVisitRepository {
     });
 
     return opds;
+  }
+
+  async createReferral(data: CreateOpdReferralInput) {
+    return await this.opdReferral.create({
+      data
+    });
+  }
+
+  async getReferralByOpdId(opdId: string) {
+    return await this.opdReferral.findUnique({
+      where: { opdId },
+      include: {
+        staff: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true
+          }
+        },
+        healthPost: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        referredHealthPost: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        patient: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true
+          }
+        },
+        opdVisit: true
+      }
+    });
+  }
+
+  async getReferralsForHealthPost(healthPostId: string, type: "SENT" | "RECEIVED") {
+    const whereClause = type === "SENT"
+      ? { healthPostId }
+      : { referedHealthPostId: healthPostId };
+
+    return await this.opdReferral.findMany({
+      where: whereClause,
+      include: {
+        staff: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true
+          }
+        },
+        patient: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true
+          }
+        },
+        opdVisit: true
+      },
+      orderBy: {
+        createdAt: "desc"
+      }
+    });
+  }
+
+  async updateReferralStatus(referralId: string, referralStatus: "APPROVED" | "REJECTED") {
+    const existingReferral = await this.opdReferral.findUnique({
+      where: { id: referralId }
+    });
+
+    if (!existingReferral) {
+      throw new Error("Referral not found");
+    }
+
+    if (existingReferral.referralStatus !== "PENDING") {
+      throw new Error("Referral already acted upon");
+    }
+
+    return await this.opdReferral.update({
+      where: { id: referralId },
+      data: { referralStatus }
+    });
   }
 }

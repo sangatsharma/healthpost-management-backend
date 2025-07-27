@@ -3,7 +3,7 @@ import { OpdReferalType } from "../validations/opdReferal.validation";
 
 export class OpdReferalRepository {
   constructor(
-    private readonly prisma: PrismaClient["opdReferal"]
+    private readonly prisma: PrismaClient["opdReferral"]
   ) { }
 
   async create(dto: OpdReferalType) {
@@ -15,7 +15,7 @@ export class OpdReferalRepository {
   async getReferredForHp(hId: string) {
     return await this.prisma.findMany({
       where: {
-        referedHealthPostId: hId
+        referredHealthPostId: hId
       }
     });
   }
