@@ -105,7 +105,7 @@ healthPostRouter.put(
   upload.fields([
     { name: "profileImage", maxCount: 1 },
   ]),
-  authGuard(["SUPERADMIN", "ADMIN"]),
+  authGuard(),
   validateSchema(updatePatientValidation),
   uploadToCloudinary,
   languageMiddleware,
