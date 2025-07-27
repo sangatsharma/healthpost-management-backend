@@ -351,10 +351,6 @@ export class OpdVisitRepository {
       throw new Error("Referral not found");
     }
 
-    if (existingReferral.referralStatus !== "PENDING") {
-      throw new Error("Referral already acted upon");
-    }
-
     return await this.opdReferral.update({
       where: { id: referralId },
       data: { referralStatus },
