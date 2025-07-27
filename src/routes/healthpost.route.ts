@@ -54,7 +54,7 @@ healthPostRouter.post(
 );
 healthPostRouter.get(
   "",
-  authGuard(["SUPERADMIN"]),
+  authGuard(),
   languageMiddleware,
   getHealthPostController
 );
