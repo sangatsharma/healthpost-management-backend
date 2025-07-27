@@ -223,7 +223,38 @@ export class OpdVisitRepository {
 
   async createReferral(data: CreateOpdReferralInput) {
     return await this.opdReferral.create({
-      data
+      data,
+      include: {
+        staff: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true
+          }
+        },
+        healthPost: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        referredHealthPost: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        patient: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true
+          }
+        },
+        opdVisit: true
+      }
     });
   }
 
@@ -308,7 +339,10 @@ export class OpdVisitRepository {
     });
   }
 
-  async updateReferralStatus(referralId: string, referralStatus: "APPROVED" | "REJECTED") {
+  async updateReferralStatus(
+    referralId: string,
+    referralStatus: "APPROVED" | "REJECTED" | "COMPLETED"
+  ) {
     const existingReferral = await this.opdReferral.findUnique({
       where: { id: referralId }
     });

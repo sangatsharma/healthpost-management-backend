@@ -81,11 +81,14 @@ export const updateReferralStatusController = async (
 ) => {
   const body = req.body as AcceptRejectReferralInput;
 
-  const referral = await RepoManager.opdVisitRepository.updateReferralStatus(body.referralId, body.referalStatus);
+  const referral = await RepoManager.opdVisitRepository.updateReferralStatus(
+    body.referralId,
+    body.referalStatus
+  );
 
   return successResponse({
     res,
-    message: `Referral ${body.referalStatus === "APPROVED" ? "Accepted" : "Rejected"} Successfully`,
+    message: `Referral status updated to ${referral.referralStatus}`,
     data: referral
   });
 };

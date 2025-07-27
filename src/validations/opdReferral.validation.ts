@@ -37,7 +37,7 @@ export const acceptRejectReferralSchemaValidation = (lang: string) => {
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
     }),
-    referalStatus: z.enum(["APPROVED", "REJECTED"], {
+    referalStatus: z.enum(["APPROVED", "REJECTED", "COMPLETED"], {
       required_error: t.required,
     })
   });
