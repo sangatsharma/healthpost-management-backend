@@ -298,7 +298,7 @@ export class OpdVisitRepository {
   async getReferralsForHealthPost(healthPostId: string, type: "SENT" | "RECEIVED") {
     const whereClause = type === "SENT"
       ? { healthPostId }
-      : { referedHealthPostId: healthPostId };
+      : { referredHealthPostId: healthPostId };
 
     return await this.opdReferral.findMany({
       where: whereClause,
