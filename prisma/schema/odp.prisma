@@ -65,6 +65,7 @@ model OpdReferral {
   staffId              String
   healthPostId         String
   referredHealthPostId String
+  referralReason       String?
   patientId            String
   opdId                String        @unique()
   referralStatus       OpdStatusType @default(PENDING)

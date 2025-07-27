@@ -25,6 +25,7 @@ export const createOpdReferralSchemaValidation = (lang: string) => {
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
     }).uuid(),
+    referralReason: z.string().optional().nullable(),
   });
 };
 
