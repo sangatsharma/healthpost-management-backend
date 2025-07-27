@@ -24,7 +24,7 @@ import {
   TokenHelper
 } from "@app/src/helpers/index.helper";
 import { RepoManager } from "@app/src/repository/index.repository";
-import { Patient, User } from "@prisma/client";
+import { Patient, User, UserType } from "@prisma/client";
 import { ModifiedUser } from "@app/types/index.type";
 
 const domain = CONFIG.ENV === "PROD" ? ".healthsync.me" : "localhost";
@@ -299,7 +299,8 @@ export const userLogoutHandler = async (
   next: NextFunction
 ) => {
   const user = res.locals.user as {
-    id: string
+    id: string,
+    accountType: UserType
   };
   const response = res.locals.message;
 
@@ -311,7 +312,11 @@ export const userLogoutHandler = async (
     expires: new Date("1990-10-10")
   });
 
-  await RepoManager.userRepository.updateLogout(user.id);
+  if (user.accountType === UserType.PATIENT)
+    await RepoManager.patientRepository.updateLogout(user.id);
+  else
+    await RepoManager.userRepository.updateLogout(user.id);
+
 
   return successResponse({
     res,

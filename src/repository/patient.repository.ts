@@ -199,4 +199,19 @@ export class PatientRepository {
       }
     });
   }
+
+  async updateLogout(id: string): Promise<undefined> {
+    await this.prisma.update({
+      where: {
+        id: id
+      },
+      data: {
+        refreshToken: null,
+        otp: null,
+        optCreatedAt: null,
+      }
+    });
+
+    return;
+  }
 }

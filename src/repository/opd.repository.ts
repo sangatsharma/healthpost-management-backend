@@ -357,7 +357,38 @@ export class OpdVisitRepository {
 
     return await this.opdReferral.update({
       where: { id: referralId },
-      data: { referralStatus }
+      data: { referralStatus },
+      include: {
+        staff: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true
+          }
+        },
+        patient: {
+          select: {
+            id: true,
+            firstName: true,
+            middleName: true,
+            lastName: true
+          }
+        },
+        opdVisit: true,
+        healthPost: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        referredHealthPost: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+      },
     });
   }
 }

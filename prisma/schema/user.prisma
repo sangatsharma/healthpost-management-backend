@@ -24,6 +24,7 @@ model User {
   OpdVisit             OpdVisit[]
   HealthPost           HealthPost?
   referralsMade        OpdReferral[]
+  Notice               Notice[]
 
   @@map("user")
 }

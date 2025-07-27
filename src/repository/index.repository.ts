@@ -5,6 +5,7 @@ import { HealthPostRepository } from "./healthpost.repository";
 import { PatientRepository } from "./patient.repository";
 import { MedicineRepository } from "./medicine.repository";
 import { OpdVisitRepository } from "./opd.repository";
+import { NoticeRepository } from "./notice.repository";
 
 export class RepoManager {
   private static prisma: PrismaClient = prisma;
@@ -13,6 +14,7 @@ export class RepoManager {
   private static patientRepo: PatientRepository;
   private static medicineRepo: MedicineRepository;
   private static opdVisitRepo: OpdVisitRepository;
+  private static noticeRepo: NoticeRepository;
 
   static get userRepository() {
     if (!this.userRepo)
@@ -59,5 +61,14 @@ export class RepoManager {
       );
 
     return this.opdVisitRepo;
+  }
+
+  static get noticeRepository() {
+    if (!this.noticeRepo)
+      this.noticeRepo = new NoticeRepository(
+        this.prisma.notice
+      );
+
+    return this.noticeRepo;
   }
 }

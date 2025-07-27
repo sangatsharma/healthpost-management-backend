@@ -77,7 +77,7 @@ healthPostRouter.put(
   ]),
   authGuard(["SUPERADMIN", "ADMIN"]),
   validateSchema(updateHealthPostSchemaValidation),
-  // uploadToCloudinary,
+  uploadToCloudinary,
   languageMiddleware,
   updateHealthPostController
 );

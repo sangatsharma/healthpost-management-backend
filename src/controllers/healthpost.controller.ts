@@ -126,7 +126,13 @@ export const updateHealthPostController = async (
   const data = req.body as UpdateHealthPostType;
   const user = res.locals.user as UserJwt;
 
-  const uploads = res.locals.urls;
+  const uploads = res.locals.uploads as Record<
+    string,
+    { secure_url: string; public_id: string }[] // All fields now have array of uploads
+  >;
+
+  // Extract expected fields
+  const images = uploads?.images;
   try {
     const healthPostExists = await RepoManager.healthPostRepository.findById(
       healthPostId,
@@ -151,12 +157,11 @@ export const updateHealthPostController = async (
           message: response.UPDATE_HEALTHPOST.FAIL.INVALID_ADMIN_ID
         });
     }
-
     const updatedHealthPost = await RepoManager.healthPostRepository.update(
       healthPostId,
       {
         ...data,
-        images: uploads.images >= 1 ? uploads.images : undefined,
+        images: images ? images.map((image) => image.secure_url) : undefined,
       },
     ) as HealthPost;
     if (data.adminId)
@@ -172,11 +177,10 @@ export const updateHealthPostController = async (
 
   }
   catch (err) {
-    if (uploads.images.length > 1) {
-      await Promise.all(uploads.images.forEach(async (image: { public_id: string }) => {
+    if (images)
+      await Promise.all(images.map((image) => {
         cloudinary.uploader.destroy(image.public_id);
       }));
-    }
     return next(err);
   }
 };
