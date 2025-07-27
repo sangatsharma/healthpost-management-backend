@@ -109,7 +109,7 @@ export const createOpdVisitSchema = (lang: string) => {
       required_error: t.required,
     }),
     medicines: z.array(z.string()),
-    Vitals: VitalsSchema,
+    vitals: VitalsSchema,
   });
 };
 

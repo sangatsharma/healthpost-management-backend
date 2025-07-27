@@ -1,5 +1,6 @@
 import { Patient, PrismaClient } from "@prisma/client";
 import { NewPatientType, UpdatePatientType } from "@app/src/validations/index.validation";
+import { profile } from "console";
 
 function modifyImage(data: Patient) {
   const { profileImage, ...rest } = data;
@@ -118,15 +119,44 @@ export class PatientRepository {
     return patient;
   }
 
-  async findByEmail(email: string): Promise<Patient | null> {
+  async findByEmail(email: string) {
     const patient = await this.prisma.findUnique({
       where: {
         email: email
+      },
+      include: {
+        healthPost: {
+          select: {
+            name: true
+          }
+        }
       }
     });
 
-    return patient;
-  }
+    if (!patient)
+      return null;
+    return {
+      fullName: {
+        firstName: patient.firstName,
+        middleName: patient.middleName,
+        lastName: patient.lastName
+      },
+      email: patient.email,
+      role: patient.role,
+      phoneNumber: patient.phoneNumber,
+      status: patient.status,
+      permissions: [],
+      healthPostId: patient.healthPostId,
+      gender: patient.gender,
+      profileImage: patient.profileImage,
+      signature: [],
+      healthPost: {
+        name: patient.healthPost.name,
+      },
+      createdAt: patient.createdAt,
+      refreshToken: patient.updatedAt,
+    };
+  };
 
   async delete(id: string): Promise<Patient | null> {
     const deletedPatient = await this.prisma.delete({

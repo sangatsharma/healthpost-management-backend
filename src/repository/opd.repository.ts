@@ -26,7 +26,7 @@ export class OpdVisitRepository {
       visitType,
       prescriptions,
       medicines,
-      Vitals,
+      vitals,
     } = dto;
 
     return this.prisma.create({
@@ -59,7 +59,7 @@ export class OpdVisitRepository {
         },
         medicines,
         vitals: {
-          create: Vitals
+          create: vitals
         },
       },
       include: {
@@ -88,8 +88,17 @@ export class OpdVisitRepository {
             firstName: true,
             middleName: true,
             lastName: true,
-            palityId: true
-          }
+            dobBs: true,
+            patientCode: true,
+            districtId: true,
+            palityId: true,
+            tole: true,
+            wardNo: true,
+            gender: true,
+            nationality: true,
+            phoneNumber: true,
+            emergencyContact: true,
+          },
         },
         healthPost: {
           select: {
