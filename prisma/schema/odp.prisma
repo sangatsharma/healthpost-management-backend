@@ -62,6 +62,7 @@ model Medicine {
 
 model OpdReferral {
   id                   String        @id @default(uuid())
+  referralNo           Int           @default(autoincrement())
   staffId              String
   healthPostId         String
   referredHealthPostId String
@@ -83,6 +84,7 @@ enum OpdStatusType {
   PENDING
   APPROVED
   REJECTED
+  COMPLETED
 }
 
 enum VisitType {

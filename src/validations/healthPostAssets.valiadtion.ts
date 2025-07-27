@@ -44,6 +44,9 @@ export const engageAssetSchemaValidation = (lang: string) => {
       required_error: t.required,
       invalid_type_error: t.invalid_type_string
     }),
+    count: z.number({
+      required_error: t.required,
+    }),
     opdVisitId: z.string().optional()
   });
 };

@@ -288,7 +288,19 @@ export class OpdVisitRepository {
             lastName: true
           }
         },
-        opdVisit: true
+        opdVisit: true,
+        healthPost: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        referredHealthPost: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
       },
       orderBy: {
         createdAt: "desc"
