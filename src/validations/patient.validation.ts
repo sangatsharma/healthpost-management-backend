@@ -5,7 +5,6 @@ import {
   Nationality,
   BloodGroup,
   DisabilityIdentityType,
-  DisabilityType,
   GENDER,
   MarriageStatus,
 } from "@prisma/client";
@@ -24,6 +23,17 @@ const nullableEnum = <T extends Record<string, string | number>>(enumObj: T) =>
 export const newPatientValidation = (lang: string) => {
   const t = lang === "np" ? np : en;
 
+  enum DisabilityType {
+    PHYSICAL = "PHYSICAL",
+    VISUAL = "VISUAL",
+    HEARING = "HEARING",
+    INTELLECTUAL = "INTELLECTUAL",
+    MENTAL = "MENTAL",
+    MULTIPLE = "MULTIPLE",
+    OTHER = "OTHER",
+    NEUROLOGICAL = "NEUROLOGICAL",
+    null = "NULL"
+  }
   return z.object({
     firstName: z.string({
       required_error: t.required,
@@ -130,9 +140,10 @@ export const newPatientValidation = (lang: string) => {
     bloodGroup: z.nativeEnum(BloodGroup, {
       required_error: t.required,
     }),
-    disabilityType: z.nativeEnum(DisabilityType, {
+    disabilityType: z.enum(
+      ["PHYSICAL", "VISUAL", "HEARING", "INTELLECTUAL", "MENTAL", "MULTIPLE", "OTHER", "null"], {
     }).optional().nullable()
-      .transform((value) => value === null ? null : value),
+      .transform((value) => value === "null" ? undefined : value),
     disabilityIdentityType: z.nativeEnum(DisabilityIdentityType, {
     }).optional().nullable(),
     nshiNumber: z.string({
@@ -174,14 +185,10 @@ export const updatePatientValidation = (lang: string) => {
     height: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
-    disabilityType: z.string()
-      .transform(val => val === "" ? null : val) // Convert empty string to null
-      .nullable()
-      .optional()
-      .refine(val => val === null || Object.values(DisabilityType).includes(val as DisabilityType), {
-        message: "Invalid disability type",
-      })
-      .transform(val => val === null ? null : val as DisabilityType),
+    disabilityType: z.enum(
+      ["PHYSICAL", "VISUAL", "HEARING", "INTELLECTUAL", "MENTAL", "MULTIPLE", "OTHER", "null"], {
+    }).optional().nullable()
+      .transform((value) => value === "null" ? undefined : value),
     weight: z.string({
       invalid_type_error: t.invalid_type_string,
     }).optional().nullable(),
