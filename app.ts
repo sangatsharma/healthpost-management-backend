@@ -17,6 +17,7 @@ import patientRouter from "./src/routes/patient.route";
 import opdRouter from "./src/routes/opd.route";
 import referralRouter from "./src/routes/opdReferral.route";
 import assetRouter from "./src/routes/healthPostAsset.router";
+import noticeRouter from "./src/routes/notice.route";
 
 const port = CONFIG.PORT || 3000;
 
@@ -44,6 +45,7 @@ app.use("/api/patient", patientRouter);
 app.use("/api/opd", opdRouter);
 app.use("/api/opd-referral", referralRouter);
 app.use("/api/hp-assets", assetRouter);
+app.use("/api/notice", noticeRouter);
 
 app.use(errorHandler);
 app.use(unknownEndpoint);

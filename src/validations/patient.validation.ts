@@ -131,7 +131,8 @@ export const newPatientValidation = (lang: string) => {
       required_error: t.required,
     }),
     disabilityType: z.nativeEnum(DisabilityType, {
-    }).optional().nullable(),
+    }).optional().nullable()
+      .transform((value) => value === null ? null : value),
     disabilityIdentityType: z.nativeEnum(DisabilityIdentityType, {
     }).optional().nullable(),
     nshiNumber: z.string({

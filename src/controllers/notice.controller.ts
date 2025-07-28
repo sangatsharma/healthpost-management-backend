@@ -14,6 +14,15 @@ export const createNoticeController = async (
   const body = req.body as NoticeSchemaType;
   const creator = res.locals.user as UserJwt;
 
+  const uploads = res.locals.uploads as Record<
+    string,
+    { secure_url: string; public_id: string }[] // All fields now have array of uploads
+  >;
+  console.log(body);
+
+  // Extract expected fields
+  const images = uploads?.attachments || [];
+
   if (!creator || !creator.id) {
     throw new customErrors.AccessError({
       name: "UNAUTHORIZED",
@@ -50,7 +59,11 @@ export const createNoticeController = async (
   //   }
   // }
 
-  const notice = await RepoManager.noticeRepository.create(body, creator.id);
+  const notice = await RepoManager.noticeRepository.create(
+    body,
+    creator.id,
+    images.map((image) => image.secure_url)
+  );
 
   return successResponse({
     res,

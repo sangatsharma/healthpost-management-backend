@@ -6,13 +6,18 @@ export class NoticeRepository {
     private readonly prisma: PrismaClient["notice"]
   ) { }
 
-  async create(dto: NoticeSchemaType, creatorId: string) {
+  async create(
+    dto: NoticeSchemaType,
+    creatorId: string,
+    images: string[]
+  ) {
     return await this.prisma.create({
       data: {
         description: dto.description,
         type: dto.type,
-        toIds: dto.toIds || [],
-        createdById: creatorId
+        // toIds: dto.toIds || [],
+        createdById: creatorId,
+        attachments: images
       }
     });
   }
@@ -75,7 +80,7 @@ export class NoticeRepository {
       data: {
         description: dto.description,
         type: dto.type,
-        toIds: dto.toIds
+        // toIds: dto.toIds
       }
     });
   }

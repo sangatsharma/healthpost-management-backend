@@ -9,14 +9,20 @@ import {
   getAllNoticesController,
 } from "../controllers/notice.controller";
 import { noticeSchemaValidation } from "../validations/notice.validation";
+import { upload } from "@app/utils/index.utils";
+import { uploadToCloudinary } from "../helpers/uploadToCloudinary.helper";
 
 const noticeRouter = express.Router();
 
 // Create a new Notice
 noticeRouter.post(
   "",
+  upload.fields([
+    { name: "attachments" },
+  ]),
   authGuard(["SUPERADMIN", "ADMIN"]),
   validateSchema(noticeSchemaValidation),
+  uploadToCloudinary,
   createNoticeController
 );
 

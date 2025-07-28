@@ -4,6 +4,7 @@ model Notice {
   description String
   type        NoticeType // ENUM: HP, PATIENT, ALL
   toIds       String[] // Array of User IDs or HP IDs (depends on type)
+  attachments String[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 

@@ -24,6 +24,7 @@ export const uploadToCloudinary = async (
       profileImage: "profilePic",
       signature: "signature",
       images: "images",
+      attachments: "images",
       // Add more mappings as needed
     };
 
