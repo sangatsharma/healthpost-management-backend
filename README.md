@@ -65,7 +65,9 @@ ACCESS_EXPIRE=15m
 REFRESH_SECRET=<different random string>
 REFRESH_EXPIRE=7d
 
-MAIL=<app password for the mail account>
+MAIL=<sender Gmail address>
+MAIL_PASSWORD=<Gmail app password>
+SUPERADMIN_PASSWORD=<password for the superadmin login>
 
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
@@ -80,6 +82,10 @@ pnpm start:dev           # http://localhost:8000
 ```
 
 The frontend expects `NEXT_PUBLIC_API_URL=http://localhost:8000/api`. Allowed CORS origins are set in `app.ts`.
+
+### Deploying to Vercel
+
+The repo deploys as a single serverless function: `api/index.js` loads the compiled app, and `vercel.json` routes every request to it. The `vercel-build` script generates the Prisma client, applies migrations (`prisma migrate deploy`) and compiles to `dist/`, so `DATABASE_URL` must be available at build time. Set `ENV=PROD` so auth cookies are sent with `Secure`.
 
 ### Scripts
 

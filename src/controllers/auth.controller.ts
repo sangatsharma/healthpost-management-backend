@@ -51,7 +51,7 @@ export const adminLoginController = async (
     password: string
   };
 
-  if (body.password !== "secret123")
+  if (!CONFIG.SUPERADMIN_PASSWORD || body.password !== CONFIG.SUPERADMIN_PASSWORD)
     throw new customErrors.AccessError({
       name: "FORBIDDEN",
       message: "Access denied"

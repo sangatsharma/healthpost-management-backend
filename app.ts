@@ -50,8 +50,11 @@ app.use("/api/notice", noticeRouter);
 app.use(errorHandler);
 app.use(unknownEndpoint);
 
-app.listen(port, () => {
-  console.log(`Listining on port ${port}`);
-});
+// On Vercel the app runs as a serverless function, so it must not bind a port.
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`Listining on port ${port}`);
+  });
+}
 
 export default app;

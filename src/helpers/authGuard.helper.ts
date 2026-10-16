@@ -1,4 +1,4 @@
-import { customErrors } from "@app/utils/index.utils";
+import { customErrors, CONFIG } from "@app/utils/index.utils";
 import {
   Request,
   Response,
@@ -28,14 +28,14 @@ const authGuard = (role?: string[]) => {
     }
 
     if (req.path === "/logout") {
-      const user = jwt.verify(refreshToken, "12345678") as UserJwt;
+      const user = jwt.verify(refreshToken, CONFIG.REFRESH_SECRET) as UserJwt;
       res.locals.user = user;
       return next();
     }
 
     try {
 
-      const user = jwt.verify(accessToken, "secret") as UserJwt;
+      const user = jwt.verify(accessToken, CONFIG.ACCESS_SECRET) as UserJwt;
 
       if (role) {
         const userRole = user.role;

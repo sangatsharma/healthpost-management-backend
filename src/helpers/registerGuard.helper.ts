@@ -1,4 +1,4 @@
-import { customErrors } from "@app/utils/index.utils";
+import { customErrors, CONFIG } from "@app/utils/index.utils";
 import {
   Request,
   Response,
@@ -40,7 +40,7 @@ const registerAuthGuard = async (
     });
   }
 
-  const user = jwt.verify(accessToken, "secret") as UserJwt;
+  const user = jwt.verify(accessToken, CONFIG.ACCESS_SECRET) as UserJwt;
 
   if (body.role === "ADMIN" && user.role !== "SUPERADMIN")
     throw new customErrors.AccessError({
