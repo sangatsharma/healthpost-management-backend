@@ -8,7 +8,7 @@
     "start:prod": "node dist/app.js",
     "build": "prisma generate --schema ./prisma/schema/ && tsc --build && tsc-alias",
     "build:prod": "prisma generate --schema  ./prisma/schema/ && prisma migrate deploy --schema ./prisma/schema/ && tsc --build && tsc-alias",
-    "vercel-build": "pnpm build:prod && mkdir -p public",
+    "vercel-build": "pnpm build:prod && mkdir -p public && printf 'User-agent: *\\nDisallow: /\\n' > public/robots.txt",
     "studio": "prisma studio --schema  ./prisma/schema/",
     "db:migrate": "prisma generate --schema ./prisma/schema/ && prisma migrate  dev --schema ./prisma/schema ",
     "test": "echo \"Error: no test specified\" && exit 1"
